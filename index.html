@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="PokeInvest">
+<meta name="theme-color" content="#080810">
+<title>PokeInvest</title>
+<link rel="manifest" href="manifest.json">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+/* ── TOKENS ──────────────────────────────────────────────────────── */
+:root {
+  --bg:       #080810;
+  --bg1:      #0f0f1a;
+  --bg2:      #161624;
+  --bg3:      #1e1e30;
+  --border:   rgba(255,255,255,0.06);
+  --border2:  rgba(255,255,255,0.11);
+  --text:     #e8e8f0;
+  --muted:    #6a6a88;
+  --dim:      #3a3a52;
+  --gold:     #c8a84b;
+  --gold2:    #e8c86a;
+  --fire:     #ff5a3a;
+  --green:    #3ddc84;
+  --blue:     #4a9eff;
+  --amber:    #f5a623;
+  --purple:   #9b72ff;
+  --r:        12px;
+  --rs:       8px;
+  --safe-t:   env(safe-area-inset-top);
+  --safe-b:   env(safe-area-inset-bottom);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'DM Mono', monospace; overscroll-behavior: none; }
+
+/* ── LOGIN ───────────────────────────────────────────────────────── */
+#loginScreen {
+  position: fixed; inset: 0; z-index: 9999; background: var(--bg);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: calc(var(--safe-t) + 40px) 28px calc(var(--safe-b) + 40px);
+}
+.login-wordmark {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 52px; letter-spacing: 3px; color: var(--text);
+  margin-bottom: 4px; line-height: 1;
+}
+.login-wordmark span { color: var(--gold); }
+.login-tag { font-size: 10px; color: var(--muted); letter-spacing: 2px; margin-bottom: 52px; text-transform: uppercase; }
+.login-box { width: 100%; max-width: 320px; }
+.login-lbl { font-size: 9px; color: var(--muted); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px; display: block; }
+.pw-wrap { position: relative; margin-bottom: 10px; }
+.pw-input {
+  width: 100%; background: var(--bg1); border: 1px solid var(--border2);
+  border-radius: var(--r); padding: 13px 44px 13px 16px;
+  font-family: 'DM Mono', monospace; font-size: 14px; color: var(--text);
+  letter-spacing: 3px; outline: none; transition: border-color 0.2s;
+}
+.pw-input::placeholder { letter-spacing: 1px; color: var(--dim); }
+.pw-input:focus { border-color: var(--gold); }
+.pw-input.err { border-color: var(--fire); animation: shake .3s ease; }
+.pw-input.ok  { border-color: var(--green); }
+.eye { position: absolute; right: 13px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--muted); cursor: pointer; font-size: 15px; }
+.login-go {
+  width: 100%; padding: 13px; background: var(--gold); border: none; border-radius: var(--r);
+  font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 2px; color: #080810;
+  cursor: pointer; transition: opacity .15s, transform .1s; margin-top: 2px;
+}
+.login-go:active { transform: scale(0.98); opacity: 0.85; }
+.login-err { font-size: 11px; color: var(--fire); margin-top: 10px; text-align: center; min-height: 16px; }
+.slots { display: flex; justify-content: center; gap: 7px; margin-top: 32px; }
+.slot { width: 8px; height: 8px; border-radius: 50%; background: var(--bg3); border: 1px solid var(--border2); transition: all .3s; }
+.slot.used { background: var(--gold); border-color: var(--gold); }
+.login-hint { font-size: 10px; color: var(--muted); margin-top: 8px; text-align: center; letter-spacing: 0.5px; }
+@keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-7px)} 75%{transform:translateX(7px)} }
+@keyframes fadeUp { to { opacity:0; transform:translateY(-12px); pointer-events:none; } }
+.fade-up { animation: fadeUp .45s ease forwards; }
+
+/* ── HEADER ──────────────────────────────────────────────────────── */
+.hdr {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(8,8,16,0.9); backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border-bottom: 1px solid var(--border);
+  padding: calc(var(--safe-t) + 12px) 16px 12px;
+}
+.hdr-inner { max-width: 640px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
+.wordmark { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 2px; }
+.wordmark span { color: var(--gold); }
+.hdr-right { display: flex; align-items: center; gap: 10px; }
+.live-pill {
+  display: flex; align-items: center; gap: 5px;
+  background: var(--bg2); border: 1px solid var(--border2);
+  border-radius: 20px; padding: 4px 10px; font-size: 10px; color: var(--muted);
+}
+.live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+.refresh-btn {
+  background: transparent; border: 1px solid var(--border2); border-radius: var(--rs);
+  padding: 5px 10px; color: var(--muted); font-size: 11px; font-family: 'DM Mono', monospace;
+  cursor: pointer; display: flex; align-items: center; gap: 4px; transition: border-color .2s;
+}
+.refresh-btn:active { background: var(--bg2); }
+@keyframes spin { to { transform: rotate(360deg); } }
+.spinning { animation: spin .8s linear infinite; display: inline-block; }
+
+/* ── TABS ────────────────────────────────────────────────────────── */
+.tabs {
+  display: flex; border-bottom: 1px solid var(--border);
+  background: rgba(8,8,16,0.9); backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  position: sticky; top: 53px; z-index: 99;
+  max-width: 100%; overflow-x: auto; scrollbar-width: none;
+}
+.tabs::-webkit-scrollbar { display: none; }
+.tab {
+  flex: 1; min-width: 72px; padding: 11px 0; text-align: center;
+  font-family: 'Bebas Neue', sans-serif; font-size: 13px; letter-spacing: 1.5px;
+  color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent;
+  transition: color .2s, border-color .2s; white-space: nowrap;
+}
+.tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+/* ── CONTENT ─────────────────────────────────────────────────────── */
+.content { max-width: 640px; margin: 0 auto; padding: 16px 14px calc(var(--safe-b) + 80px); }
+.page { display: none; }
+.page.active { display: block; }
+
+/* ── SEARCH BAR ──────────────────────────────────────────────────── */
+.search-wrap { position: relative; margin-bottom: 14px; }
+.search-input {
+  width: 100%; background: var(--bg1); border: 1px solid var(--border2);
+  border-radius: var(--r); padding: 12px 40px 12px 14px;
+  font-family: 'DM Mono', monospace; font-size: 13px; color: var(--text);
+  outline: none; transition: border-color .2s;
+}
+.search-input:focus { border-color: var(--gold); }
+.search-input::placeholder { color: var(--muted); }
+.search-ico { position: absolute; right: 13px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 14px; pointer-events: none; }
+.search-x { position: absolute; right: 13px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 16px; cursor: pointer; background: none; border: none; display: none; line-height:1; }
+
+/* ── FILTERS ─────────────────────────────────────────────────────── */
+.filter-bar { background: var(--bg1); border: 1px solid var(--border); border-radius: var(--r); padding: 12px 14px; margin-bottom: 12px; }
+.filter-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+.filter-grid:last-child { margin-bottom: 0; }
+.fg { }
+.fg label { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 5px; }
+select {
+  width: 100%; background: var(--bg2); border: 1px solid var(--border2);
+  border-radius: var(--rs); color: var(--text); font-family: 'DM Mono', monospace;
+  font-size: 11px; padding: 7px 10px; appearance: none; -webkit-appearance: none; cursor: pointer;
+}
+input[type=range] {
+  width: 100%; -webkit-appearance: none; appearance: none;
+  height: 3px; background: var(--bg3); border-radius: 2px; outline: none;
+}
+input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 15px; height: 15px; border-radius: 50%; background: var(--gold); cursor: pointer; }
+
+/* ── SORT PILLS ──────────────────────────────────────────────────── */
+.sort-row { display: flex; gap: 6px; margin-bottom: 12px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+.sort-row::-webkit-scrollbar { display: none; }
+.spill {
+  white-space: nowrap; padding: 5px 12px; border-radius: 20px;
+  font-size: 10px; font-family: 'DM Mono', monospace; letter-spacing: .5px;
+  border: 1px solid var(--border2); background: var(--bg1); color: var(--muted);
+  cursor: pointer; transition: all .18s; flex-shrink: 0;
+}
+.spill.active { background: var(--gold); border-color: var(--gold); color: #080810; }
+
+/* ── LEGEND ──────────────────────────────────────────────────────── */
+.legend { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+.leg { display: flex; align-items: center; gap: 4px; font-size: 9px; color: var(--muted); }
+.leg-dot { width: 7px; height: 7px; border-radius: 50%; }
+
+.results-lbl { font-size: 10px; color: var(--muted); margin-bottom: 10px; }
+.results-lbl strong { color: var(--text); }
+
+/* ── LOADING / ERROR ─────────────────────────────────────────────── */
+.loader { text-align: center; padding: 60px 20px; }
+.loader-ring {
+  width: 38px; height: 38px; border: 3px solid var(--bg3); border-top-color: var(--gold);
+  border-radius: 50%; animation: spin .75s linear infinite; margin: 0 auto 18px;
+}
+.loader-title { font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 1px; color: var(--text); margin-bottom: 6px; }
+.loader-sub { font-size: 11px; color: var(--muted); line-height: 1.7; }
+.err-box { text-align: center; padding: 40px 20px; }
+.retry { margin-top: 14px; background: var(--gold); border: none; border-radius: var(--rs); padding: 10px 22px; font-family: 'Bebas Neue', sans-serif; font-size: 16px; letter-spacing: 1px; color: #080810; cursor: pointer; }
+
+/* ── CARD ────────────────────────────────────────────────────────── */
+.pcard {
+  background: var(--bg1); border: 1px solid var(--border);
+  border-radius: var(--r); margin-bottom: 10px; overflow: hidden;
+  cursor: pointer; transition: border-color .2s, transform .1s;
+}
+.pcard:active { transform: scale(0.995); }
+.pcard.open { border-color: var(--border2); }
+.pcard-top { padding: 13px 14px; }
+.pcard-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+.pcard-left { flex: 1; min-width: 0; }
+.pcard-name { font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 1px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; }
+.pcard-meta { font-size: 10px; color: var(--muted); display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.pcard-num { color: var(--gold); font-weight: 500; }
+.score-ring {
+  width: 50px; height: 50px; border-radius: 50%; flex-shrink: 0; margin-left: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 0.5px;
+  border: 2px solid;
+}
+.tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 7px; }
+.tag { font-size: 9px; padding: 2px 7px; border-radius: 20px; font-weight: 500; letter-spacing: .3px; border: 1px solid; }
+.t-sir  { background: rgba(200,168,75,.12); color: var(--gold2);  border-color: rgba(200,168,75,.25); }
+.t-hr   { background: rgba(155,114,255,.12); color: var(--purple); border-color: rgba(155,114,255,.25); }
+.t-ir   { background: rgba(74,158,255,.12);  color: var(--blue);   border-color: rgba(74,158,255,.25); }
+.t-new  { background: rgba(61,220,132,.1);   color: var(--green);  border-color: rgba(61,220,132,.2); }
+.t-buy  { background: rgba(61,220,132,.12);  color: var(--green);  border-color: rgba(61,220,132,.25); }
+.t-wait { background: rgba(245,166,35,.1);   color: var(--amber);  border-color: rgba(245,166,35,.2); }
+.t-pass { background: rgba(106,106,136,.1);  color: var(--muted);  border-color: rgba(106,106,136,.2); }
+.t-trainer { background: rgba(255,90,58,.1); color: var(--fire);   border-color: rgba(255,90,58,.2); }
+.t-nodata  { background: rgba(106,106,136,.08); color: var(--dim); border-color: var(--border); }
+
+/* ── PRICE ROW ───────────────────────────────────────────────────── */
+.price-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 10px; }
+.pcell { background: var(--bg2); border-radius: var(--rs); padding: 7px 9px; }
+.pcell-lbl { font-size: 8px; color: var(--muted); text-transform: uppercase; letter-spacing: .8px; margin-bottom: 3px; }
+.pcell-val { font-size: 13px; font-weight: 500; }
+.up { color: var(--green); }
+.dn { color: var(--fire); }
+.na { color: var(--muted); }
+
+/* ── BARS ────────────────────────────────────────────────────────── */
+.bars { display: flex; flex-direction: column; gap: 4px; }
+.bar-row { display: flex; align-items: center; gap: 7px; }
+.bar-lbl { font-size: 9px; color: var(--muted); width: 88px; flex-shrink: 0; }
+.bar-track { flex: 1; height: 3px; background: var(--bg3); border-radius: 2px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 2px; transition: width .5s ease; }
+.bar-num { font-size: 9px; color: var(--muted); width: 20px; text-align: right; }
+
+/* ── DETAIL ──────────────────────────────────────────────────────── */
+.pcard-detail { border-top: 1px solid var(--border); padding: 13px 14px; display: none; }
+.pcard-detail.show { display: block; }
+.det-section { margin-bottom: 11px; }
+.det-section:last-child { margin-bottom: 0; }
+.det-lbl { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+.det-body { font-size: 11px; color: #a0a0c0; line-height: 1.75; }
+.det-rec { font-size: 12px; line-height: 1.65; }
+.bench-row { display: flex; gap: 8px; margin-top: 4px; }
+.bench-cell { flex: 1; background: var(--bg2); border-radius: var(--rs); padding: 7px; text-align: center; }
+.bench-cell-lbl { font-size: 8px; color: var(--muted); text-transform: uppercase; letter-spacing: .6px; margin-bottom: 3px; }
+.bench-cell-val { font-size: 13px; font-weight: 500; }
+
+/* ── EBAY LIVE BOX ───────────────────────────────────────────────── */
+.ebay-box {
+  margin-top: 10px; background: var(--bg2); border-radius: var(--rs);
+  padding: 10px 12px; font-size: 11px; color: var(--muted); line-height: 1.7;
+  border: 1px solid var(--border);
+}
+.ebay-box.loaded { border-color: rgba(61,220,132,.2); }
+.ebay-stat { display: flex; justify-content: space-between; align-items: center; padding: 3px 0; border-bottom: 1px solid var(--border); }
+.ebay-stat:last-child { border-bottom: none; }
+
+/* ── LINKS ───────────────────────────────────────────────────────── */
+.ext-link {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  margin-top: 6px; padding: 9px; background: var(--bg2); border: 1px solid var(--border2);
+  border-radius: var(--rs); font-size: 11px; text-decoration: none;
+  font-family: 'Bebas Neue', sans-serif; font-size: 13px; letter-spacing: .8px;
+  transition: border-color .2s;
+}
+.ext-link:active { background: var(--bg3); }
+
+/* ── WATCHLIST BTN ───────────────────────────────────────────────── */
+.watch-btn {
+  width: 100%; margin-top: 8px; padding: 9px; background: transparent;
+  border: 1px solid var(--gold); border-radius: var(--rs);
+  font-family: 'Bebas Neue', sans-serif; font-size: 14px; letter-spacing: 1px;
+  color: var(--gold); cursor: pointer; transition: background .18s;
+}
+.watch-btn.on { background: rgba(200,168,75,.12); }
+
+/* ── INSIGHT CARDS ───────────────────────────────────────────────── */
+.icard { background: var(--bg1); border: 1px solid var(--border); border-radius: var(--r); padding: 14px; margin-bottom: 10px; }
+.icard-title { font-family: 'Bebas Neue', sans-serif; font-size: 15px; letter-spacing: 1px; color: var(--text); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+.icard-body { font-size: 11px; color: #9090b0; line-height: 1.75; }
+.irow { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 11px; }
+.irow:last-child { border-bottom: none; }
+.irow-name { color: var(--text); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-right: 8px; }
+.irow-val { flex-shrink: 0; font-weight: 500; }
+
+/* ── METRICS GRID ────────────────────────────────────────────────── */
+.mgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+.mbox { background: var(--bg1); border: 1px solid var(--border); border-radius: var(--r); padding: 13px; }
+.mbox-lbl { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: .8px; margin-bottom: 4px; }
+.mbox-val { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 1px; }
+.mbox-sub { font-size: 9px; color: var(--muted); margin-top: 2px; }
+
+/* ── EMPTY ───────────────────────────────────────────────────────── */
+.empty { text-align: center; padding: 60px 20px; color: var(--muted); }
+.empty-ico { font-size: 38px; margin-bottom: 14px; }
+.empty-title { font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 1px; color: var(--text); margin-bottom: 6px; }
+.empty-sub { font-size: 11px; line-height: 1.7; }
+
+/* ── TOAST ───────────────────────────────────────────────────────── */
+.toast {
+  position: fixed; bottom: calc(var(--safe-b) + 88px); left: 50%;
+  transform: translateX(-50%) translateY(16px);
+  background: var(--bg3); border: 1px solid var(--border2); border-radius: 20px;
+  padding: 9px 18px; font-size: 11px; color: var(--text);
+  opacity: 0; transition: all .25s; pointer-events: none; white-space: nowrap; z-index: 999;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ── TRENDING BADGE ──────────────────────────────────────────────── */
+.trend-up   { color: var(--green); }
+.trend-down { color: var(--fire); }
+.trend-flat { color: var(--muted); }
+
+/* ── SECTION HEAD ────────────────────────────────────────────────── */
+.sec-head { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 10px; margin-top: 4px; }
+</style>
+</head>
+<body>
+
+<!-- ── LOGIN ─────────────────────────────────────────────────────── -->
+<div id="loginScreen">
+  <div class="login-wordmark">Poke<span>Invest</span></div>
+  <div class="login-tag">Private Access · Investment Screener</div>
+  <div class="login-box">
+    <label class="login-lbl">Access Password</label>
+    <div class="pw-wrap">
+      <input class="pw-input" type="password" id="pwInput" placeholder="••••••••" autocomplete="off" onkeydown="if(event.key==='Enter')tryLogin()">
+      <button class="eye" onclick="toggleEye()">👁</button>
+    </div>
+    <button class="login-go" onclick="tryLogin()">ENTER</button>
+    <div class="login-err" id="loginErr"></div>
+    <div class="slots" id="slots"></div>
+    <div class="login-hint" id="loginHint">Invite only</div>
+  </div>
+</div>
+
+<!-- ── HEADER ─────────────────────────────────────────────────────── -->
+<div class="hdr">
+  <div class="hdr-inner">
+    <div class="wordmark">Poke<span>Invest</span></div>
+    <div class="hdr-right">
+      <div class="live-pill"><span class="live-dot"></span><span id="statusTxt">Loading</span></div>
+      <button class="refresh-btn" onclick="loadCards(true)"><span id="ri">↻</span> Refresh</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── TABS ───────────────────────────────────────────────────────── -->
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('screener',this)">Screener</div>
+  <div class="tab" onclick="switchTab('search',this)">Search</div>
+  <div class="tab" onclick="switchTab('trending',this)">Trending</div>
+  <div class="tab" onclick="switchTab('watchlist',this)">Watchlist</div>
+  <div class="tab" onclick="switchTab('insights',this)">Insights</div>
+</div>
+
+<div class="content">
+
+  <!-- ── SCREENER ─────────────────────────────────────────────────── -->
+  <div class="page active" id="page-screener">
+    <div class="filter-bar">
+      <div class="filter-grid">
+        <div class="fg">
+          <label>Rarity</label>
+          <select id="rarityF" onchange="renderScreener()">
+            <option value="all">All Secret Rares</option>
+            <option value="Special Illustration Rare">SIR</option>
+            <option value="Illustration Rare">IR</option>
+            <option value="Hyper Rare">Hyper Rare</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label>Lifecycle</label>
+          <select id="lcF" onchange="renderScreener()">
+            <option value="all">All Stages</option>
+            <option value="buy">Buy Zone Only</option>
+            <option value="watch">Watch + Above</option>
+          </select>
+        </div>
+      </div>
+      <div class="filter-grid">
+        <div class="fg">
+          <label>Min Score: <strong id="scoreV" style="color:var(--gold)">60</strong></label>
+          <input type="range" min="0" max="100" value="60" id="scoreF" step="1" oninput="document.getElementById('scoreV').textContent=this.value;renderScreener()">
+        </div>
+        <div class="fg">
+          <label>Max Price: <strong id="priceV" style="color:var(--gold)">$150</strong></label>
+          <input type="range" min="5" max="500" value="150" id="priceF" step="5" oninput="document.getElementById('priceV').textContent='$'+this.value;renderScreener()">
+        </div>
+      </div>
+    </div>
+    <div class="sort-row">
+      <button class="spill active" onclick="setSort('score',this)">Score</button>
+      <button class="spill" onclick="setSort('upside',this)">Upside</button>
+      <button class="spill" onclick="setSort('price',this)">Price ↑</button>
+      <button class="spill" onclick="setSort('new',this)">Newest</button>
+    </div>
+    <div class="legend">
+      <div class="leg"><div class="leg-dot" style="background:var(--fire)"></div>Strong Buy 85+</div>
+      <div class="leg"><div class="leg-dot" style="background:var(--amber)"></div>Buy 75–84</div>
+      <div class="leg"><div class="leg-dot" style="background:var(--green)"></div>Accumulate 65–74</div>
+      <div class="leg"><div class="leg-dot" style="background:var(--blue)"></div>Watch &lt;65</div>
+    </div>
+    <div class="results-lbl" id="screenerInfo"></div>
+    <div id="screenerGrid"></div>
+  </div>
+
+  <!-- ── SEARCH ────────────────────────────────────────────────────── -->
+  <div class="page" id="page-search">
+    <div class="search-wrap">
+      <input class="search-input" type="search" id="searchInput" placeholder="Search — Charizard, Cynthia, Umbreon..." oninput="handleSearch(this.value)" autocomplete="off" autocorrect="off" autocapitalize="off">
+      <span class="search-ico" id="sIco">🔍</span>
+      <button class="search-x" id="sX" onclick="clearSearch()">✕</button>
+    </div>
+    <div id="searchResults">
+      <div class="empty">
+        <div class="empty-ico">🔍</div>
+        <div class="empty-title">Search Any Card</div>
+        <div class="empty-sub">Type a Pokémon name or trainer. Every version is scored and ranked instantly.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TRENDING ──────────────────────────────────────────────────── -->
+  <div class="page" id="page-trending">
+    <div id="trendingGrid">
+      <div class="empty">
+        <div class="empty-ico">📈</div>
+        <div class="empty-title">Trending</div>
+        <div class="empty-sub">Cards with significant 7-day vs 30-day eBay price movement. Tap Screener first to load card data, then come back here.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── WATCHLIST ─────────────────────────────────────────────────── -->
+  <div class="page" id="page-watchlist">
+    <div class="mgrid" id="watchMetrics"></div>
+    <div class="sec-head">Your Cards</div>
+    <div id="watchGrid"></div>
+  </div>
+
+  <!-- ── INSIGHTS ──────────────────────────────────────────────────── -->
+  <div class="page" id="page-insights">
+    <div id="insightsContent">
+      <div class="loader"><div class="loader-ring"></div><div class="loader-title">Loading Insights</div></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── CONFIG ────────────────────────────────────────────────────────
+const API = 'https://poke-api-three-delta.vercel.app';
+
+// ── PASSWORDS ─────────────────────────────────────────────────────
+const PASSWORDS = ['pokeball1','charizard2','pikachu3','mewtwo4','umbreon5','gardevoir6','gengar7','lugia8','eevee9','mew10'];
+let usedPws = JSON.parse(localStorage.getItem('pi_used') || '[]');
+
+function buildSlots() {
+  document.getElementById('slots').innerHTML = PASSWORDS.map((_,i) =>
+    `<div class="slot ${usedPws.includes(i)?'used':''}"></div>`).join('');
+  const u = usedPws.length;
+  document.getElementById('loginHint').textContent = u ? `${u}/${PASSWORDS.length} invites used` : 'Invite only';
+}
+function tryLogin() {
+  const inp = document.getElementById('pwInput');
+  const val = inp.value.trim().toLowerCase();
+  const err = document.getElementById('loginErr');
+  const idx = PASSWORDS.indexOf(val);
+  if (idx < 0) {
+    inp.classList.add('err'); err.textContent = 'Invalid password.';
+    setTimeout(() => inp.classList.remove('err'), 350); inp.value = ''; return;
+  }
+  inp.classList.add('ok'); err.style.color = 'var(--green)'; err.textContent = 'Access granted.';
+  sessionStorage.setItem('pi_auth','1');
+  if (!usedPws.includes(idx)) { usedPws.push(idx); localStorage.setItem('pi_used', JSON.stringify(usedPws)); }
+  buildSlots();
+  setTimeout(() => {
+    const s = document.getElementById('loginScreen');
+    s.classList.add('fade-up');
+    setTimeout(() => s.style.display = 'none', 450);
+  }, 550);
+}
+function toggleEye() { const i = document.getElementById('pwInput'); i.type = i.type === 'password' ? 'text' : 'password'; }
+if (sessionStorage.getItem('pi_auth') === '1') document.getElementById('loginScreen').style.display = 'none';
+buildSlots();
+
+// ── STATE ─────────────────────────────────────────────────────────
+let allCards = [];
+let lastFetch = 0;
+const CACHE = 30 * 60 * 1000;
+let currentSort = 'score';
+let expandedId = null;
+let expandCtx = null;
+let watchlist = JSON.parse(localStorage.getItem('pi_watch') || '[]');
+let searchTimer = null;
+let lastSearchCards = [];
+let trendingLoaded = false;
+
+// ── RATING HELPERS ────────────────────────────────────────────────
+function ratingStyle(score) {
+  if (score >= 85) return { color: 'var(--fire)',   bg: 'rgba(255,90,58,0.12)',  border: 'rgba(255,90,58,0.35)' };
+  if (score >= 75) return { color: 'var(--amber)',  bg: 'rgba(245,166,35,0.12)', border: 'rgba(245,166,35,0.35)' };
+  if (score >= 65) return { color: 'var(--green)',  bg: 'rgba(61,220,132,0.1)',  border: 'rgba(61,220,132,0.3)' };
+  return               { color: 'var(--blue)',   bg: 'rgba(74,158,255,0.1)',  border: 'rgba(74,158,255,0.3)' };
+}
+function barColor(v) { return v >= 80 ? 'var(--green)' : v >= 60 ? 'var(--amber)' : 'var(--fire)'; }
+
+function recTag(rec) {
+  if (!rec) return '';
+  const l = rec.label || '';
+  if (l.includes('Strong Buy')) return `<span class="tag t-buy">🔥 Strong Buy</span>`;
+  if (l.includes('Buy'))        return `<span class="tag t-buy">✅ Buy</span>`;
+  if (l.includes('Accumulate')) return `<span class="tag t-buy">👀 Accumulate</span>`;
+  if (l.includes('Wait') || l.includes('Dropping')) return `<span class="tag t-wait">⏳ Wait</span>`;
+  if (l.includes('Avoid'))      return `<span class="tag t-wait">🚫 Avoid</span>`;
+  if (l.includes('No Price'))   return `<span class="tag t-nodata">No Price Data</span>`;
+  return `<span class="tag t-pass">${l}</span>`;
+}
+
+function rarityTag(rarity) {
+  if (rarity === 'Special Illustration Rare') return '<span class="tag t-sir">SIR</span>';
+  if (rarity === 'Hyper Rare')                return '<span class="tag t-hr">HR</span>';
+  if (rarity === 'Illustration Rare')         return '<span class="tag t-ir">IR</span>';
+  return `<span class="tag t-pass">${rarity||'?'}</span>`;
+}
+
+// ── CARD HTML ─────────────────────────────────────────────────────
+function cardHTML(card, ctx) {
+  const score = card.score || 0;
+  const rs = ratingStyle(score);
+  const inWatch = watchlist.includes(card.id);
+  const isOpen = expandedId === card.id && expandCtx === ctx;
+  const price = card.marketPrice || 0;
+  const fv = card.benchmarks?.fair || null;
+  const upside = card.upside;
+  const bd = card.breakdown || {};
+  const isNew = card.set?.releaseDate && (Date.now() - new Date(card.set.releaseDate)) < 90*24*60*60*1000;
+  const isTrainer = card.supertype === 'Trainer';
+  const ebayQ = encodeURIComponent(card.ebayQuery || card.name);
+  const ebaySOLD = `https://www.ebay.com/sch/i.html?_nkw=${ebayQ}&LH_Complete=1&LH_Sold=1&_sop=13`;
+  const ebayBUY  = `https://www.ebay.com/sch/i.html?_nkw=${ebayQ}&LH_BIN=1&_sop=15`;
+  const tcgUrl   = card.tcgplayerUrl || '';
+
+  const priceStr  = price > 0 ? `$${price.toFixed(2)}` : '—';
+  const fvStr     = fv ? `$${fv}` : '—';
+  const upsideStr = upside !== null && upside !== undefined ? (upside >= 0 ? `+${upside}%` : `${upside}%`) : '—';
+  const upsideCls = upside > 0 ? 'up' : upside < 0 ? 'dn' : 'na';
+
+  const bars = [
+    ['Pull Rarity',   bd.pullScore],
+    ['Pokémon Demand',bd.pokemonScore],
+    ['Set Lifecycle', bd.lifecycleScore],
+    ['Price vs Floor',bd.priceScore === 'N/A' ? null : bd.priceScore],
+    ['Print Run',     bd.printRunScore],
+  ].filter(([,v]) => v !== null && v !== undefined);
+
+  return `<div class="pcard${isOpen?' open':''}" id="pc-${card.id}-${ctx}" onclick="toggleCard('${card.id}','${ctx}')">
+  <div class="pcard-top">
+    <div class="pcard-head">
+      <div class="pcard-left">
+        <div class="pcard-name">${card.name}</div>
+        <div class="pcard-meta">
+          <span>${card.set?.name || ''}</span>
+          ${card.cardNo ? `<span class="pcard-num">#${card.cardNo}</span>` : ''}
+          ${card.artist ? `<span>· ${card.artist}</span>` : ''}
+        </div>
+        <div class="tags" style="margin-top:7px">
+          ${rarityTag(card.rarity)}
+          ${recTag(card.recommendation)}
+          ${isNew ? '<span class="tag t-new">New Set</span>' : ''}
+          ${isTrainer ? '<span class="tag t-trainer">Trainer</span>' : ''}
+          ${bd.trainerBonus ? `<span class="tag t-buy">Trainer +${bd.trainerBonus}</span>` : ''}
+        </div>
+      </div>
+      <div class="score-ring" style="color:${rs.color};background:${rs.bg};border-color:${rs.border}">${score}</div>
+    </div>
+    <div class="price-row">
+      <div class="pcell"><div class="pcell-lbl">Market Price</div><div class="pcell-val">${priceStr}</div></div>
+      <div class="pcell"><div class="pcell-lbl">Fair Value</div><div class="pcell-val">${fvStr}</div></div>
+      <div class="pcell"><div class="pcell-lbl">Upside</div><div class="pcell-val ${upsideCls}">${upsideStr}</div></div>
+    </div>
+    <div class="bars">
+      ${bars.map(([l,v])=>`<div class="bar-row">
+        <div class="bar-lbl">${l}</div>
+        <div class="bar-track"><div class="bar-fill" style="width:${v}%;background:${barColor(v)}"></div></div>
+        <div class="bar-num">${v}</div>
+      </div>`).join('')}
+    </div>
+  </div>
+  <div class="pcard-detail${isOpen?' show':''}" id="det-${card.id}-${ctx}">
+    ${card.lifecycleLabel ? `<div class="det-section">
+      <div class="det-lbl">Set Stage</div>
+      <div class="det-body" style="color:var(--gold)">${card.lifecycleLabel}</div>
+    </div>` : ''}
+    <div class="det-section">
+      <div class="det-lbl">Recommendation</div>
+      <div class="det-rec" style="color:${rs.color}">${card.recommendation?.label || '—'}</div>
+      <div class="det-body" style="margin-top:4px">${card.recommendation?.detail || ''}</div>
+    </div>
+    <div class="det-section">
+      <div class="det-lbl">Price Benchmarks</div>
+      <div class="bench-row">
+        <div class="bench-cell"><div class="bench-cell-lbl">Floor</div><div class="bench-cell-val" style="color:var(--green)">$${card.benchmarks?.floor||'—'}</div></div>
+        <div class="bench-cell"><div class="bench-cell-lbl">Fair Value</div><div class="bench-cell-val" style="color:var(--gold)">$${card.benchmarks?.fair||'—'}</div></div>
+        <div class="bench-cell"><div class="bench-cell-lbl">Ceiling</div><div class="bench-cell-val" style="color:var(--fire)">$${card.benchmarks?.ceil||'—'}</div></div>
+      </div>
+    </div>
+    <div class="det-section">
+      <div class="det-lbl">eBay Sold — Real Prices</div>
+      <div class="ebay-box" id="eb-${card.id}-${ctx}">Loading real eBay sold prices...</div>
+    </div>
+    ${tcgUrl ? `<a class="ext-link" href="${tcgUrl}" target="_blank" onclick="event.stopPropagation()" style="color:var(--gold)">View on TCGPlayer ↗</a>` : ''}
+    <a class="ext-link" href="${ebaySOLD}" target="_blank" onclick="event.stopPropagation()" style="color:var(--green);border-color:rgba(61,220,132,.25)">eBay Sold Listings ↗</a>
+    <a class="ext-link" href="${ebayBUY}"  target="_blank" onclick="event.stopPropagation()" style="color:var(--blue);border-color:rgba(74,158,255,.25)">eBay Active Listings ↗</a>
+    <button class="watch-btn${inWatch?' on':''}" onclick="event.stopPropagation();toggleWatch('${card.id}')">
+      ${inWatch ? '★ IN WATCHLIST' : '☆ ADD TO WATCHLIST'}
+    </button>
+  </div>
+</div>`;
+}
+
+// ── TOGGLE CARD ───────────────────────────────────────────────────
+function toggleCard(id, ctx) {
+  const wasOpen = expandedId === id && expandCtx === ctx;
+  expandedId = wasOpen ? null : id;
+  expandCtx  = wasOpen ? null : ctx;
+  if (ctx === 'screener')  renderScreener();
+  else if (ctx === 'search')    renderSearchResults(lastSearchCards);
+  else if (ctx === 'watchlist') renderWatchlist();
+  else if (ctx === 'trending')  renderTrendingCards();
+  if (!wasOpen && expandedId) fetchEbayLive(id, ctx);
+}
+
+// ── EBAY LIVE ─────────────────────────────────────────────────────
+async function fetchEbayLive(id, ctx) {
+  const card = [...allCards, ...lastSearchCards].find(c => c.id === id);
+  if (!card) return;
+  const el = document.getElementById(`eb-${id}-${ctx}`);
+  if (!el) return;
+  try {
+    const q = card.ebayQuery || card.name;
+    const res = await fetch(`${API}/api/prices?q=${encodeURIComponent(q)}`);
+    const data = await res.json();
+    if (!data.success || !data.found) {
+      el.textContent = 'No recent eBay sold data found. Check manually.'; return;
+    }
+    el.classList.add('loaded');
+    el.innerHTML = `
+      <div class="ebay-stat"><span style="color:var(--muted)">Avg sold price</span><span style="color:var(--text);font-weight:500">$${data.trimmedAvg || data.avg}</span></div>
+      <div class="ebay-stat"><span style="color:var(--muted)">7-day avg</span><span style="color:${data.avg7 > data.avg30 ? 'var(--green)':'var(--fire)'}">${data.avg7 ? '$'+data.avg7 : '—'}</span></div>
+      <div class="ebay-stat"><span style="color:var(--muted)">30-day avg</span><span style="color:var(--text)">$${data.avg30 || data.avg}</span></div>
+      <div class="ebay-stat"><span style="color:var(--muted)">Range</span><span style="color:var(--text)">$${data.low} – $${data.high}</span></div>
+      <div class="ebay-stat"><span style="color:var(--muted)">Recent sales</span><span style="color:var(--text)">${data.count} found</span></div>
+      <div class="ebay-stat"><span style="color:var(--muted)">Trend</span><span class="trend-${data.trend}">${data.trend === 'rising' ? '↑ Rising' : data.trend === 'falling' ? '↓ Falling' : '→ Stable'} ${data.trendPct !== undefined ? '('+Math.abs(data.trendPct)+'%)':''}</span></div>`;
+  } catch(e) {
+    if (el) el.textContent = 'Could not load eBay data right now.';
+  }
+}
+
+// ── LOAD CARDS ────────────────────────────────────────────────────
+async function loadCards(force = false) {
+  if (!force && allCards.length && Date.now() - lastFetch < CACHE) { renderScreener(); return; }
+  setStatus('Fetching...', true);
+  document.getElementById('screenerGrid').innerHTML = `<div class="loader"><div class="loader-ring"></div><div class="loader-title">Scanning the market</div><div class="loader-sub">Pulling live secret rares from the backend.<br>First load takes a few seconds.</div></div>`;
+  try {
+    const res = await fetch(`${API}/api/cards`);
+    if (!res.ok) throw new Error(`Backend ${res.status}`);
+    const data = await res.json();
+    allCards = data.cards || [];
+    lastFetch = Date.now();
+    setStatus(`${new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})} · ${allCards.length} cards`, false);
+    renderScreener();
+    renderInsights();
+  } catch(e) {
+    document.getElementById('screenerGrid').innerHTML = `<div class="err-box"><div style="font-size:32px;margin-bottom:14px">⚠️</div><div style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;color:var(--text);margin-bottom:6px">Connection Error</div><div style="font-size:11px;color:var(--muted)">${e.message}</div><button class="retry" onclick="loadCards(true)">RETRY</button></div>`;
+    setStatus('Error', false);
+  }
+}
+
+function setStatus(txt, loading) {
+  document.getElementById('statusTxt').textContent = txt;
+  const ri = document.getElementById('ri');
+  loading ? ri.classList.add('spinning') : ri.classList.remove('spinning');
+}
+
+// ── SCREENER ──────────────────────────────────────────────────────
+function setSort(s, btn) {
+  currentSort = s;
+  document.querySelectorAll('.spill').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderScreener();
+}
+
+function renderScreener() {
+  if (!allCards.length) return;
+  const rarity   = document.getElementById('rarityF').value;
+  const lc       = document.getElementById('lcF').value;
+  const minScore = +document.getElementById('scoreF').value;
+  const maxPrice = +document.getElementById('priceF').value;
+
+  let cards = allCards.filter(c => {
+    if (rarity !== 'all' && c.rarity !== rarity) return false;
+    if (c.marketPrice > 0 && c.marketPrice > maxPrice) return false;
+    if (c.score < minScore) return false;
+    if (lc === 'buy' && !(c.lifecycleLabel||'').includes('BUY')) return false;
+    if (lc === 'watch' && ((c.lifecycleLabel||'').includes('Just Released') || (c.lifecycleLabel||'').includes('Dropping'))) return false;
+    return true;
+  });
+
+  cards.sort((a,b) => {
+    if (currentSort === 'price')  return (a.marketPrice||999) - (b.marketPrice||999);
+    if (currentSort === 'upside') return (b.upside||0) - (a.upside||0);
+    if (currentSort === 'new')    return new Date(b.set?.releaseDate||0) - new Date(a.set?.releaseDate||0);
+    return b.score - a.score;
+  });
+
+  document.getElementById('screenerInfo').innerHTML = `<strong>${cards.length}</strong> cards matching filters`;
+  document.getElementById('screenerGrid').innerHTML = cards.length
+    ? cards.map(c => cardHTML(c, 'screener')).join('')
+    : '<div style="text-align:center;padding:40px;color:var(--muted);font-size:12px">No cards match — try loosening filters.</div>';
+}
+
+// ── SEARCH ────────────────────────────────────────────────────────
+function handleSearch(val) {
+  document.getElementById('sX').style.display   = val ? 'block' : 'none';
+  document.getElementById('sIco').style.display = val ? 'none'  : 'block';
+  clearTimeout(searchTimer);
+  if (!val.trim()) {
+    lastSearchCards = [];
+    document.getElementById('searchResults').innerHTML = `<div class="empty"><div class="empty-ico">🔍</div><div class="empty-title">Search Any Card</div><div class="empty-sub">Type a Pokémon name or trainer.</div></div>`;
+    return;
+  }
+  document.getElementById('searchResults').innerHTML = `<div class="loader"><div class="loader-ring"></div><div class="loader-title">Searching</div></div>`;
+  searchTimer = setTimeout(() => doSearch(val.trim()), 350);
+}
+
+async function doSearch(q) {
+  try {
+    const res = await fetch(`${API}/api/search?q=${encodeURIComponent(q)}`);
+    const data = await res.json();
+    lastSearchCards = data.cards || [];
+    renderSearchResults(lastSearchCards, q);
+  } catch(e) {
+    document.getElementById('searchResults').innerHTML = `<div class="err-box"><div style="font-size:11px;color:var(--muted)">Search failed — check connection.</div></div>`;
+  }
+}
+
+function renderSearchResults(cards, q = '') {
+  lastSearchCards = cards;
+  if (!cards.length) {
+    document.getElementById('searchResults').innerHTML = `<div class="empty"><div class="empty-ico">😶</div><div class="empty-title">No Results</div><div class="empty-sub">Try a different name.</div></div>`;
+    return;
+  }
+  const sorted = [...cards].sort((a,b) => b.score - a.score);
+  document.getElementById('searchResults').innerHTML =
+    `<div class="results-lbl"><strong>${sorted.length}</strong> results for "${q}" — by investment score</div>` +
+    sorted.map(c => cardHTML(c, 'search')).join('');
+}
+
+function clearSearch() {
+  document.getElementById('searchInput').value = '';
+  handleSearch('');
+  document.getElementById('searchInput').focus();
+}
+
+// ── TRENDING ──────────────────────────────────────────────────────
+let trendingCards = [];
+
+async function loadTrending() {
+  if (trendingLoaded) { renderTrendingCards(); return; }
+  document.getElementById('trendingGrid').innerHTML = `<div class="loader"><div class="loader-ring"></div><div class="loader-title">Finding Movers</div><div class="loader-sub">Scraping eBay for 7-day vs 30-day price shifts.<br>This takes 15–20 seconds.</div></div>`;
+  try {
+    const res = await fetch(`${API}/api/trending`);
+    const data = await res.json();
+    trendingCards = data.trending || [];
+    trendingLoaded = true;
+    renderTrendingCards();
+  } catch(e) {
+    document.getElementById('trendingGrid').innerHTML = `<div class="err-box"><div style="font-size:11px;color:var(--muted)">Could not load trending data.</div><button class="retry" onclick="trendingLoaded=false;loadTrending()">RETRY</button></div>`;
+  }
+}
+
+function renderTrendingCards() {
+  if (!trendingCards.length) {
+    document.getElementById('trendingGrid').innerHTML = `<div class="empty"><div class="empty-ico">📊</div><div class="empty-title">No Movers Found</div><div class="empty-sub">No significant price movement detected in current top cards.</div></div>`;
+    return;
+  }
+  // Merge trending data into card format for rendering
+  const merged = trendingCards.map(t => {
+    const base = allCards.find(c => c.id === t.id) || {};
+    return { ...base, ...t, marketPrice: t.tcgPrice, ebayQuery: t.ebayQuery };
+  });
+  const rising  = merged.filter(c => c.trend === 'rising');
+  const falling = merged.filter(c => c.trend === 'falling');
+  let html = '';
+  if (rising.length) html += `<div class="sec-head">↑ Rising — Momentum Building</div>` + rising.map(c => trendCardHTML(c)).join('');
+  if (falling.length) html += `<div class="sec-head" style="margin-top:16px">↓ Falling — Potential Entry Points</div>` + falling.map(c => trendCardHTML(c)).join('');
+  document.getElementById('trendingGrid').innerHTML = html;
+}
+
+function trendCardHTML(c) {
+  const pct = c.trendPct || 0;
+  const dir = pct > 0 ? 'up' : 'dn';
+  const arrow = pct > 0 ? '↑' : '↓';
+  return `<div class="icard">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+      <div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1px;color:var(--text)">${c.name}</div>
+        <div style="font-size:10px;color:var(--muted)">${c.set} · #${c.cardNo||'?'} · Score ${c.score}</div>
+      </div>
+      <div class="${dir}" style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px">${arrow}${Math.abs(pct)}%</div>
+    </div>
+    <div class="price-row" style="margin-bottom:0">
+      <div class="pcell"><div class="pcell-lbl">TCG Price</div><div class="pcell-val">$${c.tcgPrice||'—'}</div></div>
+      <div class="pcell"><div class="pcell-lbl">7-Day eBay</div><div class="pcell-val ${dir}">$${c.ebayAvg7||'—'}</div></div>
+      <div class="pcell"><div class="pcell-lbl">30-Day eBay</div><div class="pcell-val">$${c.ebayAvg30||'—'}</div></div>
+    </div>
+  </div>`;
+}
+
+// ── WATCHLIST ─────────────────────────────────────────────────────
+function toggleWatch(id) {
+  watchlist.includes(id)
+    ? (watchlist = watchlist.filter(w => w !== id), showToast('Removed from watchlist'))
+    : (watchlist.push(id), showToast('Added to watchlist ★'));
+  localStorage.setItem('pi_watch', JSON.stringify(watchlist));
+  renderScreener();
+  renderSearchResults(lastSearchCards);
+  renderWatchlist();
+}
+
+function renderWatchlist() {
+  const metrics = document.getElementById('watchMetrics');
+  const grid    = document.getElementById('watchGrid');
+  const cards   = allCards.filter(c => watchlist.includes(c.id));
+
+  if (!watchlist.length || !cards.length) {
+    metrics.innerHTML = '';
+    grid.innerHTML = `<div class="empty"><div class="empty-ico">★</div><div class="empty-title">Watchlist Empty</div><div class="empty-sub">Expand any card in Screener or Search and tap Add to Watchlist.</div></div>`;
+    return;
+  }
+
+  const avgScore  = Math.round(cards.reduce((a,c) => a + c.score, 0) / cards.length);
+  const avgUpside = Math.round(cards.reduce((a,c) => a + (c.upside||0), 0) / cards.length);
+  const totalCost = cards.reduce((a,c) => a + (c.marketPrice||0), 0).toFixed(0);
+  const totalFV   = cards.reduce((a,c) => a + (c.benchmarks?.fair||0), 0);
+  const totalROI  = totalCost > 0 ? Math.round((totalFV/totalCost - 1)*100) : 0;
+  const rs = ratingStyle(avgScore);
+
+  metrics.innerHTML = `
+    <div class="mbox"><div class="mbox-lbl">Cards Tracked</div><div class="mbox-val" style="color:var(--gold)">${cards.length}</div></div>
+    <div class="mbox"><div class="mbox-lbl">Avg Score</div><div class="mbox-val" style="color:${rs.color}">${avgScore}</div></div>
+    <div class="mbox"><div class="mbox-lbl">Total Cost</div><div class="mbox-val">$${totalCost}</div><div class="mbox-sub">at market price</div></div>
+    <div class="mbox"><div class="mbox-lbl">Portfolio Upside</div><div class="mbox-val" style="color:var(--green)">+${totalROI}%</div><div class="mbox-sub">to fair value</div></div>`;
+
+  grid.innerHTML = [...cards].sort((a,b) => b.score - a.score).map(c => cardHTML(c, 'watchlist')).join('');
+}
+
+// ── INSIGHTS ──────────────────────────────────────────────────────
+function renderInsights() {
+  if (!allCards.length) return;
+  const el = document.getElementById('insightsContent');
+  const sorted    = [...allCards].sort((a,b) => b.score - a.score);
+  const byUpside  = [...allCards].sort((a,b) => (b.upside||0) - (a.upside||0));
+  const byNew     = [...allCards].sort((a,b) => new Date(b.set?.releaseDate||0) - new Date(a.set?.releaseDate||0));
+  const mustBuy   = allCards.filter(c => c.score >= 85).length;
+  const inBuyZone = allCards.filter(c => (c.lifecycleLabel||'').includes('BUY')).length;
+  const avgUp     = Math.round(allCards.reduce((a,c) => a + (c.upside||0), 0) / allCards.length);
+  const cheapGems = allCards.filter(c => c.marketPrice > 0 && c.marketPrice < 40 && c.score >= 65).sort((a,b) => b.score - a.score).slice(0,5);
+
+  el.innerHTML = `
+    <div class="mgrid">
+      <div class="mbox"><div class="mbox-lbl">Cards Tracked</div><div class="mbox-val" style="color:var(--gold)">${allCards.length}</div><div class="mbox-sub">secret rares</div></div>
+      <div class="mbox"><div class="mbox-lbl">Strong Buy</div><div class="mbox-val" style="color:var(--fire)">${mustBuy}</div><div class="mbox-sub">score 85+</div></div>
+      <div class="mbox"><div class="mbox-lbl">In Buy Zone</div><div class="mbox-val" style="color:var(--green)">${inBuyZone}</div><div class="mbox-sub">lifecycle signal</div></div>
+      <div class="mbox"><div class="mbox-lbl">Avg Upside</div><div class="mbox-val" style="color:var(--green)">+${avgUp}%</div><div class="mbox-sub">to fair value</div></div>
+    </div>
+
+    <div class="icard">
+      <div class="icard-title">🏆 Top Scored</div>
+      <div class="icard-body">${sorted.slice(0,5).map((c,i) => `
+        <div class="irow">
+          <span class="irow-name">${i+1}. ${c.name} <span style="color:var(--muted);font-size:9px">${c.set?.name||''}</span></span>
+          <span class="irow-val" style="color:${ratingStyle(c.score).color}">${c.score}</span>
+        </div>`).join('')}
+      </div>
+    </div>
+
+    <div class="icard">
+      <div class="icard-title">📈 Most Upside</div>
+      <div class="icard-body">${byUpside.filter(c=>c.upside>0).slice(0,5).map((c,i) => `
+        <div class="irow">
+          <span class="irow-name">${i+1}. ${c.name} <span style="color:var(--muted);font-size:9px">#${c.cardNo||'?'}</span></span>
+          <span class="irow-val up">+${c.upside}%</span>
+        </div>`).join('')}
+      </div>
+    </div>
+
+    ${cheapGems.length ? `<div class="icard">
+      <div class="icard-title">💎 Under $40 Gems</div>
+      <div class="icard-body">${cheapGems.map((c,i) => `
+        <div class="irow">
+          <span class="irow-name">${i+1}. ${c.name}</span>
+          <span class="irow-val" style="color:var(--gold)">$${c.marketPrice?.toFixed(0)} · ${c.score}</span>
+        </div>`).join('')}
+      </div>
+    </div>` : ''}
+
+    <div class="icard">
+      <div class="icard-title">📖 How Scores Work</div>
+      <div class="icard-body">
+        <div class="irow"><span class="irow-name">Pull Rate Rarity</span><span class="irow-val" style="color:var(--muted)">20%</span></div>
+        <div class="irow"><span class="irow-name">Pokémon Demand + Overprint</span><span class="irow-val" style="color:var(--muted)">22%</span></div>
+        <div class="irow"><span class="irow-name">Set Lifecycle (most important)</span><span class="irow-val" style="color:var(--gold)">25%</span></div>
+        <div class="irow"><span class="irow-name">Price vs Floor</span><span class="irow-val" style="color:var(--muted)">20%</span></div>
+        <div class="irow"><span class="irow-name">Print Run Size</span><span class="irow-val" style="color:var(--muted)">8%</span></div>
+        <div class="irow"><span class="irow-name">Upside to Fair Value</span><span class="irow-val" style="color:var(--muted)">5%</span></div>
+        <div style="margin-top:10px;font-size:11px;color:var(--muted);line-height:1.75">
+          Trainer SIRs get a separate multiplier (up to +18%) applied after scoring — reflecting their historically higher appreciation vs Pokémon SIRs.
+          Cards in overprinted Pokémon lines (Charizard, Pikachu, Eevee) receive a demand penalty since collectors have too many versions to choose from.
+          The BUY ZONE is 6–18 months after release for standard sets, faster for mini-sets.
+        </div>
+      </div>
+    </div>
+
+    <div class="icard">
+      <div class="icard-title">🔍 Grading Strategy</div>
+      <div class="icard-body" style="font-size:11px;color:var(--muted);line-height:1.75">
+        PSA 10 copies of SIRs typically sell at 3–8x raw price. A $45 raw that slabs at $200 graded is the highest-leverage play in the hobby.<br><br>
+        Best candidates from this screener: Trainer SIRs (centering is critical — inspect carefully before submitting), any card scoring 85+ under $60 raw, and JP cards (thicker stock = higher PSA 10 rate).<br><br>
+        PSA turnaround: ~45–90 days at Value tier ($25/card). Factor this into your hold timeline.
+      </div>
+    </div>`;
+}
+
+// ── NAV ───────────────────────────────────────────────────────────
+function switchTab(tab, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + tab).classList.add('active');
+  el.classList.add('active');
+  if (tab === 'watchlist') renderWatchlist();
+  if (tab === 'insights')  renderInsights();
+  if (tab === 'trending')  loadTrending();
+}
+
+// ── TOAST ─────────────────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// ── AUTO REFRESH every 30 min ─────────────────────────────────────
+setInterval(() => loadCards(true), 30 * 60 * 1000);
+
+// ── INIT ──────────────────────────────────────────────────────────
+loadCards();
+</script>
+</body>
+</html>
