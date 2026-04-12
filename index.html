@@ -12,7 +12,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 <style>
 :root{
-  --nav-h:calc(var(--st) + 88px);
   --bg:#07070e;--s1:#0e0e1c;--s2:#141428;--s3:#1a1a32;--s4:#202040;
   --b0:rgba(255,255,255,0.05);--b1:rgba(255,255,255,0.09);--b2:rgba(255,255,255,0.15);
   --tx:#e4e4f0;--mu:#5e5e80;--di:#2a2a44;
@@ -23,7 +22,6 @@
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;background:var(--bg);color:var(--tx);font-family:'DM Mono',monospace;overscroll-behavior:none}
-html{scroll-padding-top:var(--nav-h)}
 
 /* ── LOGIN ── */
 #loginScreen{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:calc(var(--st)+40px) 28px calc(var(--sb)+40px)}
@@ -65,7 +63,7 @@ html{scroll-padding-top:var(--nav-h)}
 .spn{animation:spin .8s linear infinite;display:inline-block}
 
 /* ── TABS ── */
-.tabs{display:flex;border-bottom:1px solid var(--b0);background:transparent;overflow-x:auto;scrollbar-width:none}
+.tabs{display:flex;border-bottom:1px solid var(--b0);background:rgba(7,7,14,.93);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);position:sticky;top:50px;z-index:99;overflow-x:auto;scrollbar-width:none}
 .tabs::-webkit-scrollbar{display:none}
 .tab{flex:1;min-width:72px;padding:10px 4px;text-align:center;font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:1.5px;color:var(--mu);cursor:pointer;border-bottom:2px solid transparent;transition:color .18s,border-color .18s;white-space:nowrap}
 .tab.on{color:var(--gold);border-bottom-color:var(--gold)}
@@ -321,26 +319,7 @@ input[type=number]:focus,input[type=text]:focus{border-color:var(--gold)}
 /* ── TOAST ── */
 .toast{position:fixed;bottom:calc(var(--sb)+86px);left:50%;transform:translateX(-50%) translateY(14px);background:var(--s3);border:1px solid var(--b1);border-radius:20px;padding:8px 16px;font-size:10px;color:var(--tx);opacity:0;transition:all .22s;pointer-events:none;white-space:nowrap;z-index:999}
 .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
-/* SANITY CHECK + DEAL SCORER */
-.sanity-box{border-radius:var(--rs);padding:10px 12px;margin-top:5px;font-size:11px;line-height:1.7;border:1px solid}
-.sanity-confirmed{background:rgba(51,221,136,.08);border-color:rgba(51,221,136,.22)}
-.sanity-reasonable{background:rgba(200,168,75,.08);border-color:rgba(200,168,75,.22)}
-.sanity-conservative{background:rgba(245,166,35,.1);border-color:rgba(245,166,35,.25)}
-.sanity-caution{background:rgba(255,85,51,.08);border-color:rgba(255,85,51,.22)}
-.deal-box{border-radius:var(--rs);padding:10px 12px;margin-top:5px;border:1px solid var(--b1);background:var(--s2)}
-.deal-score-ring{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:17px;border:2px solid;flex-shrink:0}
-.deal-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px}
-.deal-verdict{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:.8px;margin-bottom:3px}
-.deal-risk{margin-top:7px;padding:7px 9px;background:rgba(255,85,51,.08);border-radius:var(--rs);border-left:3px solid rgba(255,85,51,.4);font-size:10px;color:var(--mu);line-height:1.6}
-.collector-tier{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;font-size:9px;border:1px solid}
-.tier-grail{background:rgba(255,85,51,.1);color:var(--fire);border-color:rgba(255,85,51,.25)}
-.tier-blue-chip{background:rgba(200,168,75,.1);color:var(--gold2);border-color:rgba(200,168,75,.25)}
-.tier-solid{background:rgba(51,221,136,.08);color:var(--green);border-color:rgba(51,221,136,.2)}
-.tier-speculative{background:rgba(94,94,128,.08);color:var(--mu);border-color:var(--b0)}
-.tier-unknown{background:rgba(94,94,128,.06);color:var(--di);border-color:var(--b0)}
-/* Prevent detail panel interactions from closing card */
-.pcdet input,.pcdet select,.pcdet textarea,.pcdet a,.pcdet button{pointer-events:auto}
-.pcdet{cursor:default}
+.pcdet{cursor:default}.pcdet input,.pcdet select,.pcdet button,.pcdet a{pointer-events:auto}
 </style>
 </head>
 <body>
@@ -539,8 +518,8 @@ let sortKey='score',gemsOnly=false,expandId=null,expandCtx=null;
 let watchlist=JSON.parse(localStorage.getItem('pi_watch')||'[]');
 let owned=JSON.parse(localStorage.getItem('pi_owned')||'[]');
 let dismissed=JSON.parse(localStorage.getItem('pi_dismissed')||'[]');
-let ownedData=JSON.parse(localStorage.getItem('pi_owned_data')||'{}'); // {cardId:{buyPrice,qty,buyDate,grade}}
-let alertTargets=JSON.parse(localStorage.getItem('pi_alerts')||'{}'); // {cardId:{target,direction}}
+let ownedData=JSON.parse(localStorage.getItem('pi_owned_data')||'{}');
+let alertTargets=JSON.parse(localStorage.getItem('pi_alerts')||'{}');
 let sTimer=null,lastSearch=[];
 let tLoaded=false,tCards=[];
 let intelLoaded=false;
@@ -660,11 +639,11 @@ function cardHTML(c,ctx){
     </div>
     <div class="dsec" id="deal-${c.id}-${ctx}-wrap" style="display:none">
       <div class="dlbl">🔍 AI Deal Analysis</div>
-      <div id="deal-${c.id}-${ctx}"><div class="deal-box" style="color:var(--mu);font-size:11px">Loading deal analysis...</div></div>
+      <div id="deal-${c.id}-${ctx}"><div class="deal-box" style="color:var(--mu);font-size:11px">Loading...</div></div>
     </div>
     <div class="dsec" id="sanity-${c.id}-${ctx}-wrap" style="display:none">
       <div class="dlbl">✅ Benchmark Sanity Check</div>
-      <div id="sanity-${c.id}-${ctx}"><div class="sanity-box sanity-reasonable" style="color:var(--mu)">Checking benchmarks...</div></div>
+      <div id="sanity-${c.id}-${ctx}"><div class="sanity-box sanity-reasonable" style="color:var(--mu)">Checking...</div></div>
     </div>
     <div class="dsec">
       <div class="dlbl">🤖 AI Investment Thesis</div>
@@ -743,130 +722,27 @@ function toggleCard(id,ctx){
   }
 }
 
-// ── AI DEAL SCORER + SANITY CHECK ────────────────────────────────
-async function loadDeal(id,ctx){
-  const card=[...allCards,...lastSearch].find(c=>c.id===id);
-  if(!card)return;
-
-  // Show the deal sections
-  const wrapDeal=document.getElementById(`deal-${id}-${ctx}-wrap`);
-  const wrapSanity=document.getElementById(`sanity-${id}-${ctx}-wrap`);
-  if(wrapDeal) wrapDeal.style.display='block';
-  if(wrapSanity) wrapSanity.style.display='block';
-
-  try{
-    const b=card.benchmarks||{};
-    const params=new URLSearchParams({
-      name:   card.name,
-      rarity: card.rarity||'',
-      price:  card.marketPrice||0,
-      score:  card.score||0,
-      floor:  b.floor||'',
-      fair:   b.fair||'',
-      ceil:   b.ceil||'',
-      peak:   b.peak||'',
-      collectorTier:    card.collectorTier||'',
-      characterNotes:   card.characterNotes||'',
-      lifecycleLabel:   card.lifecycleLabel||'',
-      reprintRisk:      card.reprintRiskScore||'',
-      playabilityContext: card.playabilityContext||'',
-      upside: card.upside||0,
-    });
-
-    const res=await fetch(`${API}/api/ai-deal?${params.toString()}`);
-    if(!res.ok) throw new Error(`Backend ${res.status}`);
-    const d=await res.json();
-
-    // ── Deal Scorer ──
-    const dealEl=document.getElementById(`deal-${id}-${ctx}`);
-    if(dealEl&&d.dealScore!==undefined){
-      const sc=d.dealScore||0;
-      const ringColor=sc>=80?'var(--green)':sc>=65?'var(--amber)':sc>=45?'var(--blue)':'var(--fire)';
-      const ringBg=sc>=80?'rgba(51,221,136,.12)':sc>=65?'rgba(245,166,35,.12)':sc>=45?'rgba(74,158,255,.1)':'rgba(255,85,51,.1)';
-      const verdictLabel={
-        'strong-opportunity':'🔥 Strong Opportunity',
-        'opportunity':'✅ Opportunity',
-        'fair-entry':'👀 Fair Entry',
-        'wait':'⏳ Wait',
-        'avoid':'🚫 Avoid',
-        'market-correctly-ignoring':'⚠️ Market May Be Right',
-      }[d.dealVerdict]||d.dealVerdict||'—';
-
-      dealEl.innerHTML=`<div class="deal-box">
-        <div class="deal-row">
-          <div class="deal-score-ring" style="color:${ringColor};background:${ringBg};border-color:${ringColor}">${sc}</div>
-          <div style="flex:1">
-            <div class="deal-verdict" style="color:${ringColor}">${verdictLabel}</div>
-            <div style="font-size:9px;color:var(--mu)">Confidence: ${d.dealConfidence||'—'} ${d.isFallback?'· Rule-based':''}</div>
-          </div>
-        </div>
-        <div style="font-size:11px;color:#9090b0;line-height:1.75;margin-bottom:8px">${d.dealReasoning||d.dealReasoning||''}</div>
-        ${d.keyRisk?`<div class="deal-risk">⚠️ Key risk: ${d.keyRisk}</div>`:''}
-        ${d.actionVerdict?`<div style="margin-top:8px;font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:.8px;color:var(--gold)">${d.actionVerdict}</div>`:''}
-      </div>`;
-    }
-
-    // ── Sanity Check ──
-    const sanityEl=document.getElementById(`sanity-${id}-${ctx}`);
-    if(sanityEl&&d.sanityVerdict){
-      const cls={
-        'confirmed':'sanity-confirmed',
-        'reasonable':'sanity-reasonable',
-        'conservative-advised':'sanity-conservative',
-        'use-with-caution':'sanity-caution',
-      }[d.sanityVerdict]||'sanity-reasonable';
-
-      const qualityLabel={
-        'accurate':'✓ Accurate',
-        'slightly-generous':'⚡ Slightly Generous',
-        'significantly-overestimated':'⚠️ Overestimated',
-        'significantly-underestimated':'⬆️ Underestimated',
-      }[d.benchmarkQuality]||d.benchmarkQuality||'';
-
-      const adjLabel={
-        'none':'No adjustment needed',
-        'discount-10-20%':'Consider discounting 10–20%',
-        'discount-20-35%':'Consider discounting 20–35%',
-        'premium-warranted':'Premium may be warranted',
-      }[d.suggestedAdjustment]||'';
-
-      sanityEl.innerHTML=`<div class="sanity-box ${cls}">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-          <span style="font-size:10px;color:var(--tx);font-weight:500">${qualityLabel}</span>
-          <span style="font-size:9px;color:var(--mu)">Confidence: ${d.adjustedConfidence||'—'}</span>
-        </div>
-        <div style="font-size:11px;color:#9090b0;line-height:1.75">${d.sanityReasoning||''}</div>
-        ${adjLabel?`<div style="margin-top:6px;font-size:10px;color:var(--amber)">→ ${adjLabel}</div>`:''}
-      </div>`;
-    }
-
-  }catch(e){
-    console.error('Deal load error:',e.message);
-    const dealEl=document.getElementById(`deal-${id}-${ctx}`);
-    if(dealEl) dealEl.innerHTML=`<div class="deal-box" style="color:var(--mu);font-size:11px">Deal analysis unavailable.</div>`;
-  }
-}
-
-// ── ARTIST TIER DATA (baked in for display) ──────────────────────
+// ── AI ANALYSIS ───────────────────────────────────────────────────
+// ── ARTIST TIER DATA ────────────────────────────────────────────
 const ARTIST_TIERS={
-  'Mitsuhiro Arita':  {tier:'S',note:'Original Base Set artist. Massive nostalgia premium. 2–3x vs typical artist.'},
+  'Mitsuhiro Arita':  {tier:'S',note:'Original Base Set artist. Massive nostalgia premium.'},
   'Atsushi Furusawa': {tier:'S',note:'Cinematic painterly style. High collector demand.'},
-  'Naoki Saito':      {tier:'S',note:'Fan favorite for dynamic compositions. Consistently outperforms at auction.'},
-  'Akira Komayama':   {tier:'S',note:'Elegant romantic style. Gardevoir SIR widely cited as one of the most beautiful modern cards.'},
-  'Narumi Sato':      {tier:'S',note:'Distinctive soft painterly work. Strong collector following.'},
-  'Yuka Morii':       {tier:'S',note:'Unique clay art style. Major premium for this aesthetic.'},
+  'Naoki Saito':      {tier:'S',note:'Fan favorite. Consistently outperforms at auction.'},
+  'Akira Komayama':   {tier:'S',note:'Elegant romantic style. Gardevoir SIR is one of the most beautiful modern cards.'},
+  'Narumi Sato':      {tier:'S',note:'Distinctive soft painterly work. Strong following.'},
+  'Yuka Morii':       {tier:'S',note:'Unique clay art style. Major collector premium.'},
   'HYOGONOSUKE':      {tier:'A',note:'Atmospheric scenes. Collector favorite.'},
   'Shibuzoh.':        {tier:'A',note:'Distinctive style with strong community following.'},
-  'Tomokazu Komiya':  {tier:'A',note:'Clean powerful compositions. Consistent collector interest.'},
-  'Ryuta Fuse':       {tier:'A',note:'Dynamic action scenes. Popular with collectors.'},
+  'Tomokazu Komiya':  {tier:'A',note:'Clean powerful compositions.'},
+  'Ryuta Fuse':       {tier:'A',note:'Dynamic action scenes.'},
   'Yusuke Ohmura':    {tier:'A',note:'Vibrant colors and detailed environments.'},
-  'Kouki Saitou':     {tier:'A',note:'Detailed illustrative style. Solid following.'},
+  'Kouki Saitou':     {tier:'A',note:'Detailed illustrative style.'},
   'danciao':          {tier:'A',note:'Rising artist. Mega Gengar ex SAR generated enormous demand.'},
   'Taiga Kasai':      {tier:'A',note:'Dramatic lighting and composition.'},
-  'Sanosuke Sakuma':  {tier:'A',note:'Strong character work. Consistent auction performance.'},
-  '5ban Graphics':    {tier:'B',note:'3D CGI style. Professional but lower collector premium than painterly illustration.'},
-  'Planeta CG Works': {tier:'B',note:'Clean 3D renders. Lower collector appeal vs painterly.'},
-  'Ryo Ueda':         {tier:'B',note:'Clean professional work. Moderate collector interest.'},
+  'Sanosuke Sakuma':  {tier:'A',note:'Strong character work.'},
+  '5ban Graphics':    {tier:'B',note:'3D CGI. Lower collector premium than painterly.'},
+  'Planeta CG Works': {tier:'B',note:'Clean 3D renders. Lower collector appeal.'},
+  'Ryo Ueda':         {tier:'B',note:'Clean professional work.'},
 };
 function getArtistInfo(name){
   if(!name)return null;
@@ -876,7 +752,7 @@ function getArtistInfo(name){
   return null;
 }
 
-// ── AI ANALYSIS — calls Vercel backend (Gemini free API) ──────────
+// ── AI ANALYSIS ──────────────────────────────────────────────────
 async function loadAI(id,ctx){
   const card=[...allCards,...lastSearch].find(c=>c.id===id);
   if(!card)return;
@@ -891,71 +767,74 @@ async function loadAI(id,ctx){
   };
 
   setLoading('ai','Generating investment thesis...');
-  setLoading('art','Scoring artwork and artist...');
+  setLoading('art','Scoring artwork...');
   setLoading('rep','Assessing reprint risk...');
 
   try{
     const b=card.benchmarks||{};
     const params=new URLSearchParams({
-      name:  card.name,
-      rarity:card.rarity||'',
-      set:   card.set?.name||'',
-      artist:card.artist||'',
-      price: card.marketPrice||0,
-      score: card.score||0,
+      name:card.name, rarity:card.rarity||'', set:card.set?.name||'',
+      artist:card.artist||'', price:card.marketPrice||0, score:card.score||0,
       lifecycleLabel:card.lifecycleLabel||'',
-      floor: b.floor||'',
-      fair:  b.fair||'',
-      ceil:  b.ceil||'',
-      peak:  b.peak||'',
-      imageUrl: encodeURIComponent(card.imageLarge||card.image||''),
+      floor:b.floor||'', fair:b.fair||'', ceil:b.ceil||'', peak:b.peak||'',
+      imageUrl:encodeURIComponent(card.imageLarge||card.image||''),
     });
 
     const res=await fetch(`${API}/api/ai-analysis?${params.toString()}`);
-    if(!res.ok)throw new Error(`Backend ${res.status}`);
+    if(!res.ok) throw new Error(`Backend ${res.status}`);
     const d=await res.json();
 
-    if(!d.success&&!d.thesis){
-      const errMsg=`<div class="ai-text" style="color:var(--mu)">${d.error||'AI unavailable. Check GEMINI_API_KEY in Vercel.'}</div>`;
-      ['ai','art','rep'].forEach(p=>setBox(p,errMsg));
-      return;
-    }
-
-    // ── Fallback label ──
+    // ── Fallback note ──
     const fallbackNote=d.isFallback||d.rateLimited
-      ?`<div style="font-size:9px;color:var(--mu);margin-bottom:6px;padding:3px 7px;background:rgba(94,94,128,.1);border-radius:4px;display:inline-block">${d.rateLimited?'⚡ Rate limited — rule-based estimate':'📋 Rule-based estimate — AI key not configured'}</div><br>`
-      :'';
+      ? `<div style="font-size:9px;color:var(--mu);margin-bottom:6px;padding:2px 7px;background:rgba(94,94,128,.1);border-radius:4px;display:inline-block">${d.rateLimited?'⚡ Rate limited — rule-based':'📋 Rule-based estimate'}</div><br>`
+      : '';
 
-    // ── Thesis + Comparable ──
-    const comp = d.comparable;
-    const compHTML = comp && comp.name
-      ? `<div style="margin-top:9px;padding:8px 10px;background:var(--s2);border-radius:var(--rs);border:1px solid var(--b1)">
-          <div style="font-size:9px;color:var(--mu);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px">Comparable Card</div>
-          <div style="font-size:11px;color:var(--tx);margin-bottom:3px;font-weight:500">${comp.name}</div>
-          <div style="font-size:10px;color:var(--mu);margin-bottom:6px">${comp.reason||''}</div>
-          ${comp.tcgplayerUrl?`<a href="${comp.tcgplayerUrl}" target="_blank" onclick="event.stopPropagation()" style="font-size:10px;color:var(--blue);text-decoration:none;display:inline-flex;align-items:center;gap:4px">View on TCGPlayer ↗</a>`:''}
-        </div>`
+    // ── Thesis ──
+    const comp=d.comparable;
+    const compHTML=comp&&comp.name
+      ? `<div style="margin-top:9px;padding:8px 10px;background:var(--s2);border-radius:var(--rs);border:1px solid var(--b1)"><div style="font-size:9px;color:var(--mu);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px">Comparable Card</div><div style="font-size:11px;color:var(--tx);margin-bottom:3px;font-weight:500">${comp.name}</div><div style="font-size:10px;color:var(--mu);margin-bottom:6px">${comp.reason||''}</div>${comp.tcgplayerUrl?`<a href="${comp.tcgplayerUrl}" target="_blank" onclick="event.stopPropagation()" style="font-size:10px;color:var(--blue)">View on TCGPlayer ↗</a>`:''}</div>`
       : '';
     setBox('ai', d.thesis
       ? `<div class="ai-label">🤖 AI Thesis</div>${fallbackNote}<div class="ai-text">${d.thesis}</div>${compHTML}`
-      : `<div class="ai-text" style="color:var(--mu)">Thesis unavailable.</div>`
-    );
+      : `<div class="ai-text" style="color:var(--mu)">Thesis unavailable.</div>`);
 
-    // ── Art Score ──
+    // ── Art Score (5-dimension) ──
     const a=d.artScore;
-    const artistInfo=d.artistInfo||getArtistInfo(card.artist||'');
     if(a){
       const tierColor=a.artistTier==='S'?'var(--fire)':a.artistTier==='A'?'var(--amber)':a.artistTier==='B'?'var(--green)':'var(--mu)';
-      const aName=artistInfo?.name||card.artist||'Unknown Artist';
-      setBox('art',`
-        <div class="ai-label">🎨 Art Score: <span style="color:var(--gold);font-size:14px;font-family:'Bebas Neue',sans-serif;margin-left:4px">${a.score}/100</span></div>
-        <div class="ai-row"><span>Artist</span><span style="color:${tierColor};font-weight:500">${aName} · Tier ${a.artistTier||'?'}</span></div>
-        <div class="ai-row"><span>Style</span><span style="color:var(--tx)">${a.style||'—'}</span></div>
-        <div class="ai-row"><span>Uniqueness</span><span style="color:var(--tx)">${a.uniqueness||'—'}</span></div>
-        <div class="ai-row"><span>Reception</span><span style="color:var(--tx)">${a.communityReception||'—'}</span></div>
-        ${a.reasoning?`<div class="ai-text" style="margin-top:7px">${a.reasoning}</div>`:''}
-        ${artistInfo?.note?`<div class="ai-text" style="margin-top:5px;color:var(--mu);font-style:italic">${artistInfo.note}</div>`:''}
-      `);
+      const artistName=d.artistInfo?.name||card.artist||'Unknown';
+      const scoreColor=a.score>=85?'var(--fire)':a.score>=70?'var(--amber)':a.score>=55?'var(--green)':'var(--mu)';
+      const dims=a.dimensions||{};
+      const dimKeys=[['composition','Composition'],['colorPalette','Color Palette'],['emotionalImpact','Emotional Impact'],['uniqueness','Uniqueness'],['collectibility','Collectibility']];
+      const dimRows=dimKeys.map(([k,lbl])=>{
+        const dv=dims[k];
+        if(!dv)return'';
+        const sc2=dv.score||0;
+        const cl=sc2>=80?'var(--green)':sc2>=65?'var(--amber)':'var(--mu)';
+        return '<div style="margin-bottom:7px">'
+          +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px">'
+          +`<span style="font-size:9px;color:var(--mu);text-transform:uppercase;letter-spacing:.5px">${lbl}</span>`
+          +`<span style="font-size:12px;font-weight:500;color:${cl};font-family:'Bebas Neue',sans-serif">${sc2}</span>`
+          +'</div>'
+          +`<div style="height:3px;background:var(--s3);border-radius:2px;overflow:hidden;margin-bottom:3px"><div style="width:${sc2}%;height:100%;background:${cl};border-radius:2px"></div></div>`
+          +(dv.note?`<div style="font-size:9px;color:var(--di);line-height:1.5">${dv.note}</div>`:'')
+          +'</div>';
+      }).join('');
+      const imageTag=a.imageAnalyzed
+        ?'<span style="font-size:8px;color:var(--green);margin-left:8px;background:rgba(51,221,136,.1);padding:2px 6px;border-radius:10px">👁 Image Seen</span>'
+        :'<span style="font-size:8px;color:var(--mu);margin-left:8px">Estimated</span>';
+      setBox('art',
+        `<div class="ai-label">🎨 Art Score <span style="color:${scoreColor};font-size:16px;font-family:'Bebas Neue',sans-serif;margin-left:6px">${a.score}/100</span>${imageTag}</div>`
+        +`<div class="ai-row"><span>Artist</span><span style="color:${tierColor};font-weight:500">${artistName} · Tier ${a.artistTier||'?'}</span></div>`
+        +`<div class="ai-row"><span>Style</span><span style="color:var(--tx)">${a.style||'—'}</span></div>`
+        +`<div class="ai-row"><span>Reception</span><span style="color:var(--tx)">${a.communityReception||'—'}</span></div>`
+        +(a.standoutFeature?`<div class="ai-row"><span>Best aspect</span><span style="color:var(--green);font-size:10px">${a.standoutFeature}</span></div>`:'')
+        +(a.weakness?`<div class="ai-row" style="margin-bottom:8px"><span>Weakness</span><span style="color:var(--amber);font-size:10px">${a.weakness}</span></div>`:'<div style="height:8px"></div>')
+        +'<div style="font-size:9px;color:var(--mu);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;padding-top:6px;border-top:1px solid var(--b0)">Score Breakdown</div>'
+        +dimRows
+        +(a.reasoning?`<div class="ai-text" style="margin-top:8px;padding-top:8px;border-top:1px solid var(--b0)">${a.reasoning}</div>`:'')
+        +(d.artistInfo?.note?`<div class="ai-text" style="margin-top:5px;color:var(--mu);font-style:italic;font-size:10px">${d.artistInfo.note}</div>`:'')
+      );
     } else {
       setBox('art','<div class="ai-text" style="color:var(--mu)">Art score unavailable.</div>');
     }
@@ -964,18 +843,18 @@ async function loadAI(id,ctx){
     const r=d.reprintRisk;
     if(r){
       const rClass=r.level==='Low'?'ai-risk-low':r.level==='Medium'?'ai-risk-med':r.level==='High'?'ai-risk-high':'ai-risk-vhigh';
-      setBox('rep',`
-        <div class="ai-label">Reprint Risk: <span class="${rClass}" style="font-size:12px">${r.level} (${r.score}/100)</span></div>
-        <div class="ai-text">${r.reasoning||''}</div>
-        ${(r.factors||[]).length?`<div style="margin-top:6px">${r.factors.map(f=>`<div style="font-size:10px;color:var(--mu);padding:2px 0">· ${f}</div>`).join('')}</div>`:''}
-      `);
+      setBox('rep',
+        `<div class="ai-label">Reprint Risk: <span class="${rClass}" style="font-size:12px">${r.level} (${r.score}/100)</span></div>`
+        +`<div class="ai-text">${r.reasoning||''}</div>`
+        +((r.factors||[]).length?'<div style="margin-top:6px">'+r.factors.map(f=>`<div style="font-size:10px;color:var(--mu);padding:2px 0">· ${f}</div>`).join('')+'</div>':'')
+      );
     } else {
       setBox('rep','<div class="ai-text" style="color:var(--mu)">Risk assessment unavailable.</div>');
     }
 
   }catch(e){
     console.error('AI error:',e.message);
-    const msg=`<div class="ai-text" style="color:var(--mu)">AI analysis failed. Try expanding the card again.</div>`;
+    const msg='<div class="ai-text" style="color:var(--mu)">AI analysis failed. Try expanding the card again.</div>';
     ['ai','art','rep'].forEach(p=>setBox(p,msg));
   }
 }
@@ -989,13 +868,7 @@ async function loadEbay(id,ctx){
   try{
     const res=await fetch(`${API}/api/prices?q=${encodeURIComponent(card.ebayQuery||card.name)}`);
     const d=await res.json();
-    if(!d.success||!d.found){
-      el.innerHTML=`<div style="font-size:10px;color:var(--mu);line-height:1.7">
-        No recent eBay data available right now.<br>
-        <a href="https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(card.ebayQuery||card.name)}&LH_Complete=1&LH_Sold=1&_sop=13" target="_blank" style="color:var(--blue)">View sold listings on eBay ↗</a>
-      </div>`;
-      return;
-    }
+    if(!d.success||!d.found){el.textContent='No recent eBay sold data. Check manually.';return;}
     el.classList.add('rdy');
     const trend=d.trend==='rising'?`<span class="up">↑ Rising</span>`:d.trend==='falling'?`<span class="dn">↓ Falling</span>`:`<span style="color:var(--mu)">→ Stable</span>`;
     el.innerHTML=`
@@ -1018,20 +891,15 @@ async function loadPSA(id,ctx){
     const q=`${card.name} ${card.cardNo||''} ${card.set?.name||''}`.trim();
     const res=await fetch(`${API}/api/psa-pop?q=${encodeURIComponent(q)}`);
     const d=await res.json();
+    if(!d.found){el.textContent='No PSA population data found. This card may not be widely graded yet.';return;}
     el.classList.add('rdy');
-    // PSA blocks scraping — we use community-documented data
     el.innerHTML=`
-      <div class="ebrow"><span>PSA 10 rate (est.)</span><span style="color:var(--gold);font-weight:500">${d.psa10Rate||'—'}%</span></div>
-      <div class="ebrow"><span>Population</span><span style="color:var(--tx)">${d.scarcitySignal||'—'}</span></div>
-      ${d.estimatedValues?`
-      <div class="ebrow"><span>Est. PSA 10 value</span><span style="color:var(--green)">$${d.estimatedValues.psa10||'—'}</span></div>
-      <div class="ebrow"><span>Est. PSA 9 value</span><span style="color:var(--tx)">$${d.estimatedValues.psa9||'—'}</span></div>
-      <div class="ebrow"><span>Grading ROI (PSA 10)</span><span style="color:${(d.estimatedValues.psa10ROI||0)>50?'var(--green)':'var(--amber)'}">${d.estimatedValues.psa10ROI!=null?'+'+d.estimatedValues.psa10ROI+'%':'—'}</span></div>
-      `:''}
-      <div class="ebrow"><span>Worth grading?</span><span style="color:${d.worthGrading?'var(--green)':'var(--mu)'}">${d.worthGrading?'Yes — if pristine':'Not at this price'}</span></div>
-      ${d.gradingNote?`<div style="margin-top:7px;font-size:10px;color:var(--mu);line-height:1.6">${d.gradingNote}</div>`:''}
-      ${d.artistNote?`<div style="margin-top:5px;font-size:10px;color:var(--amber);line-height:1.6">${d.artistNote}</div>`:''}
-      <div style="margin-top:5px;font-size:9px;color:var(--di)">${d.turnaround||''}</div>`;
+      <div class="ebrow"><span>Total graded</span><span style="color:var(--tx);font-weight:500">${d.total?.toLocaleString()||'—'}</span></div>
+      <div class="ebrow"><span>PSA 10 count</span><span style="color:var(--gold)">${d.psa10?.toLocaleString()||'—'}</span></div>
+      <div class="ebrow"><span>PSA 9 count</span><span style="color:var(--tx)">${d.psa9?.toLocaleString()||'—'}</span></div>
+      <div class="ebrow"><span>PSA 10 rate</span><span style="color:var(--tx)">${d.psa10Rate!=null?d.psa10Rate+'%':'—'}</span></div>
+      <div class="ebrow"><span>Scarcity</span><span style="color:var(--amber)">${d.scarcitySignal||'—'}</span></div>
+      ${d.gradingAdvice?`<div style="margin-top:7px;font-size:10px;color:var(--mu);line-height:1.6">${d.gradingAdvice}</div>`:''}`;
   }catch(e){if(el)el.textContent='Could not load PSA data.';}
 }
 
@@ -1561,50 +1429,4 @@ setInterval(()=>loadCards(true),30*60*1000);
 loadCards();
 </script>
 </body>
-</html>// ── Art Score (5-dimension breakdown) ──
-    const artEl=document.getElementById(`art-${id}-${ctx}`);
-    if(artEl){
-      artEl.classList.remove('loading');
-      const a=d.artScore;
-      if(a){
-        const tierColor=a.artistTier==='S'?'var(--fire)':a.artistTier==='A'?'var(--amber)':a.artistTier==='B'?'var(--green)':'var(--mu)';
-        const artistName=d.artistInfo?.name||card.artist||'Unknown Artist';
-        const scoreColor=a.score>=85?'var(--fire)':a.score>=70?'var(--amber)':a.score>=55?'var(--green)':'var(--mu)';
-        const dims=a.dimensions||{};
-        const dimKeys=[['composition','Composition'],['colorPalette','Color Palette'],['emotionalImpact','Emotional Impact'],['uniqueness','Uniqueness'],['collectibility','Collectibility']];
-        const dimRows=dimKeys.map(([k,lbl])=>{
-          const dv=dims[k];if(!dv)return'';
-          const sc=dv.score||0;
-          const c=sc>=80?'var(--green)':sc>=65?'var(--amber)':'var(--mu)';
-          return `<div style="margin-bottom:7px">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px">
-              <span style="font-size:9px;color:var(--mu);text-transform:uppercase;letter-spacing:.5px">${lbl}</span>
-              <span style="font-size:12px;font-weight:500;color:${c};font-family:'Bebas Neue',sans-serif">${sc}</span>
-            </div>
-            <div style="height:3px;background:var(--s3);border-radius:2px;overflow:hidden;margin-bottom:3px">
-              <div style="width:${sc}%;height:100%;background:${c};border-radius:2px"></div>
-            </div>
-            ${dv.note?`<div style="font-size:9px;color:var(--di);line-height:1.5">${dv.note}</div>`:''}
-          </div>`;
-        }).join('');
-        setBox('art',`
-          <div class="ai-label">🎨 Art Score
-            <span style="color:${scoreColor};font-size:16px;font-family:'Bebas Neue',sans-serif;margin-left:6px">${a.score}/100</span>
-            ${a.imageAnalyzed
-              ?'<span style="font-size:8px;color:var(--green);margin-left:8px;background:rgba(51,221,136,.1);padding:2px 6px;border-radius:10px">👁 Image Seen</span>'
-              :'<span style="font-size:8px;color:var(--mu);margin-left:8px">Estimated</span>'}
-          </div>
-          <div class="ai-row"><span>Artist</span><span style="color:${tierColor};font-weight:500">${artistName} · Tier ${a.artistTier||'?'}</span></div>
-          <div class="ai-row"><span>Style</span><span style="color:var(--tx)">${a.style||'—'}</span></div>
-          <div class="ai-row"><span>Reception</span><span style="color:var(--tx)">${a.communityReception||'—'}</span></div>
-          ${a.standoutFeature?`<div class="ai-row"><span>Best aspect</span><span style="color:var(--green);font-size:10px">${a.standoutFeature}</span></div>`:''}
-          ${a.weakness?`<div class="ai-row" style="margin-bottom:10px"><span>Weakness</span><span style="color:var(--amber);font-size:10px">${a.weakness}</span></div>`:'<div style="height:10px"></div>'}
-          <div style="font-size:9px;color:var(--mu);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;padding-top:2px;border-top:1px solid var(--b0)">Score Breakdown</div>
-          ${dimRows}
-          ${a.reasoning?`<div class="ai-text" style="margin-top:8px;padding-top:8px;border-top:1px solid var(--b0)">${a.reasoning}</div>`:''}
-          ${d.artistInfo?.note?`<div class="ai-text" style="margin-top:5px;color:var(--mu);font-style:italic;font-size:10px">${d.artistInfo.note}</div>`:''}
-        `);
-      } else {
-        setBox('art','<div class="ai-text" style="color:var(--mu)">Art score unavailable.</div>');
-      }
-    }
+</html>/
