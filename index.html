@@ -51,7 +51,7 @@ html{scroll-padding-top:var(--nav-h)}
 .fu{animation:fadeUp .4s ease forwards}
 
 /* ── HEADER ── */
-.hdr{position:sticky;top:0;z-index:100;background:rgba(7,7,14,.93);backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);border-bottom:1px solid var(--b0);padding:calc(var(--st)+11px) 14px 11px}
+.nav{position:sticky;top:0;z-index:100;background:rgba(7,7,14,.96);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);}.hdr{background:transparent;padding:calc(var(--st)+11px) 14px 11px}
 .hdri{max-width:720px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:10px}
 .hmark{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;flex-shrink:0}
 .hmark b{color:var(--gold)}
@@ -65,13 +65,13 @@ html{scroll-padding-top:var(--nav-h)}
 .spn{animation:spin .8s linear infinite;display:inline-block}
 
 /* ── TABS ── */
-.tabs{display:flex;border-bottom:1px solid var(--b0);background:rgba(7,7,14,.93);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);position:sticky;top:calc(var(--st) + 44px);z-index:99;overflow-x:auto;scrollbar-width:none}
+.tabs{display:flex;border-bottom:1px solid var(--b0);background:transparent;overflow-x:auto;scrollbar-width:none}
 .tabs::-webkit-scrollbar{display:none}
 .tab{flex:1;min-width:72px;padding:10px 4px;text-align:center;font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:1.5px;color:var(--mu);cursor:pointer;border-bottom:2px solid transparent;transition:color .18s,border-color .18s;white-space:nowrap}
 .tab.on{color:var(--gold);border-bottom-color:var(--gold)}
 
 /* ── CONTENT ── */
-.cnt{max-width:720px;margin:0 auto;padding:16px 12px calc(var(--sb)+80px)}
+.cnt{max-width:720px;margin:0 auto;padding:14px 12px calc(var(--sb)+80px)}
 .pg{display:none}
 .pg.on{display:block}
 
@@ -345,7 +345,8 @@ input[type=number]:focus,input[type=text]:focus{border-color:var(--gold)}
   </div>
 </div>
 
-<!-- HEADER -->
+<!-- NAV -->
+<div class="nav">
 <div class="hdr">
   <div class="hdri">
     <div class="hmark">Poke<b>Invest</b></div>
@@ -356,14 +357,13 @@ input[type=number]:focus,input[type=text]:focus{border-color:var(--gold)}
     </div>
   </div>
 </div>
-
-<!-- TABS -->
 <div class="tabs">
   <div class="tab on"  onclick="goTab('discover',this)">Discover</div>
   <div class="tab"     onclick="goTab('search',this)">Search</div>
   <div class="tab"     onclick="goTab('portfolio',this)">Portfolio</div>
   <div class="tab"     onclick="goTab('intel',this)">Intel</div>
 </div>
+</div><!-- /nav -->
 
 <div class="cnt">
 
@@ -794,9 +794,18 @@ async function loadAI(id,ctx){
       ?`<div style="font-size:9px;color:var(--mu);margin-bottom:6px;padding:3px 7px;background:rgba(94,94,128,.1);border-radius:4px;display:inline-block">${d.rateLimited?'⚡ Rate limited — rule-based estimate':'📋 Rule-based estimate — AI key not configured'}</div><br>`
       :'';
 
-    // ── Thesis ──
+    // ── Thesis + Comparable ──
+    const comp = d.comparable;
+    const compHTML = comp && comp.name
+      ? `<div style="margin-top:9px;padding:8px 10px;background:var(--s2);border-radius:var(--rs);border:1px solid var(--b1)">
+          <div style="font-size:9px;color:var(--mu);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px">Comparable Card</div>
+          <div style="font-size:11px;color:var(--tx);margin-bottom:3px;font-weight:500">${comp.name}</div>
+          <div style="font-size:10px;color:var(--mu);margin-bottom:6px">${comp.reason||''}</div>
+          ${comp.tcgplayerUrl?`<a href="${comp.tcgplayerUrl}" target="_blank" onclick="event.stopPropagation()" style="font-size:10px;color:var(--blue);text-decoration:none;display:inline-flex;align-items:center;gap:4px">View on TCGPlayer ↗</a>`:''}
+        </div>`
+      : '';
     setBox('ai', d.thesis
-      ? `<div class="ai-label">🤖 AI Thesis</div>${fallbackNote}<div class="ai-text">${d.thesis}</div>`
+      ? `<div class="ai-label">🤖 AI Thesis</div>${fallbackNote}<div class="ai-text">${d.thesis}</div>${compHTML}`
       : `<div class="ai-text" style="color:var(--mu)">Thesis unavailable.</div>`
     );
 
