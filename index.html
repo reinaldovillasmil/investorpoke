@@ -715,10 +715,13 @@ function toggleCard(id,ctx){
   expandId=wasOpen?null:id; expandCtx=wasOpen?null:ctx;
   reRender(ctx);
   if(!wasOpen&&expandId){
-    loadAI(id,ctx);
-    loadEbay(id,ctx);
-    loadPSA(id,ctx);
-    loadDeal(id,ctx);
+    // Small delay lets the DOM render the expanded card before we query elements
+    setTimeout(()=>{
+      loadAI(id,ctx);
+      loadEbay(id,ctx);
+      loadPSA(id,ctx);
+      loadDeal(id,ctx);
+    }, 50);
   }
 }
 
@@ -798,45 +801,21 @@ async function loadAI(id,ctx){
       ? `<div class="ai-label">🤖 AI Thesis</div>${fallbackNote}<div class="ai-text">${d.thesis}</div>${compHTML}`
       : `<div class="ai-text" style="color:var(--mu)">Thesis unavailable.</div>`);
 
-    // ── Art Score (5-dimension) ──
-    const a=d.artScore;
-    if(a){
-      const tierColor=a.artistTier==='S'?'var(--fire)':a.artistTier==='A'?'var(--amber)':a.artistTier==='B'?'var(--green)':'var(--mu)';
-      const artistName=d.artistInfo?.name||card.artist||'Unknown';
-      const scoreColor=a.score>=85?'var(--fire)':a.score>=70?'var(--amber)':a.score>=55?'var(--green)':'var(--mu)';
-      const dims=a.dimensions||{};
-      const dimKeys=[['composition','Composition'],['colorPalette','Color Palette'],['emotionalImpact','Emotional Impact'],['uniqueness','Uniqueness'],['collectibility','Collectibility']];
-      const dimRows=dimKeys.map(([k,lbl])=>{
-        const dv=dims[k];
-        if(!dv)return'';
-        const sc2=dv.score||0;
-        const cl=sc2>=80?'var(--green)':sc2>=65?'var(--amber)':'var(--mu)';
-        return '<div style="margin-bottom:7px">'
-          +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px">'
-          +`<span style="font-size:9px;color:var(--mu);text-transform:uppercase;letter-spacing:.5px">${lbl}</span>`
-          +`<span style="font-size:12px;font-weight:500;color:${cl};font-family:'Bebas Neue',sans-serif">${sc2}</span>`
-          +'</div>'
-          +`<div style="height:3px;background:var(--s3);border-radius:2px;overflow:hidden;margin-bottom:3px"><div style="width:${sc2}%;height:100%;background:${cl};border-radius:2px"></div></div>`
-          +(dv.note?`<div style="font-size:9px;color:var(--di);line-height:1.5">${dv.note}</div>`:'')
-          +'</div>';
-      }).join('');
-      const imageTag=a.imageAnalyzed
-        ?'<span style="font-size:8px;color:var(--green);margin-left:8px;background:rgba(51,221,136,.1);padding:2px 6px;border-radius:10px">👁 Image Seen</span>'
-        :'<span style="font-size:8px;color:var(--mu);margin-left:8px">Estimated</span>';
-      setBox('art',
-        `<div class="ai-label">🎨 Art Score <span style="color:${scoreColor};font-size:16px;font-family:'Bebas Neue',sans-serif;margin-left:6px">${a.score}/100</span>${imageTag}</div>`
-        +`<div class="ai-row"><span>Artist</span><span style="color:${tierColor};font-weight:500">${artistName} · Tier ${a.artistTier||'?'}</span></div>`
-        +`<div class="ai-row"><span>Style</span><span style="color:var(--tx)">${a.style||'—'}</span></div>`
-        +`<div class="ai-row"><span>Reception</span><span style="color:var(--tx)">${a.communityReception||'—'}</span></div>`
-        +(a.standoutFeature?`<div class="ai-row"><span>Best aspect</span><span style="color:var(--green);font-size:10px">${a.standoutFeature}</span></div>`:'')
-        +(a.weakness?`<div class="ai-row" style="margin-bottom:8px"><span>Weakness</span><span style="color:var(--amber);font-size:10px">${a.weakness}</span></div>`:'<div style="height:8px"></div>')
-        +'<div style="font-size:9px;color:var(--mu);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;padding-top:6px;border-top:1px solid var(--b0)">Score Breakdown</div>'
-        +dimRows
-        +(a.reasoning?`<div class="ai-text" style="margin-top:8px;padding-top:8px;border-top:1px solid var(--b0)">${a.reasoning}</div>`:'')
-        +(d.artistInfo?.note?`<div class="ai-text" style="margin-top:5px;color:var(--mu);font-style:italic;font-size:10px">${d.artistInfo.note}</div>`:'')
-      );
-    } else {
-      setBox('art','<div class="ai-text" style="color:var(--mu)">Art score unavailable.</div>');
+    // ── Art Score — show button, don't auto-load (vision is more expensive) ──
+    const artistInfo2=getArtistInfo(card.artist||'');
+    const artEl2=document.getElementById(`art-${id}-${ctx}`);
+    if(artEl2){
+      const knownTier=artistInfo2?`Tier ${artistInfo2.tier} · ${artistInfo2.name}`:'Artist tier unknown';
+      artEl2.classList.remove('loading');
+      artEl2.innerHTML=
+        `<div style="font-size:11px;color:var(--mu);line-height:1.7;margin-bottom:10px">`
+        +`<span style="color:var(--tx)">${knownTier}</span><br>`
+        +`Vision AI scores composition, color, emotional impact, uniqueness and collectibility by analyzing the actual card image.`
+        +`</div>`
+        +`<button onclick="event.stopPropagation();loadArtAI('${id}','${ctx}')" `
+        +`style="width:100%;padding:9px;background:transparent;border:1px solid rgba(155,114,255,.4);border-radius:var(--rs);`
+        +`font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:1px;color:var(--purple);cursor:pointer;">`
+        +`🎨 Generate Art Score (~$0.004)</button>`;
     }
 
     // ── Reprint Risk ──
@@ -858,6 +837,78 @@ async function loadAI(id,ctx){
     ['ai','art','rep'].forEach(p=>setBox(p,msg));
   }
 }
+
+// ── ART AI (on-demand, vision-powered, button-triggered) ─────────
+async function loadArtAI(id,ctx){
+  const card=[...allCards,...lastSearch].find(c=>c.id===id);
+  if(!card)return;
+  const artEl=document.getElementById(`art-${id}-${ctx}`);
+  if(!artEl)return;
+
+  // Show loading state
+  artEl.innerHTML='<div class="ai-text" style="color:var(--mu)">🎨 Analyzing artwork with vision AI...</div>';
+
+  try{
+    const b=card.benchmarks||{};
+    const params=new URLSearchParams({
+      name:card.name, rarity:card.rarity||'', set:card.set?.name||'',
+      artist:card.artist||'', price:card.marketPrice||0, score:card.score||0,
+      lifecycleLabel:card.lifecycleLabel||'',
+      floor:b.floor||'', fair:b.fair||'', ceil:b.ceil||'', peak:b.peak||'',
+      imageUrl:encodeURIComponent(card.imageLarge||card.image||''),
+      artOnly:'1',
+    });
+
+    const res=await fetch(`${API}/api/ai-analysis?${params.toString()}`);
+    if(!res.ok) throw new Error(`Backend ${res.status}`);
+    const d=await res.json();
+    const a=d.artScore;
+
+    if(!a){ artEl.innerHTML='<div class="ai-text" style="color:var(--mu)">Art score unavailable.</div>'; return; }
+
+    const artistInfo=getArtistInfo(card.artist||'');
+    const tierColor=a.artistTier==='S'?'var(--fire)':a.artistTier==='A'?'var(--amber)':a.artistTier==='B'?'var(--green)':'var(--mu)';
+    const artistName=d.artistInfo?.name||card.artist||'Unknown';
+    const scoreColor=a.score>=85?'var(--fire)':a.score>=70?'var(--amber)':a.score>=55?'var(--green)':'var(--mu)';
+    const dims=a.dimensions||{};
+    const dimKeys=[['composition','Composition'],['colorPalette','Color Palette'],['emotionalImpact','Emotional Impact'],['uniqueness','Uniqueness'],['collectibility','Collectibility']];
+    const dimRows=dimKeys.map(([k,lbl])=>{
+      const dv=dims[k];
+      if(!dv)return'';
+      const sc2=dv.score||0;
+      const cl=sc2>=80?'var(--green)':sc2>=65?'var(--amber)':'var(--mu)';
+      return '<div style="margin-bottom:7px">'
+        +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px">'
+        +`<span style="font-size:9px;color:var(--mu);text-transform:uppercase;letter-spacing:.5px">${lbl}</span>`
+        +`<span style="font-size:12px;font-weight:500;color:${cl};font-family:'Bebas Neue',sans-serif">${sc2}</span>`
+        +'</div>'
+        +`<div style="height:3px;background:var(--s3);border-radius:2px;overflow:hidden;margin-bottom:3px"><div style="width:${sc2}%;height:100%;background:${cl};border-radius:2px"></div></div>`
+        +(dv.note?`<div style="font-size:9px;color:var(--di);line-height:1.5">${dv.note}</div>`:'')
+        +'</div>';
+    }).join('');
+
+    const imageTag=a.imageAnalyzed
+      ?'<span style="font-size:8px;color:var(--green);margin-left:8px;background:rgba(51,221,136,.1);padding:2px 6px;border-radius:10px">👁 Image Seen</span>'
+      :'<span style="font-size:8px;color:var(--mu);margin-left:8px">Estimated</span>';
+
+    artEl.innerHTML=
+      `<div class="ai-label">🎨 Art Score <span style="color:${scoreColor};font-size:16px;font-family:'Bebas Neue',sans-serif;margin-left:6px">${a.score}/100</span>${imageTag}</div>`
+      +`<div class="ai-row"><span>Artist</span><span style="color:${tierColor};font-weight:500">${artistName} · Tier ${a.artistTier||'?'}</span></div>`
+      +`<div class="ai-row"><span>Style</span><span style="color:var(--tx)">${a.style||'—'}</span></div>`
+      +`<div class="ai-row"><span>Reception</span><span style="color:var(--tx)">${a.communityReception||'—'}</span></div>`
+      +(a.standoutFeature?`<div class="ai-row"><span>Best aspect</span><span style="color:var(--green);font-size:10px">${a.standoutFeature}</span></div>`:'')
+      +(a.weakness?`<div class="ai-row" style="margin-bottom:8px"><span>Weakness</span><span style="color:var(--amber);font-size:10px">${a.weakness}</span></div>`:'<div style="height:8px"></div>')
+      +'<div style="font-size:9px;color:var(--mu);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;padding-top:6px;border-top:1px solid var(--b0)">Score Breakdown</div>'
+      +dimRows
+      +(a.reasoning?`<div class="ai-text" style="margin-top:8px;padding-top:8px;border-top:1px solid var(--b0)">${a.reasoning}</div>`:'')
+      +(d.artistInfo?.note?`<div class="ai-text" style="margin-top:5px;color:var(--mu);font-style:italic;font-size:10px">${d.artistInfo.note}</div>`:'');
+
+  }catch(e){
+    console.error('Art AI error:',e.message);
+    if(artEl) artEl.innerHTML='<div class="ai-text" style="color:var(--mu)">Art analysis failed. Try again.</div>';
+  }
+}
+
 
 // ── EBAY LIVE ─────────────────────────────────────────────────────
 async function loadEbay(id,ctx){
