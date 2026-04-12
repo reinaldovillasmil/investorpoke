@@ -319,6 +319,9 @@ input[type=number]:focus,input[type=text]:focus{border-color:var(--gold)}
 /* ── TOAST ── */
 .toast{position:fixed;bottom:calc(var(--sb)+86px);left:50%;transform:translateX(-50%) translateY(14px);background:var(--s3);border:1px solid var(--b1);border-radius:20px;padding:8px 16px;font-size:10px;color:var(--tx);opacity:0;transition:all .22s;pointer-events:none;white-space:nowrap;z-index:999}
 .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+/* Prevent detail panel interactions from closing card */
+.pcdet input,.pcdet select,.pcdet textarea,.pcdet a,.pcdet button{pointer-events:auto}
+.pcdet{cursor:default}
 </style>
 </head>
 <body>
@@ -619,7 +622,7 @@ function cardHTML(c,ctx){
       ${bars.map(([l,v])=>`<div class="brow"><div class="blbl">${l}</div><div class="btrack"><div class="bfill" style="width:${v}%;background:${bc(v)}"></div></div><div class="bnum">${v}</div></div>`).join('')}
     </div>
   </div>
-  <div class="pcdet${isOpen?' on':''}" id="det-${c.id}-${ctx}">
+  <div class="pcdet${isOpen?' on':''}" id="det-${c.id}-${ctx}" onclick="event.stopPropagation()">
     ${c.lifecycleLabel?`<div class="dsec"><div class="dlbl">Set Stage</div><div class="dbody" style="color:var(--gold)">${c.lifecycleLabel}</div></div>`:''}
     <div class="dsec">
       <div class="dlbl">Recommendation</div>
@@ -711,62 +714,121 @@ function toggleCard(id,ctx){
   }
 }
 
-// ── AI ANALYSIS ───────────────────────────────────────────────────
+// ── ARTIST TIER DATA (baked in for display) ──────────────────────
+const ARTIST_TIERS={
+  'Mitsuhiro Arita':  {tier:'S',note:'Original Base Set artist. Massive nostalgia premium. 2–3x vs typical artist.'},
+  'Atsushi Furusawa': {tier:'S',note:'Cinematic painterly style. High collector demand.'},
+  'Naoki Saito':      {tier:'S',note:'Fan favorite for dynamic compositions. Consistently outperforms at auction.'},
+  'Akira Komayama':   {tier:'S',note:'Elegant romantic style. Gardevoir SIR widely cited as one of the most beautiful modern cards.'},
+  'Narumi Sato':      {tier:'S',note:'Distinctive soft painterly work. Strong collector following.'},
+  'Yuka Morii':       {tier:'S',note:'Unique clay art style. Major premium for this aesthetic.'},
+  'HYOGONOSUKE':      {tier:'A',note:'Atmospheric scenes. Collector favorite.'},
+  'Shibuzoh.':        {tier:'A',note:'Distinctive style with strong community following.'},
+  'Tomokazu Komiya':  {tier:'A',note:'Clean powerful compositions. Consistent collector interest.'},
+  'Ryuta Fuse':       {tier:'A',note:'Dynamic action scenes. Popular with collectors.'},
+  'Yusuke Ohmura':    {tier:'A',note:'Vibrant colors and detailed environments.'},
+  'Kouki Saitou':     {tier:'A',note:'Detailed illustrative style. Solid following.'},
+  'danciao':          {tier:'A',note:'Rising artist. Mega Gengar ex SAR generated enormous demand.'},
+  'Taiga Kasai':      {tier:'A',note:'Dramatic lighting and composition.'},
+  'Sanosuke Sakuma':  {tier:'A',note:'Strong character work. Consistent auction performance.'},
+  '5ban Graphics':    {tier:'B',note:'3D CGI style. Professional but lower collector premium than painterly illustration.'},
+  'Planeta CG Works': {tier:'B',note:'Clean 3D renders. Lower collector appeal vs painterly.'},
+  'Ryo Ueda':         {tier:'B',note:'Clean professional work. Moderate collector interest.'},
+};
+function getArtistInfo(name){
+  if(!name)return null;
+  for(const[k,v]of Object.entries(ARTIST_TIERS)){
+    if(name.toLowerCase().includes(k.toLowerCase()))return{name:k,...v};
+  }
+  return null;
+}
+
+// ── AI ANALYSIS — calls Vercel backend (Gemini free API) ──────────
 async function loadAI(id,ctx){
   const card=[...allCards,...lastSearch].find(c=>c.id===id);
   if(!card)return;
+
+  const setBox=(prefix,content)=>{
+    const el=document.getElementById(`${prefix}-${id}-${ctx}`);
+    if(el){el.classList.remove('loading');el.innerHTML=content;}
+  };
+  const setLoading=(prefix,msg)=>{
+    const el=document.getElementById(`${prefix}-${id}-${ctx}`);
+    if(el){el.classList.add('loading');el.innerHTML=`<div class="ai-text" style="color:var(--mu)">${msg}</div>`;}
+  };
+
+  setLoading('ai','Generating investment thesis...');
+  setLoading('art','Scoring artwork and artist...');
+  setLoading('rep','Assessing reprint risk...');
+
   try{
+    const b=card.benchmarks||{};
     const params=new URLSearchParams({
-      id,name:card.name,rarity:card.rarity||'',set:card.set?.name||'',
-      artist:card.artist||'',price:card.marketPrice||0,score:card.score||0,
+      name:  card.name,
+      rarity:card.rarity||'',
+      set:   card.set?.name||'',
+      artist:card.artist||'',
+      price: card.marketPrice||0,
+      score: card.score||0,
       lifecycleLabel:card.lifecycleLabel||'',
-      benchmarks:JSON.stringify(card.benchmarks||{}),
+      floor: b.floor||'',
+      fair:  b.fair||'',
+      ceil:  b.ceil||'',
+      peak:  b.peak||'',
     });
-    const res=await fetch(`${API}/api/ai-analysis?${params}`);
+
+    const res=await fetch(`${API}/api/ai-analysis?${params.toString()}`);
+    if(!res.ok)throw new Error(`Backend ${res.status}`);
     const d=await res.json();
-    if(!d.success)throw new Error(d.error);
 
-    // Thesis
-    const aiEl=document.getElementById(`ai-${id}-${ctx}`);
-    if(aiEl){
-      aiEl.classList.remove('loading');
-      aiEl.innerHTML=`<div class="ai-label">🤖 AI Thesis</div><div class="ai-text">${d.thesis||'Analysis unavailable.'}</div>`;
+    if(!d.success){
+      const errMsg=`<div class="ai-text" style="color:var(--mu)">${d.error||'AI unavailable.'}</div>`;
+      ['ai','art','rep'].forEach(p=>setBox(p,errMsg));
+      return;
     }
 
-    // Art score
-    const artEl=document.getElementById(`art-${id}-${ctx}`);
-    if(artEl&&d.artScore){
-      const a=d.artScore;
+    // ── Thesis ──
+    setBox('ai', d.thesis
+      ? `<div class="ai-label">🤖 AI Thesis</div><div class="ai-text">${d.thesis}</div>`
+      : `<div class="ai-text" style="color:var(--mu)">Thesis unavailable.</div>`
+    );
+
+    // ── Art Score ──
+    const a=d.artScore;
+    const artistInfo=d.artistInfo||getArtistInfo(card.artist||'');
+    if(a){
       const tierColor=a.artistTier==='S'?'var(--fire)':a.artistTier==='A'?'var(--amber)':a.artistTier==='B'?'var(--green)':'var(--mu)';
-      artEl.innerHTML=`
-        <div class="ai-label">🎨 Art Score: <span style="color:var(--gold);font-size:14px;font-family:'Bebas Neue',sans-serif">${a.score}/100</span></div>
-        <div class="ai-row"><span>Artist Tier</span><span style="color:${tierColor};font-weight:500">Tier ${a.artistTier||'?'} ${d.artistInfo?'· '+d.artistInfo.name:''}</span></div>
-        <div class="ai-row"><span>Style</span><span>${a.style||'—'}</span></div>
-        <div class="ai-row"><span>Uniqueness</span><span>${a.uniqueness||'—'}</span></div>
-        <div class="ai-row"><span>Community</span><span>${a.communityReception||'—'}</span></div>
-        <div class="ai-text" style="margin-top:7px">${a.reasoning||''}</div>
-        ${d.artistInfo?.note?`<div class="ai-text" style="margin-top:5px;color:var(--mu)">${d.artistInfo.note}</div>`:''}`;
-    } else if(artEl){
-      artEl.innerHTML=`<div class="ai-text" style="color:var(--mu)">Art score unavailable.</div>`;
+      const aName=artistInfo?.name||card.artist||'Unknown Artist';
+      setBox('art',`
+        <div class="ai-label">🎨 Art Score: <span style="color:var(--gold);font-size:14px;font-family:'Bebas Neue',sans-serif;margin-left:4px">${a.score}/100</span></div>
+        <div class="ai-row"><span>Artist</span><span style="color:${tierColor};font-weight:500">${aName} · Tier ${a.artistTier||'?'}</span></div>
+        <div class="ai-row"><span>Style</span><span style="color:var(--tx)">${a.style||'—'}</span></div>
+        <div class="ai-row"><span>Uniqueness</span><span style="color:var(--tx)">${a.uniqueness||'—'}</span></div>
+        <div class="ai-row"><span>Reception</span><span style="color:var(--tx)">${a.communityReception||'—'}</span></div>
+        ${a.reasoning?`<div class="ai-text" style="margin-top:7px">${a.reasoning}</div>`:''}
+        ${artistInfo?.note?`<div class="ai-text" style="margin-top:5px;color:var(--mu);font-style:italic">${artistInfo.note}</div>`:''}
+      `);
+    } else {
+      setBox('art','<div class="ai-text" style="color:var(--mu)">Art score unavailable.</div>');
     }
 
-    // Reprint risk
-    const repEl=document.getElementById(`rep-${id}-${ctx}`);
-    if(repEl&&d.reprintRisk){
-      const r=d.reprintRisk;
-      const rClass=r.level==='Low'?'ai-risk-low':r.level==='Medium'?'ai-risk-med':'ai-risk-high';
-      repEl.innerHTML=`
-        <div class="ai-label">Reprint Risk: <span class="${rClass}">${r.level}</span></div>
+    // ── Reprint Risk ──
+    const r=d.reprintRisk;
+    if(r){
+      const rClass=r.level==='Low'?'ai-risk-low':r.level==='Medium'?'ai-risk-med':r.level==='High'?'ai-risk-high':'ai-risk-vhigh';
+      setBox('rep',`
+        <div class="ai-label">Reprint Risk: <span class="${rClass}" style="font-size:12px">${r.level} (${r.score}/100)</span></div>
         <div class="ai-text">${r.reasoning||''}</div>
-        ${r.factors?.length?`<div style="margin-top:6px">${r.factors.map(f=>`<div class="ai-row" style="font-size:10px"><span>·</span><span style="color:var(--mu)">${f}</span></div>`).join('')}</div>`:''}`;
-    } else if(repEl){
-      repEl.innerHTML=`<div class="ai-text" style="color:var(--mu)">Risk assessment unavailable.</div>`;
+        ${(r.factors||[]).length?`<div style="margin-top:6px">${r.factors.map(f=>`<div style="font-size:10px;color:var(--mu);padding:2px 0">· ${f}</div>`).join('')}</div>`:''}
+      `);
+    } else {
+      setBox('rep','<div class="ai-text" style="color:var(--mu)">Risk assessment unavailable.</div>');
     }
+
   }catch(e){
-    ['ai','art','rep'].forEach(prefix=>{
-      const el=document.getElementById(`${prefix}-${id}-${ctx}`);
-      if(el)el.innerHTML=`<div class="ai-text" style="color:var(--mu)">Analysis unavailable — add ANTHROPIC_API_KEY to Vercel env vars.</div>`;
-    });
+    console.error('AI error:',e.message);
+    const msg=`<div class="ai-text" style="color:var(--mu)">AI analysis failed. Try expanding the card again.</div>`;
+    ['ai','art','rep'].forEach(p=>setBox(p,msg));
   }
 }
 
