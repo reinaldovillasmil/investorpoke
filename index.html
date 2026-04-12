@@ -12,6 +12,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 <style>
 :root{
+  --nav-h:calc(var(--st) + 88px);
   --bg:#07070e;--s1:#0e0e1c;--s2:#141428;--s3:#1a1a32;--s4:#202040;
   --b0:rgba(255,255,255,0.05);--b1:rgba(255,255,255,0.09);--b2:rgba(255,255,255,0.15);
   --tx:#e4e4f0;--mu:#5e5e80;--di:#2a2a44;
@@ -22,6 +23,7 @@
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;background:var(--bg);color:var(--tx);font-family:'DM Mono',monospace;overscroll-behavior:none}
+html{scroll-padding-top:var(--nav-h)}
 
 /* ── LOGIN ── */
 #loginScreen{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:calc(var(--st)+40px) 28px calc(var(--sb)+40px)}
@@ -63,13 +65,13 @@ html,body{height:100%;background:var(--bg);color:var(--tx);font-family:'DM Mono'
 .spn{animation:spin .8s linear infinite;display:inline-block}
 
 /* ── TABS ── */
-.tabs{display:flex;border-bottom:1px solid var(--b0);background:rgba(7,7,14,.93);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);position:sticky;top:50px;z-index:99;overflow-x:auto;scrollbar-width:none}
+.tabs{display:flex;border-bottom:1px solid var(--b0);background:rgba(7,7,14,.93);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);position:sticky;top:calc(var(--st) + 44px);z-index:99;overflow-x:auto;scrollbar-width:none}
 .tabs::-webkit-scrollbar{display:none}
 .tab{flex:1;min-width:72px;padding:10px 4px;text-align:center;font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:1.5px;color:var(--mu);cursor:pointer;border-bottom:2px solid transparent;transition:color .18s,border-color .18s;white-space:nowrap}
 .tab.on{color:var(--gold);border-bottom-color:var(--gold)}
 
 /* ── CONTENT ── */
-.cnt{max-width:720px;margin:0 auto;padding:14px 12px calc(var(--sb)+80px)}
+.cnt{max-width:720px;margin:0 auto;padding:16px 12px calc(var(--sb)+80px)}
 .pg{display:none}
 .pg.on{display:block}
 
@@ -781,15 +783,20 @@ async function loadAI(id,ctx){
     if(!res.ok)throw new Error(`Backend ${res.status}`);
     const d=await res.json();
 
-    if(!d.success){
-      const errMsg=`<div class="ai-text" style="color:var(--mu)">${d.error||'AI unavailable.'}</div>`;
+    if(!d.success&&!d.thesis){
+      const errMsg=`<div class="ai-text" style="color:var(--mu)">${d.error||'AI unavailable. Check GEMINI_API_KEY in Vercel.'}</div>`;
       ['ai','art','rep'].forEach(p=>setBox(p,errMsg));
       return;
     }
 
+    // ── Fallback label ──
+    const fallbackNote=d.isFallback||d.rateLimited
+      ?`<div style="font-size:9px;color:var(--mu);margin-bottom:6px;padding:3px 7px;background:rgba(94,94,128,.1);border-radius:4px;display:inline-block">${d.rateLimited?'⚡ Rate limited — rule-based estimate':'📋 Rule-based estimate — AI key not configured'}</div><br>`
+      :'';
+
     // ── Thesis ──
     setBox('ai', d.thesis
-      ? `<div class="ai-label">🤖 AI Thesis</div><div class="ai-text">${d.thesis}</div>`
+      ? `<div class="ai-label">🤖 AI Thesis</div>${fallbackNote}<div class="ai-text">${d.thesis}</div>`
       : `<div class="ai-text" style="color:var(--mu)">Thesis unavailable.</div>`
     );
 
@@ -841,7 +848,13 @@ async function loadEbay(id,ctx){
   try{
     const res=await fetch(`${API}/api/prices?q=${encodeURIComponent(card.ebayQuery||card.name)}`);
     const d=await res.json();
-    if(!d.success||!d.found){el.textContent='No recent eBay sold data. Check manually.';return;}
+    if(!d.success||!d.found){
+      el.innerHTML=`<div style="font-size:10px;color:var(--mu);line-height:1.7">
+        No recent eBay data available right now.<br>
+        <a href="https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(card.ebayQuery||card.name)}&LH_Complete=1&LH_Sold=1&_sop=13" target="_blank" style="color:var(--blue)">View sold listings on eBay ↗</a>
+      </div>`;
+      return;
+    }
     el.classList.add('rdy');
     const trend=d.trend==='rising'?`<span class="up">↑ Rising</span>`:d.trend==='falling'?`<span class="dn">↓ Falling</span>`:`<span style="color:var(--mu)">→ Stable</span>`;
     el.innerHTML=`
@@ -864,15 +877,20 @@ async function loadPSA(id,ctx){
     const q=`${card.name} ${card.cardNo||''} ${card.set?.name||''}`.trim();
     const res=await fetch(`${API}/api/psa-pop?q=${encodeURIComponent(q)}`);
     const d=await res.json();
-    if(!d.found){el.textContent='No PSA population data found. This card may not be widely graded yet.';return;}
     el.classList.add('rdy');
+    // PSA blocks scraping — we use community-documented data
     el.innerHTML=`
-      <div class="ebrow"><span>Total graded</span><span style="color:var(--tx);font-weight:500">${d.total?.toLocaleString()||'—'}</span></div>
-      <div class="ebrow"><span>PSA 10 count</span><span style="color:var(--gold)">${d.psa10?.toLocaleString()||'—'}</span></div>
-      <div class="ebrow"><span>PSA 9 count</span><span style="color:var(--tx)">${d.psa9?.toLocaleString()||'—'}</span></div>
-      <div class="ebrow"><span>PSA 10 rate</span><span style="color:var(--tx)">${d.psa10Rate!=null?d.psa10Rate+'%':'—'}</span></div>
-      <div class="ebrow"><span>Scarcity</span><span style="color:var(--amber)">${d.scarcitySignal||'—'}</span></div>
-      ${d.gradingAdvice?`<div style="margin-top:7px;font-size:10px;color:var(--mu);line-height:1.6">${d.gradingAdvice}</div>`:''}`;
+      <div class="ebrow"><span>PSA 10 rate (est.)</span><span style="color:var(--gold);font-weight:500">${d.psa10Rate||'—'}%</span></div>
+      <div class="ebrow"><span>Population</span><span style="color:var(--tx)">${d.scarcitySignal||'—'}</span></div>
+      ${d.estimatedValues?`
+      <div class="ebrow"><span>Est. PSA 10 value</span><span style="color:var(--green)">$${d.estimatedValues.psa10||'—'}</span></div>
+      <div class="ebrow"><span>Est. PSA 9 value</span><span style="color:var(--tx)">$${d.estimatedValues.psa9||'—'}</span></div>
+      <div class="ebrow"><span>Grading ROI (PSA 10)</span><span style="color:${(d.estimatedValues.psa10ROI||0)>50?'var(--green)':'var(--amber)'}">${d.estimatedValues.psa10ROI!=null?'+'+d.estimatedValues.psa10ROI+'%':'—'}</span></div>
+      `:''}
+      <div class="ebrow"><span>Worth grading?</span><span style="color:${d.worthGrading?'var(--green)':'var(--mu)'}">${d.worthGrading?'Yes — if pristine':'Not at this price'}</span></div>
+      ${d.gradingNote?`<div style="margin-top:7px;font-size:10px;color:var(--mu);line-height:1.6">${d.gradingNote}</div>`:''}
+      ${d.artistNote?`<div style="margin-top:5px;font-size:10px;color:var(--amber);line-height:1.6">${d.artistNote}</div>`:''}
+      <div style="margin-top:5px;font-size:9px;color:var(--di)">${d.turnaround||''}</div>`;
   }catch(e){if(el)el.textContent='Could not load PSA data.';}
 }
 
