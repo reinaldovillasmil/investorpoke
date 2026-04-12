@@ -851,15 +851,12 @@ async function loadArtAI(id,ctx){
   try{
     const b=card.benchmarks||{};
     const params=new URLSearchParams({
-      name:card.name, rarity:card.rarity||'', set:card.set?.name||'',
-      artist:card.artist||'', price:card.marketPrice||0, score:card.score||0,
-      lifecycleLabel:card.lifecycleLabel||'',
-      floor:b.floor||'', fair:b.fair||'', ceil:b.ceil||'', peak:b.peak||'',
+      name:card.name, rarity:card.rarity||'',
+      artist:card.artist||'',
       imageUrl:encodeURIComponent(card.imageLarge||card.image||''),
-      artOnly:'1',
     });
 
-    const res=await fetch(`${API}/api/ai-analysis?${params.toString()}`);
+    const res=await fetch(`${API}/api/ai-art?${params.toString()}`);
     if(!res.ok) throw new Error(`Backend ${res.status}`);
     const d=await res.json();
     const a=d.artScore;
