@@ -12,109 +12,86 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#07070e;--s1:#0e0e1c;--s2:#141428;--s3:#1a1a32;
-  --b0:rgba(255,255,255,0.05);--b1:rgba(255,255,255,0.09);--b2:rgba(255,255,255,0.14);
+  --bg:#07070e;--s1:#0e0e1c;--s2:#141428;--s3:#1a1a32;--s4:#202040;
+  --b0:rgba(255,255,255,0.05);--b1:rgba(255,255,255,0.09);--b2:rgba(255,255,255,0.15);
   --tx:#e4e4f0;--mu:#5e5e80;--di:#2a2a44;
   --gold:#c8a84b;--gold2:#e8c86a;
-  --fire:#ff5533;--amber:#f5a623;--green:#33dd88;--blue:#4a9eff;--purple:#9b72ff;
+  --fire:#ff5533;--amber:#f5a623;--green:#33dd88;--blue:#4a9eff;--purple:#9b72ff;--pink:#ff72b8;
   --r:12px;--rs:8px;
   --st:env(safe-area-inset-top);--sb:env(safe-area-inset-bottom);
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;background:var(--bg);color:var(--tx);font-family:'DM Mono',monospace;overscroll-behavior:none}
 
-/* LOGIN */
-#loginScreen{
-  position:fixed;inset:0;z-index:9999;background:var(--bg);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:calc(var(--st)+40px) 28px calc(var(--sb)+40px);
-}
-.l-mark{font-family:'Bebas Neue',sans-serif;font-size:54px;letter-spacing:4px;line-height:1;margin-bottom:4px}
-.l-mark b{color:var(--gold)}
-.l-sub{font-size:9px;color:var(--mu);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:52px}
-.l-box{width:100%;max-width:310px}
-.l-lbl{font-size:9px;color:var(--mu);letter-spacing:1.5px;text-transform:uppercase;display:block;margin-bottom:7px}
-.l-pwrap{position:relative;margin-bottom:9px}
-.l-pw{
-  width:100%;background:var(--s1);border:1px solid var(--b2);border-radius:var(--r);
-  padding:13px 44px 13px 15px;font-family:'DM Mono',monospace;font-size:14px;
-  color:var(--tx);letter-spacing:3px;outline:none;transition:border-color .18s;
-}
-.l-pw::placeholder{letter-spacing:1px;color:var(--di)}
-.l-pw:focus{border-color:var(--gold)}
-.l-pw.err{border-color:var(--fire);animation:shake .3s}
-.l-pw.ok{border-color:var(--green)}
-.l-eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--mu);cursor:pointer;font-size:15px}
-.l-go{
-  width:100%;padding:13px;background:var(--gold);border:none;border-radius:var(--r);
-  font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:2px;color:#07070e;
-  cursor:pointer;margin-top:2px;transition:opacity .15s,transform .1s;
-}
-.l-go:active{transform:scale(.98);opacity:.85}
-.l-err{font-size:10px;color:var(--fire);margin-top:8px;text-align:center;min-height:15px}
-.l-slots{display:flex;justify-content:center;gap:6px;margin-top:28px}
-.l-slot{width:8px;height:8px;border-radius:50%;background:var(--s3);border:1px solid var(--b1);transition:all .25s}
-.l-slot.on{background:var(--gold);border-color:var(--gold)}
-.l-hint{font-size:10px;color:var(--mu);margin-top:7px;text-align:center}
+/* ── LOGIN ── */
+#loginScreen{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:calc(var(--st)+40px) 28px calc(var(--sb)+40px)}
+.lmark{font-family:'Bebas Neue',sans-serif;font-size:54px;letter-spacing:4px;line-height:1;margin-bottom:4px}
+.lmark b{color:var(--gold)}
+.ltag{font-size:9px;color:var(--mu);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:52px}
+.lbox{width:100%;max-width:310px}
+.llbl{font-size:9px;color:var(--mu);letter-spacing:1.5px;text-transform:uppercase;display:block;margin-bottom:7px}
+.lpwrap{position:relative;margin-bottom:9px}
+.lpw{width:100%;background:var(--s1);border:1px solid var(--b2);border-radius:var(--r);padding:13px 44px 13px 15px;font-family:'DM Mono',monospace;font-size:14px;color:var(--tx);letter-spacing:3px;outline:none;transition:border-color .18s}
+.lpw::placeholder{letter-spacing:1px;color:var(--di)}
+.lpw:focus{border-color:var(--gold)}
+.lpw.err{border-color:var(--fire);animation:shake .3s}
+.lpw.ok{border-color:var(--green)}
+.leye{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--mu);cursor:pointer;font-size:15px}
+.lgo{width:100%;padding:13px;background:var(--gold);border:none;border-radius:var(--r);font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:2px;color:#07070e;cursor:pointer;margin-top:2px;transition:opacity .15s,transform .1s}
+.lgo:active{transform:scale(.98);opacity:.85}
+.lerr{font-size:10px;color:var(--fire);margin-top:8px;text-align:center;min-height:15px}
+.lslots{display:flex;justify-content:center;gap:6px;margin-top:28px}
+.lslot{width:8px;height:8px;border-radius:50%;background:var(--s3);border:1px solid var(--b1);transition:all .25s}
+.lslot.on{background:var(--gold);border-color:var(--gold)}
+.lhint{font-size:10px;color:var(--mu);margin-top:7px;text-align:center}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
 @keyframes fadeUp{to{opacity:0;transform:translateY(-14px);pointer-events:none}}
 .fu{animation:fadeUp .4s ease forwards}
 
-/* HEADER */
-.hdr{
-  position:sticky;top:0;z-index:100;
-  background:rgba(7,7,14,.92);backdrop-filter:blur(24px) saturate(160%);
-  -webkit-backdrop-filter:blur(24px) saturate(160%);
-  border-bottom:1px solid var(--b0);
-  padding:calc(var(--st)+11px) 14px 11px;
-}
-.hdr-i{max-width:680px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:10px}
-.hdr-mark{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;flex-shrink:0}
-.hdr-mark b{color:var(--gold)}
-.hdr-r{display:flex;align-items:center;gap:8px}
-.live-pill{display:flex;align-items:center;gap:5px;background:var(--s2);border:1px solid var(--b1);border-radius:20px;padding:4px 10px;font-size:10px;color:var(--mu)}
+/* ── HEADER ── */
+.hdr{position:sticky;top:0;z-index:100;background:rgba(7,7,14,.93);backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);border-bottom:1px solid var(--b0);padding:calc(var(--st)+11px) 14px 11px}
+.hdri{max-width:720px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.hmark{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;flex-shrink:0}
+.hmark b{color:var(--gold)}
+.hright{display:flex;align-items:center;gap:7px}
+.lpill{display:flex;align-items:center;gap:5px;background:var(--s2);border:1px solid var(--b1);border-radius:20px;padding:4px 10px;font-size:10px;color:var(--mu)}
 .ldot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
-.rbtn{background:transparent;border:1px solid var(--b1);border-radius:var(--rs);padding:5px 10px;color:var(--mu);font-size:10px;font-family:'DM Mono',monospace;cursor:pointer;display:flex;align-items:center;gap:4px}
-.rbtn:active{background:var(--s2)}
+.hbtn{background:transparent;border:1px solid var(--b1);border-radius:var(--rs);padding:5px 10px;color:var(--mu);font-size:10px;font-family:'DM Mono',monospace;cursor:pointer;display:flex;align-items:center;gap:4px}
+.hbtn:active{background:var(--s2)}
 @keyframes spin{to{transform:rotate(360deg)}}
 .spn{animation:spin .8s linear infinite;display:inline-block}
 
-/* TABS */
-.tabs{
-  display:flex;border-bottom:1px solid var(--b0);
-  background:rgba(7,7,14,.92);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
-  position:sticky;top:50px;z-index:99;overflow-x:auto;scrollbar-width:none;
-}
+/* ── TABS ── */
+.tabs{display:flex;border-bottom:1px solid var(--b0);background:rgba(7,7,14,.93);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);position:sticky;top:50px;z-index:99;overflow-x:auto;scrollbar-width:none}
 .tabs::-webkit-scrollbar{display:none}
-.tab{
-  flex:1;min-width:68px;padding:10px 4px;text-align:center;
-  font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:1.5px;
-  color:var(--mu);cursor:pointer;border-bottom:2px solid transparent;
-  transition:color .18s,border-color .18s;white-space:nowrap;
-}
+.tab{flex:1;min-width:72px;padding:10px 4px;text-align:center;font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:1.5px;color:var(--mu);cursor:pointer;border-bottom:2px solid transparent;transition:color .18s,border-color .18s;white-space:nowrap}
 .tab.on{color:var(--gold);border-bottom-color:var(--gold)}
 
-/* CONTENT */
-.cnt{max-width:680px;margin:0 auto;padding:14px 12px calc(var(--sb)+80px)}
+/* ── CONTENT ── */
+.cnt{max-width:720px;margin:0 auto;padding:14px 12px calc(var(--sb)+80px)}
 .pg{display:none}
 .pg.on{display:block}
 
-/* HERO STRIP — hidden gems count */
-.hero-strip{
-  background:linear-gradient(135deg,rgba(155,114,255,.12),rgba(200,168,75,.08));
-  border:1px solid rgba(155,114,255,.2);border-radius:var(--r);
-  padding:12px 14px;margin-bottom:12px;display:flex;align-items:center;gap:12px;
-  cursor:pointer;transition:border-color .18s;
-}
-.hero-strip:active{border-color:rgba(155,114,255,.4)}
-.hero-gem{font-size:22px}
-.hero-txt{flex:1}
-.hero-title{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:1px;color:var(--tx)}
-.hero-sub{font-size:10px;color:var(--mu);margin-top:1px}
-.hero-count{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--purple)}
+/* ── SUB TABS ── */
+.stabs{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.stabs::-webkit-scrollbar{display:none}
+.stab{padding:6px 14px;border-radius:20px;font-size:10px;font-family:'DM Mono',monospace;letter-spacing:.4px;border:1px solid var(--b1);background:var(--s1);color:var(--mu);cursor:pointer;flex-shrink:0;transition:all .15s;white-space:nowrap}
+.stab.on{background:var(--gold);border-color:var(--gold);color:#07070e}
 
-/* FILTERS */
+/* ── HERO STRIP ── */
+.hero{background:linear-gradient(135deg,rgba(155,114,255,.13),rgba(200,168,75,.08));border:1px solid rgba(155,114,255,.22);border-radius:var(--r);padding:11px 13px;margin-bottom:11px;display:flex;align-items:center;gap:11px;cursor:pointer;transition:border-color .18s}
+.hero:active{border-color:rgba(155,114,255,.45)}
+.hero-ico{font-size:20px}
+.hero-txt{flex:1}
+.hero-title{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:1px;color:var(--tx)}
+.hero-sub{font-size:9px;color:var(--mu);margin-top:1px}
+.hero-count{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--purple)}
+
+/* ── ALERT BANNER ── */
+.alert-banner{background:rgba(255,85,51,.1);border:1px solid rgba(255,85,51,.3);border-radius:var(--r);padding:10px 13px;margin-bottom:10px;font-size:11px;color:var(--fire);display:none}
+
+/* ── FILTERS ── */
 .fbar{background:var(--s1);border:1px solid var(--b0);border-radius:var(--r);padding:12px;margin-bottom:10px}
 .fgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
 .fgrid:last-child{margin-bottom:0}
@@ -122,68 +99,78 @@ html,body{height:100%;background:var(--bg);color:var(--tx);font-family:'DM Mono'
 select{width:100%;background:var(--s2);border:1px solid var(--b1);border-radius:var(--rs);color:var(--tx);font-family:'DM Mono',monospace;font-size:11px;padding:7px 9px;appearance:none;-webkit-appearance:none;cursor:pointer}
 input[type=range]{width:100%;-webkit-appearance:none;appearance:none;height:3px;background:var(--s3);border-radius:2px;outline:none}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--gold);cursor:pointer}
+input[type=number],input[type=text],input[type=date]{width:100%;background:var(--s2);border:1px solid var(--b1);border-radius:var(--rs);color:var(--tx);font-family:'DM Mono',monospace;font-size:11px;padding:7px 9px;outline:none;transition:border-color .18s}
+input[type=number]:focus,input[type=text]:focus{border-color:var(--gold)}
 
-/* SORT + MODE ROW */
-.tool-row{display:flex;gap:6px;margin-bottom:10px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
-.tool-row::-webkit-scrollbar{display:none}
+/* ── TOOL ROW ── */
+.trow{display:flex;gap:6px;margin-bottom:10px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.trow::-webkit-scrollbar{display:none}
 .pill{white-space:nowrap;padding:5px 11px;border-radius:20px;font-size:10px;font-family:'DM Mono',monospace;letter-spacing:.4px;border:1px solid var(--b1);background:var(--s1);color:var(--mu);cursor:pointer;flex-shrink:0;transition:all .15s}
 .pill.on{background:var(--gold);border-color:var(--gold);color:#07070e}
-.pill.gem-pill.on{background:var(--purple);border-color:var(--purple);color:#fff}
+.pill.gem.on{background:var(--purple);border-color:var(--purple);color:#fff}
 
-/* LEGEND */
+/* ── LEGEND ── */
 .legend{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
 .leg{display:flex;align-items:center;gap:4px;font-size:9px;color:var(--mu)}
 .ldot2{width:6px;height:6px;border-radius:50%}
 
-.rlbl{font-size:10px;color:var(--mu);margin-bottom:8px}
-.rlbl strong{color:var(--tx)}
+/* ── DISMISSED / OWNED BARS ── */
+.dbar{display:flex;align-items:center;justify-content:space-between;padding:6px 11px;background:var(--s2);border:1px solid var(--b0);border-radius:var(--rs);margin-bottom:7px;font-size:10px;color:var(--mu)}
+.dbar button{background:none;border:none;color:var(--mu);cursor:pointer;font-size:10px;font-family:'DM Mono',monospace;text-decoration:underline;padding:0}
+.dbar button:hover{color:var(--tx)}
+.obar{display:flex;align-items:center;justify-content:space-between;padding:6px 11px;background:rgba(51,221,136,.06);border:1px solid rgba(51,221,136,.18);border-radius:var(--rs);margin-bottom:7px;font-size:10px;color:var(--green)}
 
-/* LOADER / ERROR */
+/* ── INFO LABEL ── */
+.ilbl{font-size:10px;color:var(--mu);margin-bottom:8px}
+.ilbl strong{color:var(--tx)}
+
+/* ── LOADER / ERROR ── */
 .loader{text-align:center;padding:56px 20px}
 .lring{width:36px;height:36px;border:3px solid var(--s3);border-top-color:var(--gold);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 16px}
 .ltitle{font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:1px;color:var(--tx);margin-bottom:5px}
 .lsub{font-size:11px;color:var(--mu);line-height:1.7}
 .ebox{text-align:center;padding:36px 20px}
-.retry-btn{margin-top:14px;background:var(--gold);border:none;border-radius:var(--rs);padding:9px 20px;font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:1px;color:#07070e;cursor:pointer}
+.rbtn2{margin-top:14px;background:var(--gold);border:none;border-radius:var(--rs);padding:9px 20px;font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:1px;color:#07070e;cursor:pointer}
 
-/* CARD */
+/* ── CARD ── */
 .pc{background:var(--s1);border:1px solid var(--b0);border-radius:var(--r);margin-bottom:9px;overflow:hidden;cursor:pointer;transition:border-color .18s,transform .1s}
 .pc:active{transform:scale(.995)}
 .pc.open{border-color:var(--b2)}
-.pc.gem{border-color:rgba(155,114,255,.3);background:linear-gradient(180deg,rgba(155,114,255,.04),var(--s1) 60px)}
-.pc-top{padding:12px 13px}
-.pc-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:9px}
-.pc-left{flex:1;min-width:0}
-.pc-name{font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:.8px;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px}
-.pc-meta{font-size:10px;color:var(--mu);display:flex;gap:5px;flex-wrap:wrap;align-items:center}
-.pc-num{color:var(--gold);font-size:10px}
+.pc.gem{border-color:rgba(155,114,255,.32);background:linear-gradient(180deg,rgba(155,114,255,.05),var(--s1) 60px)}
+.pctop{padding:12px 13px}
+.pchead{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:9px}
+.pcleft{flex:1;min-width:0}
+.pcname{font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:.8px;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px}
+.pcmeta{font-size:10px;color:var(--mu);display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+.pcnum{color:var(--gold);font-size:10px}
 .sring{width:48px;height:48px;border-radius:50%;flex-shrink:0;margin-left:11px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:19px;letter-spacing:.5px;border:2px solid}
 
-/* TAGS */
+/* ── TAGS ── */
 .tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
 .tag{font-size:9px;padding:2px 7px;border-radius:20px;border:1px solid;letter-spacing:.3px}
-.t-sir {background:rgba(200,168,75,.1); color:var(--gold2);border-color:rgba(200,168,75,.22)}
-.t-hr  {background:rgba(155,114,255,.1);color:var(--purple);border-color:rgba(155,114,255,.22)}
-.t-ir  {background:rgba(74,158,255,.1); color:var(--blue);  border-color:rgba(74,158,255,.22)}
-.t-gem {background:rgba(155,114,255,.15);color:var(--purple);border-color:rgba(155,114,255,.35);font-weight:500}
-.t-sbuy{background:rgba(255,85,51,.12); color:var(--fire);  border-color:rgba(255,85,51,.28)}
-.t-buy {background:rgba(51,221,136,.1); color:var(--green); border-color:rgba(51,221,136,.22)}
-.t-wait{background:rgba(245,166,35,.1); color:var(--amber); border-color:rgba(245,166,35,.22)}
-.t-pass{background:rgba(94,94,128,.08); color:var(--mu);    border-color:var(--b0)}
-.t-oop {background:rgba(74,158,255,.1); color:var(--blue);  border-color:rgba(74,158,255,.22)}
-.t-rot {background:rgba(51,221,136,.08);color:var(--green); border-color:rgba(51,221,136,.18)}
-.t-sup {background:rgba(245,166,35,.08);color:var(--amber); border-color:rgba(245,166,35,.18)}
-.t-tr  {background:rgba(255,85,51,.08); color:var(--fire);  border-color:rgba(255,85,51,.18)}
-.t-nd  {background:rgba(94,94,128,.06); color:var(--di);    border-color:var(--b0)}
+.tsir{background:rgba(200,168,75,.1);color:var(--gold2);border-color:rgba(200,168,75,.22)}
+.thr{background:rgba(155,114,255,.1);color:var(--purple);border-color:rgba(155,114,255,.22)}
+.tir{background:rgba(74,158,255,.1);color:var(--blue);border-color:rgba(74,158,255,.22)}
+.tgem{background:rgba(155,114,255,.16);color:var(--purple);border-color:rgba(155,114,255,.38);font-weight:500}
+.tsbuy{background:rgba(255,85,51,.12);color:var(--fire);border-color:rgba(255,85,51,.28)}
+.tbuy{background:rgba(51,221,136,.1);color:var(--green);border-color:rgba(51,221,136,.22)}
+.twait{background:rgba(245,166,35,.1);color:var(--amber);border-color:rgba(245,166,35,.22)}
+.tpass{background:rgba(94,94,128,.08);color:var(--mu);border-color:var(--b0)}
+.toop{background:rgba(74,158,255,.1);color:var(--blue);border-color:rgba(74,158,255,.22)}
+.trot{background:rgba(51,221,136,.08);color:var(--green);border-color:rgba(51,221,136,.18)}
+.tsup{background:rgba(245,166,35,.08);color:var(--amber);border-color:rgba(245,166,35,.18)}
+.ttr{background:rgba(255,85,51,.08);color:var(--fire);border-color:rgba(255,85,51,.18)}
+.tnd{background:rgba(94,94,128,.06);color:var(--di);border-color:var(--b0)}
+.tart{background:rgba(255,114,184,.1);color:var(--pink);border-color:rgba(255,114,184,.22)}
 
-/* PRICE ROW */
+/* ── PRICE ROW ── */
 .prow{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;margin-bottom:9px}
 .pcell{background:var(--s2);border-radius:var(--rs);padding:7px 8px}
 .pclbl{font-size:8px;color:var(--mu);text-transform:uppercase;letter-spacing:.8px;margin-bottom:3px}
 .pcval{font-size:13px;font-weight:500}
 .up{color:var(--green)}.dn{color:var(--fire)}.na{color:var(--mu)}
 
-/* BARS */
+/* ── BARS ── */
 .bars{display:flex;flex-direction:column;gap:4px}
 .brow{display:flex;align-items:center;gap:6px}
 .blbl{font-size:9px;color:var(--mu);width:90px;flex-shrink:0}
@@ -191,36 +178,67 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
 .bfill{height:100%;border-radius:2px;transition:width .5s ease}
 .bnum{font-size:9px;color:var(--mu);width:18px;text-align:right}
 
-/* DETAIL */
-.pc-det{border-top:1px solid var(--b0);padding:12px 13px;display:none}
-.pc-det.on{display:block}
-.dsec{margin-bottom:10px}
+/* ── DETAIL ── */
+.pcdet{border-top:1px solid var(--b0);padding:12px 13px;display:none}
+.pcdet.on{display:block}
+.dsec{margin-bottom:11px}
 .dsec:last-child{margin-bottom:0}
 .dlbl{font-size:9px;color:var(--mu);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px}
 .dbody{font-size:11px;color:#9090b0;line-height:1.75}
 .drec{font-size:12px;line-height:1.65;font-weight:500}
 
-/* BENCHMARK ROW */
-.bench{display:flex;gap:5px;margin-top:5px}
+/* ── BENCHMARKS ── */
+.bench{display:flex;gap:4px;margin-top:5px}
 .bcell{flex:1;background:var(--s2);border-radius:var(--rs);padding:7px;text-align:center}
 .bclbl{font-size:8px;color:var(--mu);text-transform:uppercase;letter-spacing:.6px;margin-bottom:3px}
-.bcval{font-size:13px;font-weight:500}
+.bcval{font-size:12px;font-weight:500}
 
-/* EBAY BOX */
-.ebbox{margin-top:9px;background:var(--s2);border-radius:var(--rs);padding:10px 11px;font-size:11px;color:var(--mu);line-height:1.7;border:1px solid var(--b0)}
+/* ── AI SECTION ── */
+.ai-box{background:linear-gradient(135deg,rgba(155,114,255,.08),rgba(74,158,255,.05));border:1px solid rgba(155,114,255,.2);border-radius:var(--rs);padding:11px 12px;margin-top:6px}
+.ai-box.loading{opacity:.6}
+.ai-label{font-size:9px;color:var(--purple);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;display:flex;align-items:center;gap:5px}
+.ai-text{font-size:11px;color:#a8a8c8;line-height:1.75}
+.ai-row{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:10px}
+.ai-row:last-child{border-bottom:none}
+.ai-risk-low{color:var(--green)}.ai-risk-med{color:var(--amber)}.ai-risk-high{color:var(--fire)}.ai-risk-vhigh{color:var(--fire);font-weight:500}
+
+/* ── EBAY BOX ── */
+.ebbox{background:var(--s2);border-radius:var(--rs);padding:10px 11px;font-size:11px;color:var(--mu);line-height:1.7;border:1px solid var(--b0);margin-top:5px}
 .ebbox.rdy{border-color:rgba(51,221,136,.2)}
-.ebrow{display:flex;justify-content:space-between;align-items:center;padding:3px 0;border-bottom:1px solid var(--b0)}
+.ebrow{display:flex;justify-content:space-between;align-items:center;padding:3px 0;border-bottom:1px solid var(--b0);font-size:10px}
 .ebrow:last-child{border-bottom:none}
 
-/* LINKS */
+/* ── PSA BOX ── */
+.psabox{background:var(--s2);border-radius:var(--rs);padding:10px 11px;font-size:10px;color:var(--mu);border:1px solid var(--b0);margin-top:5px}
+.psabox.rdy{border-color:rgba(200,168,75,.2)}
+
+/* ── GRADING CALC ── */
+.gcalc{background:var(--s2);border:1px solid var(--b1);border-radius:var(--rs);padding:11px;margin-top:5px}
+.gcalc-row{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:7px}
+.gcalc-row:last-child{margin-bottom:0}
+.gcalc label{font-size:9px;color:var(--mu);display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.8px}
+.gcalc-result{background:rgba(51,221,136,.06);border:1px solid rgba(51,221,136,.18);border-radius:var(--rs);padding:8px;margin-top:7px;font-size:10px;color:var(--green);line-height:1.7}
+
+/* ── LINKS ── */
 .xlink{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:5px;padding:9px;background:var(--s2);border:1px solid var(--b1);border-radius:var(--rs);font-size:12px;text-decoration:none;font-family:'Bebas Neue',sans-serif;letter-spacing:.8px;transition:border-color .18s}
 .xlink:active{background:var(--s3)}
 
-/* WATCH BTN */
-.wbtn{width:100%;margin-top:7px;padding:9px;background:transparent;border:1px solid var(--gold);border-radius:var(--rs);font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:1px;color:var(--gold);cursor:pointer;transition:background .15s}
-.wbtn.on{background:rgba(200,168,75,.1)}
+/* ── CARD ACTIONS ── */
+.cactions{display:flex;gap:5px;margin-top:7px}
+.cabtn{flex:1;padding:8px 4px;background:transparent;border:1px solid var(--b1);border-radius:var(--rs);font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:.8px;color:var(--mu);cursor:pointer;transition:all .15s;text-align:center}
+.cabtn:active{opacity:.7}
+.cawatch.on{background:rgba(200,168,75,.12);border-color:rgba(200,168,75,.4);color:var(--gold)}
+.caown.on{background:rgba(51,221,136,.1);border-color:rgba(51,221,136,.35);color:var(--green)}
+.cadismiss:hover{border-color:rgba(255,85,51,.3);color:var(--fire)}
 
-/* SEARCH */
+/* ── ALERT INPUT ── */
+.alert-row{display:flex;gap:5px;margin-top:7px;align-items:center}
+.alert-row input{flex:1;background:var(--s2);border:1px solid var(--b1);border-radius:var(--rs);color:var(--tx);font-family:'DM Mono',monospace;font-size:11px;padding:7px 9px;outline:none}
+.alert-row input:focus{border-color:var(--gold)}
+.alert-set{padding:7px 12px;background:transparent;border:1px solid var(--gold);border-radius:var(--rs);font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:.5px;color:var(--gold);cursor:pointer;white-space:nowrap}
+.alert-set.on{background:rgba(200,168,75,.12)}
+
+/* ── SEARCH ── */
 .swrap{position:relative;margin-bottom:12px}
 .sinput{width:100%;background:var(--s1);border:1px solid var(--b1);border-radius:var(--r);padding:12px 38px 12px 13px;font-family:'DM Mono',monospace;font-size:12px;color:var(--tx);outline:none;transition:border-color .18s}
 .sinput:focus{border-color:var(--gold)}
@@ -228,14 +246,32 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
 .sico{position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--mu);font-size:14px;pointer-events:none}
 .sx{position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--mu);font-size:16px;cursor:pointer;background:none;border:none;display:none;line-height:1}
 
-/* WATCHLIST METRICS */
-.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:10px}
+/* ── PORTFOLIO METRICS ── */
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:11px}
 .mbox{background:var(--s1);border:1px solid var(--b0);border-radius:var(--r);padding:12px}
-.mbox-l{font-size:9px;color:var(--mu);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px}
-.mbox-v{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:1px}
-.mbox-s{font-size:9px;color:var(--mu);margin-top:1px}
+.mboxl{font-size:9px;color:var(--mu);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px}
+.mboxv{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:1px}
+.mboxs{font-size:9px;color:var(--mu);margin-top:1px}
+.mgrid4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin-bottom:10px}
+.mbox4{background:var(--s1);border:1px solid var(--b0);border-radius:var(--rs);padding:10px 9px;text-align:center}
+.mbox4l{font-size:8px;color:var(--mu);text-transform:uppercase;letter-spacing:.7px;margin-bottom:3px}
+.mbox4v{font-family:'Bebas Neue',sans-serif;font-size:18px}
 
-/* INSIGHT CARDS */
+/* ── OWNED CARD ROW ── */
+.ocard{background:var(--s1);border:1px solid var(--b0);border-radius:var(--r);padding:12px;margin-bottom:8px}
+.ocard-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:9px}
+.ocard-name{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:.8px;color:var(--tx);margin-bottom:2px}
+.ocard-meta{font-size:9px;color:var(--mu)}
+.ocard-pnl{text-align:right}
+.ocard-pnl-val{font-family:'Bebas Neue',sans-serif;font-size:18px}
+.ocard-pnl-sub{font-size:9px;color:var(--mu);margin-top:1px}
+.ocard-inputs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:7px}
+.ocard-inputs label{font-size:8px;color:var(--mu);text-transform:uppercase;letter-spacing:.7px;display:block;margin-bottom:3px}
+.ocard-footer{display:flex;justify-content:space-between;align-items:center;font-size:10px;color:var(--mu);padding-top:7px;border-top:1px solid var(--b0)}
+.rm-btn{background:none;border:none;color:var(--mu);cursor:pointer;font-size:10px;font-family:'DM Mono',monospace}
+.rm-btn:hover{color:var(--fire)}
+
+/* ── ICARD (insight card) ── */
 .icard{background:var(--s1);border:1px solid var(--b0);border-radius:var(--r);padding:13px;margin-bottom:9px}
 .ititle{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:1px;color:var(--tx);margin-bottom:9px;display:flex;align-items:center;gap:7px}
 .irow{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--b0);font-size:11px}
@@ -243,19 +279,44 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
 .irn{color:var(--tx);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-right:7px}
 .irv{flex-shrink:0;font-weight:500}
 
-/* TRENDING */
-.tcard{background:var(--s1);border:1px solid var(--b0);border-radius:var(--r);padding:13px;margin-bottom:9px}
+/* ── INTEL CARD ── */
+.setcard{background:var(--s1);border:1px solid var(--b0);border-radius:var(--r);padding:13px;margin-bottom:9px}
+.setcard-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+.setcard-name{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:.8px;color:var(--tx);margin-bottom:2px}
+.setcard-date{font-size:9px;color:var(--mu)}
+.setcard-region{padding:2px 8px;border-radius:20px;font-size:9px}
+.setcard-region.en{background:rgba(74,158,255,.1);color:var(--blue);border:1px solid rgba(74,158,255,.22)}
+.setcard-region.jp{background:rgba(255,85,51,.1);color:var(--fire);border:1px solid rgba(255,85,51,.22)}
+.impact-card{padding:8px 10px;background:var(--s2);border-radius:var(--rs);margin-bottom:6px;font-size:10px}
+.impact-pos{border-left:2px solid var(--green)}
+.impact-neg{border-left:2px solid var(--fire)}
 
-/* EMPTY */
+/* ── HOW IT WORKS ── */
+.hw-section{margin-bottom:16px}
+.hw-title{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:1px;color:var(--gold);margin-bottom:8px}
+.hw-body{font-size:11px;color:#9090b0;line-height:1.8}
+.hw-factor{background:var(--s1);border:1px solid var(--b0);border-radius:var(--rs);padding:10px 12px;margin-bottom:6px;display:flex;align-items:center;gap:10px}
+.hw-weight{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--gold);width:36px;flex-shrink:0}
+.hw-ftitle{font-size:11px;color:var(--tx);margin-bottom:2px}
+.hw-fdesc{font-size:10px;color:var(--mu);line-height:1.6}
+.hw-lc-bar{background:var(--s2);border-radius:var(--rs);padding:8px 10px;margin-bottom:4px;display:flex;justify-content:space-between;align-items:center;font-size:10px}
+.hw-artist{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--b0);font-size:10px}
+.hw-artist:last-child{border-bottom:none}
+.tier-s{color:var(--fire)}.tier-a{color:var(--amber)}.tier-b{color:var(--green)}.tier-c{color:var(--mu)}
+
+/* ── EMPTY ── */
 .empty{text-align:center;padding:56px 20px;color:var(--mu)}
 .eico{font-size:36px;margin-bottom:12px}
 .etitle{font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:1px;color:var(--tx);margin-bottom:6px}
 .esub{font-size:11px;line-height:1.7}
 
-/* SECTION HEAD */
+/* ── SECTION HEAD ── */
 .sh{font-size:9px;color:var(--mu);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:8px;margin-top:4px}
 
-/* TOAST */
+/* ── DIVIDER ── */
+.div{height:1px;background:var(--b0);margin:12px 0}
+
+/* ── TOAST ── */
 .toast{position:fixed;bottom:calc(var(--sb)+86px);left:50%;transform:translateX(-50%) translateY(14px);background:var(--s3);border:1px solid var(--b1);border-radius:20px;padding:8px 16px;font-size:10px;color:var(--tx);opacity:0;transition:all .22s;pointer-events:none;white-space:nowrap;z-index:999}
 .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
 </style>
@@ -264,49 +325,50 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
 
 <!-- LOGIN -->
 <div id="loginScreen">
-  <div class="l-mark">Poke<b>Invest</b></div>
-  <div class="l-sub">Private Access · Investment Screener</div>
-  <div class="l-box">
-    <label class="l-lbl">Access Password</label>
-    <div class="l-pwrap">
-      <input class="l-pw" type="password" id="pwIn" placeholder="••••••••" autocomplete="off" onkeydown="if(event.key==='Enter')tryLogin()">
-      <button class="l-eye" onclick="toggleEye()">👁</button>
+  <div class="lmark">Poke<b>Invest</b></div>
+  <div class="ltag">Private Access · Investment Screener</div>
+  <div class="lbox">
+    <label class="llbl">Access Password</label>
+    <div class="lpwrap">
+      <input class="lpw" type="password" id="pwIn" placeholder="••••••••" autocomplete="off" onkeydown="if(event.key==='Enter')tryLogin()">
+      <button class="leye" onclick="toggleEye()">👁</button>
     </div>
-    <button class="l-go" onclick="tryLogin()">ENTER</button>
-    <div class="l-err" id="lErr"></div>
-    <div class="l-slots" id="lSlots"></div>
-    <div class="l-hint" id="lHint">Invite only</div>
+    <button class="lgo" onclick="tryLogin()">ENTER</button>
+    <div class="lerr" id="lErr"></div>
+    <div class="lslots" id="lSlots"></div>
+    <div class="lhint" id="lHint">Invite only</div>
   </div>
 </div>
 
 <!-- HEADER -->
 <div class="hdr">
-  <div class="hdr-i">
-    <div class="hdr-mark">Poke<b>Invest</b></div>
-    <div class="hdr-r">
-      <div class="live-pill"><span class="ldot"></span><span id="stxt">Loading</span></div>
-      <button class="rbtn" onclick="loadCards(true)"><span id="ri">↻</span> Refresh</button>
+  <div class="hdri">
+    <div class="hmark">Poke<b>Invest</b></div>
+    <div class="hright">
+      <div class="lpill"><span class="ldot"></span><span id="stxt">Loading</span></div>
+      <button class="hbtn" onclick="shuffleCards()" title="Load different 250 cards"><span>🔀</span></button>
+      <button class="hbtn" onclick="loadCards(true)"><span id="ri">↻</span></button>
     </div>
   </div>
 </div>
 
 <!-- TABS -->
 <div class="tabs">
-  <div class="tab on"  onclick="goTab('screener',this)">Screener</div>
+  <div class="tab on"  onclick="goTab('discover',this)">Discover</div>
   <div class="tab"     onclick="goTab('search',this)">Search</div>
-  <div class="tab"     onclick="goTab('trending',this)">Trending</div>
-  <div class="tab"     onclick="goTab('watchlist',this)">Watchlist</div>
-  <div class="tab"     onclick="goTab('insights',this)">Insights</div>
+  <div class="tab"     onclick="goTab('portfolio',this)">Portfolio</div>
+  <div class="tab"     onclick="goTab('intel',this)">Intel</div>
 </div>
 
 <div class="cnt">
 
-  <!-- SCREENER -->
-  <div class="pg on" id="pg-screener">
-    <div id="heroStrip" class="hero-strip" onclick="toggleGems()" style="display:none">
-      <div class="hero-gem">💎</div>
+  <!-- ── DISCOVER ── -->
+  <div class="pg on" id="pg-discover">
+    <div id="alertBanner" class="alert-banner"></div>
+    <div id="heroStrip" class="hero" onclick="toggleGems()" style="display:none">
+      <div class="hero-ico">💎</div>
       <div class="hero-txt">
-        <div class="hero-title">Hidden Gems Found</div>
+        <div class="hero-title">Hidden Gems Detected</div>
         <div class="hero-sub">Underpriced · Under the radar · Asymmetric upside</div>
       </div>
       <div class="hero-count" id="heroCount">0</div>
@@ -315,7 +377,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
       <div class="fgrid">
         <div class="fg">
           <label>Rarity</label>
-          <select id="rarF" onchange="renderScreener()">
+          <select id="rarF" onchange="renderDiscover()">
             <option value="all">All Secret Rares</option>
             <option value="Special Illustration Rare">SIR Only</option>
             <option value="Illustration Rare">IR Only</option>
@@ -323,8 +385,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
           </select>
         </div>
         <div class="fg">
-          <label>Lifecycle Stage</label>
-          <select id="lcF" onchange="renderScreener()">
+          <label>Lifecycle</label>
+          <select id="lcF" onchange="renderDiscover()">
             <option value="all">All Stages</option>
             <option value="buy">Buy Zone Only</option>
             <option value="oop">Out of Print</option>
@@ -335,20 +397,20 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
       <div class="fgrid">
         <div class="fg">
           <label>Min Score: <strong id="scV" style="color:var(--gold)">60</strong></label>
-          <input type="range" min="0" max="100" value="60" id="scF" step="1" oninput="document.getElementById('scV').textContent=this.value;renderScreener()">
+          <input type="range" min="0" max="100" value="60" id="scF" step="1" oninput="document.getElementById('scV').textContent=this.value;renderDiscover()">
         </div>
         <div class="fg">
           <label>Max Price: <strong id="prV" style="color:var(--gold)">$150</strong></label>
-          <input type="range" min="5" max="500" value="150" id="prF" step="5" oninput="document.getElementById('prV').textContent='$'+this.value;renderScreener()">
+          <input type="range" min="5" max="500" value="150" id="prF" step="5" oninput="document.getElementById('prV').textContent='$'+this.value;renderDiscover()">
         </div>
       </div>
     </div>
-    <div class="tool-row">
-      <button class="pill on"      onclick="setSort('score',this)">Score</button>
-      <button class="pill"         onclick="setSort('upside',this)">Upside</button>
-      <button class="pill"         onclick="setSort('price',this)">Price ↑</button>
-      <button class="pill"         onclick="setSort('new',this)">Newest</button>
-      <button class="pill gem-pill" id="gemBtn" onclick="toggleGems()">💎 Gems Only</button>
+    <div class="trow">
+      <button class="pill on"   onclick="setSort('score',this)">Score</button>
+      <button class="pill"      onclick="setSort('upside',this)">Upside</button>
+      <button class="pill"      onclick="setSort('price',this)">Price ↑</button>
+      <button class="pill"      onclick="setSort('new',this)">Newest</button>
+      <button class="pill gem"  id="gemBtn" onclick="toggleGems()">💎 Gems Only</button>
     </div>
     <div class="legend">
       <div class="leg"><div class="ldot2" style="background:var(--fire)"></div>Strong Buy 85+</div>
@@ -357,11 +419,12 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
       <div class="leg"><div class="ldot2" style="background:var(--blue)"></div>Watch &lt;65</div>
       <div class="leg"><div class="ldot2" style="background:var(--purple)"></div>💎 Hidden Gem</div>
     </div>
-    <div class="rlbl" id="scrInfo"></div>
-    <div id="scrGrid"></div>
+    <div id="discoverInfo" class="ilbl"></div>
+    <div id="batchInfo" style="font-size:9px;color:var(--mu);margin-bottom:6px;display:none"></div>
+    <div id="discoverGrid"></div>
   </div>
 
-  <!-- SEARCH -->
+  <!-- ── SEARCH ── -->
   <div class="pg" id="pg-search">
     <div class="swrap">
       <input class="sinput" type="search" id="sIn" placeholder="Search — Charizard, Cynthia, Umbreon ex..." oninput="handleSearch(this.value)" autocomplete="off" autocorrect="off" autocapitalize="off">
@@ -372,32 +435,51 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
       <div class="empty">
         <div class="eico">🔍</div>
         <div class="etitle">Search Any Card</div>
-        <div class="esub">Every version scored and ranked.<br>Hidden gems float to the top.</div>
+        <div class="esub">Every version scored and ranked.<br>Hidden gems always float to the top.</div>
       </div>
     </div>
   </div>
 
-  <!-- TRENDING -->
-  <div class="pg" id="pg-trending">
-    <div id="tGrid">
-      <div class="empty">
-        <div class="eico">📈</div>
-        <div class="etitle">Price Movers</div>
-        <div class="esub">Cards with significant 7-day vs 30-day eBay price movement.<br>Loads when you open this tab.</div>
-      </div>
+  <!-- ── PORTFOLIO ── -->
+  <div class="pg" id="pg-portfolio">
+    <div class="stabs">
+      <button class="stab on" onclick="goSubTab('watchlist',this,'portfolio')">Watchlist</button>
+      <button class="stab"    onclick="goSubTab('owned',this,'portfolio')">Owned</button>
+      <button class="stab"    onclick="goSubTab('analytics',this,'portfolio')">Analytics</button>
+    </div>
+    <div id="sub-watchlist">
+      <div class="mgrid" id="wMetrics"></div>
+      <div class="sh">Tracking — Not Yet Purchased</div>
+      <div id="wGrid"></div>
+    </div>
+    <div id="sub-owned" style="display:none">
+      <div class="mgrid" id="oMetrics"></div>
+      <div class="sh">Your Collection</div>
+      <div id="oGrid"></div>
+    </div>
+    <div id="sub-analytics" style="display:none">
+      <div id="analyticsContent"></div>
     </div>
   </div>
 
-  <!-- WATCHLIST -->
-  <div class="pg" id="pg-watchlist">
-    <div class="mgrid" id="wMetrics"></div>
-    <div class="sh">Your Cards</div>
-    <div id="wGrid"></div>
-  </div>
-
-  <!-- INSIGHTS -->
-  <div class="pg" id="pg-insights">
-    <div id="iGrid"><div class="loader"><div class="lring"></div><div class="ltitle">Loading</div></div></div>
+  <!-- ── INTEL ── -->
+  <div class="pg" id="pg-intel">
+    <div class="stabs">
+      <button class="stab on" onclick="goSubTab('trending',this,'intel')">Trending</button>
+      <button class="stab"    onclick="goSubTab('calendar',this,'intel')">Set Calendar</button>
+      <button class="stab"    onclick="goSubTab('howto',this,'intel')">How It Works</button>
+    </div>
+    <div id="sub-trending">
+      <div id="tGrid">
+        <div class="empty"><div class="eico">📈</div><div class="etitle">Price Movers</div><div class="esub">7-day vs 30-day eBay movement.<br>Loads when you open this tab.</div></div>
+      </div>
+    </div>
+    <div id="sub-calendar" style="display:none">
+      <div id="calendarContent"><div class="loader"><div class="lring"></div><div class="ltitle">Loading Intel</div></div></div>
+    </div>
+    <div id="sub-howto" style="display:none">
+      <div id="howtoContent"></div>
+    </div>
   </div>
 
 </div>
@@ -409,12 +491,11 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
 const API = 'https://poke-api-three-delta.vercel.app';
 
 // ── AUTH ──────────────────────────────────────────────────────────
-const PWS = ['pokeball1','charizard2','pikachu3','mewtwo4','umbreon5','gardevoir6','gengar7','lugia8','eevee9','mew10'];
-let used = JSON.parse(localStorage.getItem('pi_used')||'[]');
+const PWS=['pokeball1','charizard2','pikachu3','mewtwo4','umbreon5','gardevoir6','gengar7','lugia8','eevee9','mew10'];
+let used=JSON.parse(localStorage.getItem('pi_used')||'[]');
 function buildSlots(){
-  document.getElementById('lSlots').innerHTML=PWS.map((_,i)=>`<div class="l-slot${used.includes(i)?' on':''}"></div>`).join('');
-  const u=used.length;
-  document.getElementById('lHint').textContent=u?`${u}/${PWS.length} invites used`:'Invite only';
+  document.getElementById('lSlots').innerHTML=PWS.map((_,i)=>`<div class="lslot${used.includes(i)?' on':''}"></div>`).join('');
+  document.getElementById('lHint').textContent=used.length?`${used.length}/${PWS.length} invites used`:'Invite only';
 }
 function tryLogin(){
   const inp=document.getElementById('pwIn'),val=inp.value.trim().toLowerCase(),err=document.getElementById('lErr');
@@ -434,93 +515,97 @@ buildSlots();
 let allCards=[],lastFetch=0,CACHE=30*60*1000;
 let sortKey='score',gemsOnly=false,expandId=null,expandCtx=null;
 let watchlist=JSON.parse(localStorage.getItem('pi_watch')||'[]');
+let owned=JSON.parse(localStorage.getItem('pi_owned')||'[]');
+let dismissed=JSON.parse(localStorage.getItem('pi_dismissed')||'[]');
+let ownedData=JSON.parse(localStorage.getItem('pi_owned_data')||'{}'); // {cardId:{buyPrice,qty,buyDate,grade}}
+let alertTargets=JSON.parse(localStorage.getItem('pi_alerts')||'{}'); // {cardId:{target,direction}}
 let sTimer=null,lastSearch=[];
 let tLoaded=false,tCards=[];
+let intelLoaded=false;
+const SORT_OPTIONS=['-set.releaseDate','-tcgplayer.prices.holofoil.market','name','-name','number'];
 
 // ── STYLE HELPERS ────────────────────────────────────────────────
-function rStyle(score){
-  if(score>=85)return{c:'var(--fire)',  bg:'rgba(255,85,51,0.11)', bd:'rgba(255,85,51,0.32)'};
-  if(score>=75)return{c:'var(--amber)', bg:'rgba(245,166,35,0.11)',bd:'rgba(245,166,35,0.32)'};
-  if(score>=65)return{c:'var(--green)', bg:'rgba(51,221,136,0.09)',bd:'rgba(51,221,136,0.28)'};
-  return             {c:'var(--blue)',  bg:'rgba(74,158,255,0.09)', bd:'rgba(74,158,255,0.28)'};
+function rStyle(s){
+  if(s>=85)return{c:'var(--fire)',  bg:'rgba(255,85,51,0.11)',  bd:'rgba(255,85,51,0.32)'};
+  if(s>=75)return{c:'var(--amber)', bg:'rgba(245,166,35,0.11)', bd:'rgba(245,166,35,0.32)'};
+  if(s>=65)return{c:'var(--green)', bg:'rgba(51,221,136,0.09)', bd:'rgba(51,221,136,0.28)'};
+  return         {c:'var(--blue)',  bg:'rgba(74,158,255,0.09)', bd:'rgba(74,158,255,0.28)'};
 }
 function rGem(){return{c:'var(--purple)',bg:'rgba(155,114,255,0.13)',bd:'rgba(155,114,255,0.38)'};}
 function bc(v){return v>=80?'var(--green)':v>=60?'var(--amber)':'var(--fire)';}
 
 function recTag(rec,isGem){
-  if(isGem) return`<span class="tag t-gem">💎 Hidden Gem</span>`;
-  if(!rec)return'';
-  const l=rec.label||'';
-  if(l.includes('Strong Buy'))  return`<span class="tag t-sbuy">🔥 Strong Buy</span>`;
-  if(l.includes('Buy'))         return`<span class="tag t-buy">✅ Buy</span>`;
-  if(l.includes('Accumulate'))  return`<span class="tag t-buy">👀 Accumulate</span>`;
-  if(l.includes('Wait')||l.includes('Dropping')||l.includes('New')) return`<span class="tag t-wait">⏳ Wait</span>`;
-  if(l.includes('Avoid'))       return`<span class="tag t-wait">🚫 Avoid</span>`;
-  if(l.includes('No Price'))    return`<span class="tag t-nd">No Price</span>`;
-  return`<span class="tag t-pass">${l}</span>`;
+  if(isGem)return`<span class="tag tgem">💎 Hidden Gem</span>`;
+  if(!rec)return'';const l=rec.label||'';
+  if(l.includes('Strong Buy'))return`<span class="tag tsbuy">🔥 Strong Buy</span>`;
+  if(l.includes('Buy'))       return`<span class="tag tbuy">✅ Buy</span>`;
+  if(l.includes('Accumulate'))return`<span class="tag tbuy">👀 Accumulate</span>`;
+  if(l.includes('Wait')||l.includes('Dropping')||l.includes('New'))return`<span class="tag twait">⏳ Wait</span>`;
+  if(l.includes('Avoid'))     return`<span class="tag twait">🚫 Avoid</span>`;
+  if(l.includes('No Price'))  return`<span class="tag tnd">No Price</span>`;
+  return`<span class="tag tpass">${l}</span>`;
 }
 function rarTag(r){
-  if(r==='Special Illustration Rare')return`<span class="tag t-sir">SIR</span>`;
-  if(r==='Hyper Rare')               return`<span class="tag t-hr">HR</span>`;
-  if(r==='Illustration Rare')        return`<span class="tag t-ir">IR</span>`;
-  return`<span class="tag t-pass">${r||'?'}</span>`;
+  if(r==='Special Illustration Rare')return`<span class="tag tsir">SIR</span>`;
+  if(r==='Hyper Rare')               return`<span class="tag thr">HR</span>`;
+  if(r==='Illustration Rare')        return`<span class="tag tir">IR</span>`;
+  return`<span class="tag tpass">${r||'?'}</span>`;
 }
 function playTag(ctx,lbl){
   if(!lbl||ctx==='NONE'||ctx==='META')return'';
-  if(ctx==='ROTATED')return`<span class="tag t-rot">${lbl}</span>`;
-  if(ctx==='SUPPORT')return`<span class="tag t-sup">${lbl}</span>`;
-  return`<span class="tag t-pass">${lbl}</span>`;
+  if(ctx==='ROTATED')return`<span class="tag trot">${lbl}</span>`;
+  if(ctx==='SUPPORT')return`<span class="tag tsup">${lbl}</span>`;
+  return`<span class="tag tpass">${lbl}</span>`;
 }
 
 // ── CARD HTML ─────────────────────────────────────────────────────
 function cardHTML(c,ctx){
-  const isGem=!!c.isHiddenGem;
-  const rs=isGem?rGem():rStyle(c.score||0);
-  const inW=watchlist.includes(c.id);
+  const isGem=!!c.isHiddenGem,rs=isGem?rGem():rStyle(c.score||0);
+  const inW=watchlist.includes(c.id),inO=owned.includes(c.id);
   const isOpen=expandId===c.id&&expandCtx===ctx;
   const price=c.marketPrice||0,fv=c.benchmarks?.fair||null,up=c.upside;
   const bd=c.breakdown||{};
   const isNew=c.set?.releaseDate&&(Date.now()-new Date(c.set.releaseDate))<90*86400000;
-  const isOOP=!!c.isOOP;
-  const isTr=c.supertype==='Trainer';
+  const isOOP=!!c.isOOP,isTr=c.supertype==='Trainer';
   const ebayQ=encodeURIComponent(c.ebayQuery||c.name);
   const eSold=`https://www.ebay.com/sch/i.html?_nkw=${ebayQ}&LH_Complete=1&LH_Sold=1&_sop=13`;
-  const eBuy =`https://www.ebay.com/sch/i.html?_nkw=${ebayQ}&LH_BIN=1&_sop=15`;
-  const tcg  =c.tcgplayerUrl||'';
+  const eBuy=`https://www.ebay.com/sch/i.html?_nkw=${ebayQ}&LH_BIN=1&_sop=15`;
+  const tcg=c.tcgplayerUrl||'';
   const prStr=price>0?`$${price.toFixed(2)}`:'—';
   const fvStr=fv?`$${fv}`:'—';
   const upStr=up!=null?(up>=0?`+${up}%`:`${up}%`):'—';
   const upCls=up>0?'up':up<0?'dn':'na';
+  const hasAlert=alertTargets[c.id];
 
   const bars=[
-    ['Supply Scarcity', bd.supplyScore],
-    ['Pokémon Demand',  bd.demandScore],
-    ['Set Lifecycle',   bd.lifecycleScore],
-    ['Price Disloc.',   bd.priceDislocScore==='N/A'?null:bd.priceDislocScore],
-    ['Ceiling',         bd.ceilingScore],
-    ['Momentum',        bd.momentumScore==='N/A'?null:bd.momentumScore],
-  ].filter(([,v])=>v!=null&&v!==undefined);
+    ['Supply Scarcity',bd.supplyScore],
+    ['Pokémon Demand', bd.demandScore],
+    ['Set Lifecycle',  bd.lifecycleScore],
+    ['Price Disloc.',  bd.priceDislocScore==='N/A'?null:bd.priceDislocScore],
+    ['Ceiling',        bd.ceilingScore],
+    ['Momentum',       bd.momentumScore==='N/A'?null:bd.momentumScore],
+  ].filter(([,v])=>v!=null);
 
   const recColor=isGem?'var(--purple)':c.recommendation?.color==='fire'?'var(--fire)':c.recommendation?.color==='green'?'var(--green)':c.recommendation?.color==='amber'?'var(--amber)':'var(--blue)';
 
   return`<div class="pc${isOpen?' open':''}${isGem?' gem':''}" id="pc-${c.id}-${ctx}" onclick="toggleCard('${c.id}','${ctx}')">
-  <div class="pc-top">
-    <div class="pc-head">
-      <div class="pc-left">
-        <div class="pc-name">${c.name}</div>
-        <div class="pc-meta">
+  <div class="pctop">
+    <div class="pchead">
+      <div class="pcleft">
+        <div class="pcname">${c.name}</div>
+        <div class="pcmeta">
           <span>${c.set?.name||''}</span>
-          ${c.cardNo?`<span class="pc-num">#${c.cardNo}</span>`:''}
+          ${c.cardNo?`<span class="pcnum">#${c.cardNo}</span>`:''}
           ${c.artist?`<span>· ${c.artist}</span>`:''}
         </div>
         <div class="tags" style="margin-top:6px">
-          ${rarTag(c.rarity)}
-          ${recTag(c.recommendation,isGem)}
-          ${isOOP?'<span class="tag t-oop">OOP</span>':''}
-          ${isNew&&!isOOP?'<span class="tag t-buy">New</span>':''}
-          ${isTr?'<span class="tag t-tr">Trainer</span>':''}
+          ${rarTag(c.rarity)}${recTag(c.recommendation,isGem)}
+          ${isOOP?'<span class="tag toop">OOP</span>':''}
+          ${isNew&&!isOOP?'<span class="tag tbuy">New</span>':''}
+          ${isTr?'<span class="tag ttr">Trainer</span>':''}
           ${playTag(c.playabilityContext,c.playabilityLabel)}
-          ${bd.trainerBonus?`<span class="tag t-sup">Trainer ${bd.trainerBonus}</span>`:''}
+          ${bd.trainerBonus?`<span class="tag tsup">Trainer ${bd.trainerBonus}</span>`:''}
+          ${hasAlert?`<span class="tag tart">🔔 Alert $${hasAlert.target}</span>`:''}
         </div>
       </div>
       <div class="sring" style="color:${rs.c};background:${rs.bg};border-color:${rs.bd}">${c.score||0}</div>
@@ -534,7 +619,7 @@ function cardHTML(c,ctx){
       ${bars.map(([l,v])=>`<div class="brow"><div class="blbl">${l}</div><div class="btrack"><div class="bfill" style="width:${v}%;background:${bc(v)}"></div></div><div class="bnum">${v}</div></div>`).join('')}
     </div>
   </div>
-  <div class="pc-det${isOpen?' on':''}" id="det-${c.id}-${ctx}">
+  <div class="pcdet${isOpen?' on':''}" id="det-${c.id}-${ctx}">
     ${c.lifecycleLabel?`<div class="dsec"><div class="dlbl">Set Stage</div><div class="dbody" style="color:var(--gold)">${c.lifecycleLabel}</div></div>`:''}
     <div class="dsec">
       <div class="dlbl">Recommendation</div>
@@ -551,15 +636,65 @@ function cardHTML(c,ctx){
       </div>
     </div>
     <div class="dsec">
-      <div class="dlbl">Live eBay Sold Data</div>
-      <div class="ebbox" id="eb-${c.id}-${ctx}">Tap to load real eBay sold prices...</div>
+      <div class="dlbl">🤖 AI Investment Thesis</div>
+      <div class="ai-box loading" id="ai-${c.id}-${ctx}">
+        <div class="ai-text" style="color:var(--mu)">Generating analysis...</div>
+      </div>
+    </div>
+    <div class="dsec">
+      <div class="dlbl">🎨 Art & Artist Score</div>
+      <div class="ai-box" id="art-${c.id}-${ctx}">
+        <div class="ai-text" style="color:var(--mu)">Loading artist data...</div>
+      </div>
+    </div>
+    <div class="dsec">
+      <div class="dlbl">⚠️ Reprint Risk</div>
+      <div class="ai-box" id="rep-${c.id}-${ctx}">
+        <div class="ai-text" style="color:var(--mu)">Assessing risk...</div>
+      </div>
+    </div>
+    <div class="dsec">
+      <div class="dlbl">📊 PSA Population</div>
+      <div class="psabox" id="psa-${c.id}-${ctx}">Loading PSA data...</div>
+    </div>
+    <div class="dsec">
+      <div class="dlbl">💵 Live eBay Sold</div>
+      <div class="ebbox" id="eb-${c.id}-${ctx}">Loading eBay data...</div>
+    </div>
+    <div class="dsec">
+      <div class="dlbl">🎓 Grading ROI Calculator</div>
+      <div class="gcalc" id="gc-${c.id}-${ctx}">
+        <div class="gcalc-row">
+          <div><label>Your Buy Price ($)</label><input type="number" placeholder="${price>0?price.toFixed(2):'0.00'}" id="gbuy-${c.id}-${ctx}" oninput="calcGrading('${c.id}','${ctx}')"></div>
+          <div><label>PSA Sub Cost ($)</label><input type="number" value="25" id="gsub-${c.id}-${ctx}" oninput="calcGrading('${c.id}','${ctx}')"></div>
+        </div>
+        <div class="gcalc-row">
+          <div><label>Target Grade</label><select id="ggrade-${c.id}-${ctx}" onchange="calcGrading('${c.id}','${ctx}')"><option value="10">PSA 10</option><option value="9">PSA 9</option><option value="8">PSA 8</option></select></div>
+          <div><label>Est. Graded Value ($)</label><input type="number" placeholder="${fv?Math.round(fv*3):''}" id="gval-${c.id}-${ctx}" oninput="calcGrading('${c.id}','${ctx}')"></div>
+        </div>
+        <div class="gcalc-result" id="gres-${c.id}-${ctx}" style="display:none"></div>
+      </div>
+    </div>
+    <div class="dsec">
+      <div class="dlbl">🔔 Price Alert</div>
+      <div class="alert-row">
+        <select id="adir-${c.id}-${ctx}" style="width:90px;flex-shrink:0"><option value="below">Below</option><option value="above">Above</option></select>
+        <input type="number" placeholder="Target price $" id="atgt-${c.id}-${ctx}" value="${hasAlert?hasAlert.target:''}">
+        <button class="alert-set${hasAlert?' on':''}" onclick="event.stopPropagation();setAlert('${c.id}','${ctx}')">${hasAlert?'✓ Set':'Set'}</button>
+      </div>
     </div>
     ${tcg?`<a class="xlink" href="${tcg}" target="_blank" onclick="event.stopPropagation()" style="color:var(--gold)">View on TCGPlayer ↗</a>`:''}
     <a class="xlink" href="${eSold}" target="_blank" onclick="event.stopPropagation()" style="color:var(--green);border-color:rgba(51,221,136,.22)">eBay Sold Listings ↗</a>
     <a class="xlink" href="${eBuy}"  target="_blank" onclick="event.stopPropagation()" style="color:var(--blue);border-color:rgba(74,158,255,.22)">eBay Active Listings ↗</a>
-    <button class="wbtn${inW?' on':''}" onclick="event.stopPropagation();toggleWatch('${c.id}')">
-      ${inW?'★ IN WATCHLIST':'☆ ADD TO WATCHLIST'}
-    </button>
+    <div class="cactions">
+      <button class="cabtn cawatch${inW?' on':''}" onclick="event.stopPropagation();toggleWatch('${c.id}')">
+        ${inW?'★ Watching':'☆ Watch'}
+      </button>
+      <button class="cabtn caown${inO?' on':''}" onclick="event.stopPropagation();toggleOwned('${c.id}','${ctx}')">
+        ${inO?'✓ Owned':'＋ Owned'}
+      </button>
+      <button class="cabtn cadismiss" onclick="event.stopPropagation();dismissCard('${c.id}','${ctx}')">✕ Dismiss</button>
+    </div>
   </div>
 </div>`;
 }
@@ -568,11 +703,71 @@ function cardHTML(c,ctx){
 function toggleCard(id,ctx){
   const wasOpen=expandId===id&&expandCtx===ctx;
   expandId=wasOpen?null:id; expandCtx=wasOpen?null:ctx;
-  if(ctx==='screener') renderScreener();
-  else if(ctx==='search')    renderSearch(lastSearch);
-  else if(ctx==='watchlist') renderWatchlist();
-  else if(ctx==='trending')  renderTrending();
-  if(!wasOpen&&expandId) loadEbay(id,ctx);
+  reRender(ctx);
+  if(!wasOpen&&expandId){
+    loadAI(id,ctx);
+    loadEbay(id,ctx);
+    loadPSA(id,ctx);
+  }
+}
+
+// ── AI ANALYSIS ───────────────────────────────────────────────────
+async function loadAI(id,ctx){
+  const card=[...allCards,...lastSearch].find(c=>c.id===id);
+  if(!card)return;
+  try{
+    const params=new URLSearchParams({
+      id,name:card.name,rarity:card.rarity||'',set:card.set?.name||'',
+      artist:card.artist||'',price:card.marketPrice||0,score:card.score||0,
+      lifecycleLabel:card.lifecycleLabel||'',
+      benchmarks:JSON.stringify(card.benchmarks||{}),
+    });
+    const res=await fetch(`${API}/api/ai-analysis?${params}`);
+    const d=await res.json();
+    if(!d.success)throw new Error(d.error);
+
+    // Thesis
+    const aiEl=document.getElementById(`ai-${id}-${ctx}`);
+    if(aiEl){
+      aiEl.classList.remove('loading');
+      aiEl.innerHTML=`<div class="ai-label">🤖 AI Thesis</div><div class="ai-text">${d.thesis||'Analysis unavailable.'}</div>`;
+    }
+
+    // Art score
+    const artEl=document.getElementById(`art-${id}-${ctx}`);
+    if(artEl&&d.artScore){
+      const a=d.artScore;
+      const tierColor=a.artistTier==='S'?'var(--fire)':a.artistTier==='A'?'var(--amber)':a.artistTier==='B'?'var(--green)':'var(--mu)';
+      artEl.innerHTML=`
+        <div class="ai-label">🎨 Art Score: <span style="color:var(--gold);font-size:14px;font-family:'Bebas Neue',sans-serif">${a.score}/100</span></div>
+        <div class="ai-row"><span>Artist Tier</span><span style="color:${tierColor};font-weight:500">Tier ${a.artistTier||'?'} ${d.artistInfo?'· '+d.artistInfo.name:''}</span></div>
+        <div class="ai-row"><span>Style</span><span>${a.style||'—'}</span></div>
+        <div class="ai-row"><span>Uniqueness</span><span>${a.uniqueness||'—'}</span></div>
+        <div class="ai-row"><span>Community</span><span>${a.communityReception||'—'}</span></div>
+        <div class="ai-text" style="margin-top:7px">${a.reasoning||''}</div>
+        ${d.artistInfo?.note?`<div class="ai-text" style="margin-top:5px;color:var(--mu)">${d.artistInfo.note}</div>`:''}`;
+    } else if(artEl){
+      artEl.innerHTML=`<div class="ai-text" style="color:var(--mu)">Art score unavailable.</div>`;
+    }
+
+    // Reprint risk
+    const repEl=document.getElementById(`rep-${id}-${ctx}`);
+    if(repEl&&d.reprintRisk){
+      const r=d.reprintRisk;
+      const rClass=r.level==='Low'?'ai-risk-low':r.level==='Medium'?'ai-risk-med':'ai-risk-high';
+      repEl.innerHTML=`
+        <div class="ai-label">Reprint Risk: <span class="${rClass}">${r.level}</span></div>
+        <div class="ai-text">${r.reasoning||''}</div>
+        ${r.factors?.length?`<div style="margin-top:6px">${r.factors.map(f=>`<div class="ai-row" style="font-size:10px"><span>·</span><span style="color:var(--mu)">${f}</span></div>`).join('')}</div>`:''}`;
+    } else if(repEl){
+      repEl.innerHTML=`<div class="ai-text" style="color:var(--mu)">Risk assessment unavailable.</div>`;
+    }
+  }catch(e){
+    ['ai','art','rep'].forEach(prefix=>{
+      const el=document.getElementById(`${prefix}-${id}-${ctx}`);
+      if(el)el.innerHTML=`<div class="ai-text" style="color:var(--mu)">Analysis unavailable — add ANTHROPIC_API_KEY to Vercel env vars.</div>`;
+    });
+  }
 }
 
 // ── EBAY LIVE ─────────────────────────────────────────────────────
@@ -588,7 +783,7 @@ async function loadEbay(id,ctx){
     el.classList.add('rdy');
     const trend=d.trend==='rising'?`<span class="up">↑ Rising</span>`:d.trend==='falling'?`<span class="dn">↓ Falling</span>`:`<span style="color:var(--mu)">→ Stable</span>`;
     el.innerHTML=`
-      <div class="ebrow"><span>Avg sold</span><span style="color:var(--tx);font-weight:500">$${d.trimmedAvg||d.avg}</span></div>
+      <div class="ebrow"><span>Avg sold (trimmed)</span><span style="color:var(--tx);font-weight:500">$${d.trimmedAvg||d.avg}</span></div>
       <div class="ebrow"><span>7-day avg</span><span class="${d.avg7>d.avg30?'up':'dn'}">${d.avg7?'$'+d.avg7:'—'}</span></div>
       <div class="ebrow"><span>30-day avg</span><span style="color:var(--tx)">$${d.avg30||d.avg}</span></div>
       <div class="ebrow"><span>Range</span><span style="color:var(--tx)">$${d.low} – $${d.high}</span></div>
@@ -597,27 +792,113 @@ async function loadEbay(id,ctx){
   }catch(e){if(el)el.textContent='Could not load eBay data.';}
 }
 
+// ── PSA POP ───────────────────────────────────────────────────────
+async function loadPSA(id,ctx){
+  const card=[...allCards,...lastSearch].find(c=>c.id===id);
+  if(!card)return;
+  const el=document.getElementById(`psa-${id}-${ctx}`);
+  if(!el)return;
+  try{
+    const q=`${card.name} ${card.cardNo||''} ${card.set?.name||''}`.trim();
+    const res=await fetch(`${API}/api/psa-pop?q=${encodeURIComponent(q)}`);
+    const d=await res.json();
+    if(!d.found){el.textContent='No PSA population data found. This card may not be widely graded yet.';return;}
+    el.classList.add('rdy');
+    el.innerHTML=`
+      <div class="ebrow"><span>Total graded</span><span style="color:var(--tx);font-weight:500">${d.total?.toLocaleString()||'—'}</span></div>
+      <div class="ebrow"><span>PSA 10 count</span><span style="color:var(--gold)">${d.psa10?.toLocaleString()||'—'}</span></div>
+      <div class="ebrow"><span>PSA 9 count</span><span style="color:var(--tx)">${d.psa9?.toLocaleString()||'—'}</span></div>
+      <div class="ebrow"><span>PSA 10 rate</span><span style="color:var(--tx)">${d.psa10Rate!=null?d.psa10Rate+'%':'—'}</span></div>
+      <div class="ebrow"><span>Scarcity</span><span style="color:var(--amber)">${d.scarcitySignal||'—'}</span></div>
+      ${d.gradingAdvice?`<div style="margin-top:7px;font-size:10px;color:var(--mu);line-height:1.6">${d.gradingAdvice}</div>`:''}`;
+  }catch(e){if(el)el.textContent='Could not load PSA data.';}
+}
+
+// ── GRADING CALCULATOR ────────────────────────────────────────────
+function calcGrading(id,ctx){
+  const buy=parseFloat(document.getElementById(`gbuy-${id}-${ctx}`)?.value)||0;
+  const sub=parseFloat(document.getElementById(`gsub-${id}-${ctx}`)?.value)||25;
+  const val=parseFloat(document.getElementById(`gval-${id}-${ctx}`)?.value)||0;
+  const res=document.getElementById(`gres-${id}-${ctx}`);
+  if(!res)return;
+  if(!buy||!val){res.style.display='none';return;}
+  const totalCost=buy+sub;
+  const profit=val-totalCost;
+  const roi=Math.round((profit/totalCost)*100);
+  const breakeven=totalCost;
+  res.style.display='block';
+  res.innerHTML=`
+    Total cost basis: <strong>$${totalCost.toFixed(2)}</strong> (buy + grading)<br>
+    If graded value = $${val}: <strong style="color:${profit>0?'var(--green)':'var(--fire)'}">${profit>0?'+':''}$${profit.toFixed(2)} (${roi>0?'+':''}${roi}% ROI)</strong><br>
+    Break-even graded value: <strong>$${breakeven.toFixed(2)}</strong>`;
+}
+
+// ── ALERTS ────────────────────────────────────────────────────────
+function setAlert(id,ctx){
+  const tgt=parseFloat(document.getElementById(`atgt-${id}-${ctx}`)?.value);
+  const dir=document.getElementById(`adir-${id}-${ctx}`)?.value||'below';
+  if(!tgt){showToast('Enter a target price');return;}
+  if(alertTargets[id]?.target===tgt){
+    delete alertTargets[id];localStorage.setItem('pi_alerts',JSON.stringify(alertTargets));
+    showToast('Alert removed');
+  } else {
+    alertTargets[id]={target:tgt,direction:dir};
+    localStorage.setItem('pi_alerts',JSON.stringify(alertTargets));
+    showToast(`Alert set: ${dir} $${tgt}`);
+  }
+  reRender(ctx);
+}
+
+function checkAlerts(){
+  const triggered=[];
+  allCards.forEach(c=>{
+    const a=alertTargets[c.id];
+    if(!a||!c.marketPrice)return;
+    const hit=a.direction==='below'?c.marketPrice<=a.target:c.marketPrice>=a.target;
+    if(hit)triggered.push({name:c.name,price:c.marketPrice,target:a.target,direction:a.direction});
+  });
+  const banner=document.getElementById('alertBanner');
+  if(triggered.length&&banner){
+    banner.style.display='block';
+    banner.innerHTML=`🔔 ${triggered.length} alert${triggered.length>1?'s':''} triggered: ${triggered.map(t=>`${t.name} ($${t.price} ${t.direction} $${t.target})`).join(', ')}`;
+  }
+}
+
 // ── LOAD CARDS ────────────────────────────────────────────────────
 async function loadCards(force=false){
-  if(!force&&allCards.length&&Date.now()-lastFetch<CACHE){renderScreener();return;}
+  if(!force&&allCards.length&&Date.now()-lastFetch<CACHE){renderDiscover();return;}
+  await fetchBatch(1,false);
+}
+async function shuffleCards(){
+  const page=Math.floor(Math.random()*4)+1;
+  const sort=SORT_OPTIONS[Math.floor(Math.random()*SORT_OPTIONS.length)];
+  const btn=document.getElementById('ri');if(btn)btn.classList.add('spn');
+  await fetchBatch(page,true,sort);
+  if(btn)btn.classList.remove('spn');
+  showToast('Fresh batch loaded 🔀');
+}
+async function fetchBatch(page=1,anim=false,sortBy='-set.releaseDate'){
   setSt('Fetching...',true);
-  document.getElementById('scrGrid').innerHTML=`<div class="loader"><div class="lring"></div><div class="ltitle">Scanning the Market</div><div class="lsub">Pulling live secret rares and scoring every card.<br>First load takes a few seconds.</div></div>`;
+  if(!anim)document.getElementById('discoverGrid').innerHTML=`<div class="loader"><div class="lring"></div><div class="ltitle">Scanning the Market</div><div class="lsub">Loading secret rares from the backend.<br>First load takes a few seconds.</div></div>`;
+  else{document.getElementById('discoverGrid').style.opacity='0.3';document.getElementById('discoverGrid').style.transition='opacity .2s';}
   try{
-    const res=await fetch(`${API}/api/cards`);
+    const res=await fetch(`${API}/api/cards?page=${page}`);
     if(!res.ok)throw new Error(`Backend ${res.status}`);
     const d=await res.json();
-    allCards=d.cards||[];
-    lastFetch=Date.now();
+    allCards=d.cards||[];lastFetch=Date.now();
     const gems=allCards.filter(c=>c.isHiddenGem).length;
     setSt(`${new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})} · ${allCards.length} cards`,false);
-    // Show hero strip if gems found
+    const bi=document.getElementById('batchInfo');
+    if(bi&&page>1){bi.style.display='block';bi.textContent=`Batch ${page} · ${allCards.length} cards · Shuffle for different results`;}
+    else if(bi){bi.style.display='none';}
     const hs=document.getElementById('heroStrip');
-    if(gems>0){hs.style.display='flex';document.getElementById('heroCount').textContent=gems;}
-    else{hs.style.display='none';}
-    renderScreener();
-    renderInsights();
+    if(gems>0){hs.style.display='flex';document.getElementById('heroCount').textContent=gems;}else hs.style.display='none';
+    document.getElementById('discoverGrid').style.opacity='1';
+    renderDiscover();renderInsights();renderWatchlist();renderOwned();
+    checkAlerts();
   }catch(e){
-    document.getElementById('scrGrid').innerHTML=`<div class="ebox"><div style="font-size:30px;margin-bottom:12px">⚠️</div><div style="font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:1px;color:var(--tx);margin-bottom:5px">Connection Error</div><div style="font-size:11px;color:var(--mu)">${e.message}</div><button class="retry-btn" onclick="loadCards(true)">RETRY</button></div>`;
+    document.getElementById('discoverGrid').style.opacity='1';
+    document.getElementById('discoverGrid').innerHTML=`<div class="ebox"><div style="font-size:28px;margin-bottom:12px">⚠️</div><div style="font-family:'Bebas Neue',sans-serif;font-size:17px;color:var(--tx);margin-bottom:5px">Connection Error</div><div style="font-size:11px;color:var(--mu)">${e.message}</div><button class="rbtn2" onclick="loadCards(true)">RETRY</button></div>`;
     setSt('Error',false);
   }
 }
@@ -627,27 +908,26 @@ function setSt(txt,loading){
   loading?ri.classList.add('spn'):ri.classList.remove('spn');
 }
 
-// ── SCREENER ──────────────────────────────────────────────────────
+// ── DISCOVER ──────────────────────────────────────────────────────
 function setSort(s,btn){
   sortKey=s;
-  document.querySelectorAll('.tool-row .pill:not(.gem-pill)').forEach(b=>b.classList.remove('on'));
-  btn.classList.add('on');
-  renderScreener();
+  document.querySelectorAll('.trow .pill:not(.gem)').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');renderDiscover();
 }
 function toggleGems(){
   gemsOnly=!gemsOnly;
   document.getElementById('gemBtn').classList.toggle('on',gemsOnly);
-  renderScreener();
+  renderDiscover();
 }
-
-function renderScreener(){
+function renderDiscover(){
   if(!allCards.length)return;
   const rar=document.getElementById('rarF').value;
-  const lc =document.getElementById('lcF').value;
+  const lc=document.getElementById('lcF').value;
   const msc=+document.getElementById('scF').value;
   const mpr=+document.getElementById('prF').value;
-
   let cards=allCards.filter(c=>{
+    if(dismissed.includes(c.id))return false;
+    if(owned.includes(c.id))return false;
     if(rar!=='all'&&c.rarity!==rar)return false;
     if(c.marketPrice>0&&c.marketPrice>mpr)return false;
     if(c.score<msc)return false;
@@ -657,23 +937,21 @@ function renderScreener(){
     if(lc==='new'&&(Date.now()-new Date(c.set?.releaseDate||0))>90*86400000)return false;
     return true;
   });
-
   cards.sort((a,b)=>{
-    // Hidden gems always bubble to top when sorting by score
-    if(sortKey==='score'){
-      if(a.isHiddenGem&&!b.isHiddenGem)return-1;
-      if(!a.isHiddenGem&&b.isHiddenGem)return 1;
-      return b.score-a.score;
-    }
     if(sortKey==='price') return(a.marketPrice||999)-(b.marketPrice||999);
     if(sortKey==='upside')return(b.upside||0)-(a.upside||0);
     if(sortKey==='new')   return new Date(b.set?.releaseDate||0)-new Date(a.set?.releaseDate||0);
+    if(a.isHiddenGem&&!b.isHiddenGem)return-1;
+    if(!a.isHiddenGem&&b.isHiddenGem)return 1;
     return b.score-a.score;
   });
-
-  document.getElementById('scrInfo').innerHTML=`<strong>${cards.length}</strong> cards${gemsOnly?' (Hidden Gems only)':''}`;
-  document.getElementById('scrGrid').innerHTML=cards.length
-    ?cards.map(c=>cardHTML(c,'screener')).join('')
+  const dCount=dismissed.length,oCount=owned.length;
+  let bars='';
+  if(oCount>0)bars+=`<div class="obar"><span>✓ ${oCount} card${oCount>1?'s':''} owned — view in Portfolio</span></div>`;
+  if(dCount>0)bars+=`<div class="dbar"><span>${dCount} dismissed</span><button onclick="clearDismissed()">Undo all</button></div>`;
+  document.getElementById('discoverInfo').innerHTML=bars+`<strong>${cards.length}</strong> cards${gemsOnly?' (Gems only)':''}`;
+  document.getElementById('discoverGrid').innerHTML=cards.length
+    ?cards.map(c=>cardHTML(c,'discover')).join('')
     :'<div style="text-align:center;padding:36px;color:var(--mu);font-size:11px">No cards match — try loosening filters.</div>';
 }
 
@@ -684,7 +962,7 @@ function handleSearch(val){
   clearTimeout(sTimer);
   if(!val.trim()){
     lastSearch=[];
-    document.getElementById('sRes').innerHTML=`<div class="empty"><div class="eico">🔍</div><div class="etitle">Search Any Card</div><div class="esub">Every version scored and ranked.<br>Hidden gems float to the top.</div></div>`;
+    document.getElementById('sRes').innerHTML=`<div class="empty"><div class="eico">🔍</div><div class="etitle">Search Any Card</div><div class="esub">Every version scored and ranked.</div></div>`;
     return;
   }
   document.getElementById('sRes').innerHTML=`<div class="loader"><div class="lring"></div><div class="ltitle">Searching</div></div>`;
@@ -697,181 +975,335 @@ async function doSearch(q){
     lastSearch=d.cards||[];
     renderSearch(lastSearch,q);
   }catch(e){
-    document.getElementById('sRes').innerHTML=`<div class="ebox"><div style="font-size:11px;color:var(--mu)">Search failed — check connection.</div></div>`;
+    document.getElementById('sRes').innerHTML=`<div class="ebox"><div style="font-size:11px;color:var(--mu)">Search failed.</div></div>`;
   }
 }
 function renderSearch(cards,q=''){
   lastSearch=cards;
-  if(!cards.length){
-    document.getElementById('sRes').innerHTML=`<div class="empty"><div class="eico">😶</div><div class="etitle">No Results</div><div class="esub">Try a different name.</div></div>`;
-    return;
-  }
+  if(!cards.length){document.getElementById('sRes').innerHTML=`<div class="empty"><div class="eico">😶</div><div class="etitle">No Results</div></div>`;return;}
   const gems=cards.filter(c=>c.isHiddenGem);
   const rest=cards.filter(c=>!c.isHiddenGem);
-  const sorted=[...gems,...rest];
-  let html=`<div class="rlbl"><strong>${sorted.length}</strong> results for "${q}"${gems.length?` · <span style="color:var(--purple)">${gems.length} hidden gem${gems.length>1?'s':''}</span>`:''}`;
-  html+=sorted.map(c=>cardHTML(c,'search')).join('');
-  document.getElementById('sRes').innerHTML=html;
+  const gemNote=gems.length?` · <span style="color:var(--purple)">${gems.length} hidden gem${gems.length>1?'s':''}</span>`:'';
+  document.getElementById('sRes').innerHTML=
+    `<div class="ilbl"><strong>${cards.length}</strong> results for "${q}"${gemNote}</div>`+
+    [...gems,...rest].map(c=>cardHTML(c,'search')).join('');
 }
-function clearSearch(){
-  document.getElementById('sIn').value='';
-  handleSearch('');
-  document.getElementById('sIn').focus();
+function clearSearch(){document.getElementById('sIn').value='';handleSearch('');document.getElementById('sIn').focus();}
+
+// ── CARD STATE ────────────────────────────────────────────────────
+function toggleWatch(id){
+  if(watchlist.includes(id)){watchlist=watchlist.filter(w=>w!==id);showToast('Removed from watchlist');}
+  else{watchlist.push(id);owned=owned.filter(o=>o!==id);localStorage.setItem('pi_owned',JSON.stringify(owned));showToast('Added to watchlist ★');}
+  localStorage.setItem('pi_watch',JSON.stringify(watchlist));
+  reRenderAll();
+}
+function toggleOwned(id,ctx){
+  if(owned.includes(id)){owned=owned.filter(o=>o!==id);showToast('Removed from portfolio');}
+  else{
+    owned.push(id);watchlist=watchlist.filter(w=>w!==id);
+    localStorage.setItem('pi_watch',JSON.stringify(watchlist));
+    showToast('Marked as owned ✓');
+    const el=document.getElementById(`pc-${id}-${ctx}`);
+    if(el&&ctx==='discover'){el.style.transition='opacity .25s,transform .25s';el.style.opacity='0';el.style.transform='translateX(30px)';setTimeout(()=>reRenderAll(),260);return;}
+  }
+  localStorage.setItem('pi_owned',JSON.stringify(owned));
+  reRenderAll();
+}
+function dismissCard(id,ctx){
+  if(dismissed.includes(id))return;
+  dismissed.push(id);
+  watchlist=watchlist.filter(w=>w!==id);owned=owned.filter(o=>o!==id);
+  localStorage.setItem('pi_dismissed',JSON.stringify(dismissed));
+  localStorage.setItem('pi_watch',JSON.stringify(watchlist));
+  localStorage.setItem('pi_owned',JSON.stringify(owned));
+  const el=document.getElementById(`pc-${id}-${ctx}`);
+  if(el){el.style.transition='opacity .2s,transform .2s';el.style.opacity='0';el.style.transform='translateX(50px)';setTimeout(()=>reRenderAll(),230);}
+  else reRenderAll();
+  showToast('Dismissed');
+}
+function clearDismissed(){dismissed=[];localStorage.setItem('pi_dismissed','[]');renderDiscover();showToast('Dismissals cleared');}
+function reRenderAll(){renderDiscover();renderSearch(lastSearch);renderWatchlist();renderOwned();}
+function reRender(ctx){
+  if(ctx==='discover')renderDiscover();
+  else if(ctx==='search')renderSearch(lastSearch);
+  else if(ctx==='watchlist')renderWatchlist();
+  else if(ctx==='owned')renderOwned();
+}
+
+// ── PORTFOLIO — WATCHLIST ─────────────────────────────────────────
+function renderWatchlist(){
+  const metrics=document.getElementById('wMetrics'),grid=document.getElementById('wGrid');
+  if(!metrics||!grid)return;
+  const cards=allCards.filter(c=>watchlist.includes(c.id));
+  if(!watchlist.length||!cards.length){
+    metrics.innerHTML='';
+    grid.innerHTML=`<div class="empty"><div class="eico">★</div><div class="etitle">Watchlist Empty</div><div class="esub">Mark cards as Watch in Discover or Search.</div></div>`;
+    return;
+  }
+  const avgSc=Math.round(cards.reduce((a,c)=>a+c.score,0)/cards.length);
+  const gems=cards.filter(c=>c.isHiddenGem).length;
+  const rs=rStyle(avgSc);
+  metrics.innerHTML=`
+    <div class="mbox"><div class="mboxl">Watching</div><div class="mboxv" style="color:var(--gold)">${cards.length}</div><div class="mboxs">${gems>0?gems+' hidden gems':''}</div></div>
+    <div class="mbox"><div class="mboxl">Avg Score</div><div class="mboxv" style="color:${rs.c}">${avgSc}</div></div>
+    <div class="mbox"><div class="mboxl">Total Value</div><div class="mboxv">$${cards.reduce((a,c)=>a+(c.marketPrice||0),0).toFixed(0)}</div><div class="mboxs">at market</div></div>
+    <div class="mbox"><div class="mboxl">Avg Upside</div><div class="mboxv" style="color:var(--green)">+${Math.round(cards.reduce((a,c)=>a+(c.upside||0),0)/cards.length)}%</div></div>`;
+  grid.innerHTML=[...cards].sort((a,b)=>{if(a.isHiddenGem&&!b.isHiddenGem)return-1;if(!a.isHiddenGem&&b.isHiddenGem)return 1;return b.score-a.score;}).map(c=>cardHTML(c,'watchlist')).join('');
+}
+
+// ── PORTFOLIO — OWNED ─────────────────────────────────────────────
+function renderOwned(){
+  const metrics=document.getElementById('oMetrics'),grid=document.getElementById('oGrid');
+  if(!metrics||!grid)return;
+  const cards=allCards.filter(c=>owned.includes(c.id));
+  if(!owned.length||!cards.length){
+    metrics.innerHTML='';
+    grid.innerHTML=`<div class="empty"><div class="eico">✓</div><div class="etitle">No Owned Cards</div><div class="esub">Mark cards as Owned to track your collection.</div></div>`;
+    return;
+  }
+  let totalCost=0,totalMarket=0,totalFV=0,totalPeak=0;
+  cards.forEach(c=>{
+    const d=ownedData[c.id]||{};
+    const bp=parseFloat(d.buyPrice)||c.marketPrice||0;
+    const qty=parseInt(d.qty)||1;
+    totalCost+=bp*qty;
+    totalMarket+=(c.marketPrice||0)*qty;
+    totalFV+=(c.benchmarks?.fair||0)*qty;
+    totalPeak+=(c.benchmarks?.peak||0)*qty;
+  });
+  const pnl=totalMarket-totalCost;
+  const pnlPct=totalCost>0?Math.round((pnl/totalCost)*100):0;
+  const toFV=totalCost>0?Math.round(((totalFV-totalCost)/totalCost)*100):0;
+  metrics.innerHTML=`
+    <div class="mbox"><div class="mboxl">Cards Owned</div><div class="mboxv" style="color:var(--green)">${cards.length}</div></div>
+    <div class="mbox"><div class="mboxl">Cost Basis</div><div class="mboxv">$${totalCost.toFixed(0)}</div></div>
+    <div class="mbox"><div class="mboxl">Market Value</div><div class="mboxv" style="color:${pnl>=0?'var(--green)':'var(--fire)'}">${pnl>=0?'+':''}$${pnl.toFixed(0)}</div><div class="mboxs">${pnlPct>0?'+':''}${pnlPct}% unrealized</div></div>
+    <div class="mbox"><div class="mboxl">To Fair Value</div><div class="mboxv" style="color:var(--green)">+${toFV}%</div><div class="mboxs">Peak comp: +${totalCost>0?Math.round(((totalPeak-totalCost)/totalCost)*100):0}%</div></div>`;
+
+  grid.innerHTML=cards.map(c=>{
+    const od=ownedData[c.id]||{buyPrice:'',qty:1,buyDate:'',grade:''};
+    const bp=parseFloat(od.buyPrice)||0;
+    const qty=parseInt(od.qty)||1;
+    const mkt=c.marketPrice||0;
+    const pnl=bp>0?(mkt-bp)*qty:null;
+    const pnlPct=bp>0?Math.round(((mkt-bp)/bp)*100):null;
+    return`<div class="ocard">
+      <div class="ocard-head">
+        <div>
+          <div class="ocard-name">${c.name}</div>
+          <div class="ocard-meta">${c.set?.name||''} · #${c.cardNo||'?'} · Score ${c.score}</div>
+          <div class="tags" style="margin-top:5px">${rarTag(c.rarity)}${c.isHiddenGem?'<span class="tag tgem">💎</span>':''}</div>
+        </div>
+        <div class="ocard-pnl">
+          <div class="ocard-pnl-val" style="color:${pnl===null?'var(--mu)':pnl>=0?'var(--green)':'var(--fire)'}">
+            ${pnl===null?`$${mkt.toFixed(2)}`:`${pnl>=0?'+':''}$${pnl.toFixed(0)}`}
+          </div>
+          <div class="ocard-pnl-sub">${pnlPct===null?'Set buy price':`${pnlPct>0?'+':''}${pnlPct}% vs buy`}</div>
+        </div>
+      </div>
+      <div class="ocard-inputs">
+        <div><label>Buy Price ($)</label><input type="number" value="${od.buyPrice}" placeholder="0.00" onchange="updateOwnedData('${c.id}','buyPrice',this.value)"></div>
+        <div><label>Quantity</label><input type="number" value="${od.qty||1}" min="1" onchange="updateOwnedData('${c.id}','qty',this.value)"></div>
+        <div><label>Grade (PSA)</label><input type="text" value="${od.grade||''}" placeholder="Raw / 9 / 10" onchange="updateOwnedData('${c.id}','grade',this.value)"></div>
+      </div>
+      <div class="ocard-footer">
+        <span>Fair value: <strong style="color:var(--gold)">$${c.benchmarks?.fair||'—'}</strong> · Upside: <strong style="color:var(--green)">${c.upside!=null?'+'+c.upside+'%':'—'}</strong></span>
+        <button class="rm-btn" onclick="toggleOwned('${c.id}','owned')">Remove</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function updateOwnedData(id,field,val){
+  if(!ownedData[id])ownedData[id]={};
+  ownedData[id][field]=val;
+  localStorage.setItem('pi_owned_data',JSON.stringify(ownedData));
+  renderOwned();
+}
+
+// ── PORTFOLIO — ANALYTICS ─────────────────────────────────────────
+function renderAnalytics(){
+  const el=document.getElementById('analyticsContent');
+  if(!el)return;
+  const wCards=allCards.filter(c=>watchlist.includes(c.id));
+  const oCards=allCards.filter(c=>owned.includes(c.id));
+  if(!wCards.length&&!oCards.length){
+    el.innerHTML=`<div class="empty"><div class="eico">📊</div><div class="etitle">No Data Yet</div><div class="esub">Add cards to Watchlist or Owned to see analytics.</div></div>`;
+    return;
+  }
+  // Concentration by rarity
+  const bySIR=oCards.filter(c=>c.rarity==='Special Illustration Rare').length;
+  const byIR =oCards.filter(c=>c.rarity==='Illustration Rare').length;
+  const byHR =oCards.filter(c=>c.rarity==='Hyper Rare').length;
+  // Best/worst owned
+  const withBuy=oCards.filter(c=>ownedData[c.id]?.buyPrice);
+  const byPnlPct=withBuy.map(c=>{const b=parseFloat(ownedData[c.id].buyPrice);return{...c,pnlPct:Math.round(((c.marketPrice-b)/b)*100)};}).sort((a,b)=>b.pnlPct-a.pnlPct);
+  el.innerHTML=`
+    <div class="icard">
+      <div class="ititle">📦 Collection Breakdown</div>
+      <div class="irow"><span class="irn">Total cards owned</span><span class="irv" style="color:var(--green)">${oCards.length}</span></div>
+      <div class="irow"><span class="irn">Currently watching</span><span class="irv" style="color:var(--gold)">${wCards.length}</span></div>
+      <div class="irow"><span class="irn">SIR owned</span><span class="irv">${bySIR}</span></div>
+      <div class="irow"><span class="irn">IR owned</span><span class="irv">${byIR}</span></div>
+      <div class="irow"><span class="irn">Hyper Rare owned</span><span class="irv">${byHR}</span></div>
+      <div class="irow"><span class="irn">Hidden Gems owned</span><span class="irv" style="color:var(--purple)">${oCards.filter(c=>c.isHiddenGem).length}</span></div>
+    </div>
+    ${byPnlPct.length?`
+    <div class="icard">
+      <div class="ititle">🏆 Best Performers</div>
+      ${byPnlPct.slice(0,3).map((c,i)=>`<div class="irow"><span class="irn">${i+1}. ${c.name}</span><span class="irv up">+${c.pnlPct}%</span></div>`).join('')}
+    </div>
+    ${byPnlPct.length>1?`<div class="icard">
+      <div class="ititle">⚠️ Underperforming</div>
+      ${[...byPnlPct].reverse().slice(0,3).map((c,i)=>`<div class="irow"><span class="irn">${i+1}. ${c.name}</span><span class="irv dn">${c.pnlPct}%</span></div>`).join('')}
+    </div>`:''}`:'' }
+    <div class="icard">
+      <div class="ititle">⭐ Watchlist Top Picks</div>
+      ${[...wCards].sort((a,b)=>b.score-a.score).slice(0,5).map((c,i)=>`<div class="irow"><span class="irn">${i+1}. ${c.name}${c.isHiddenGem?' 💎':''}</span><span class="irv" style="color:${rStyle(c.score).c}">${c.score}</span></div>`).join('')}
+    </div>`;
 }
 
 // ── TRENDING ──────────────────────────────────────────────────────
 async function loadTrending(){
   if(tLoaded){renderTrending();return;}
-  document.getElementById('tGrid').innerHTML=`<div class="loader"><div class="lring"></div><div class="ltitle">Finding Movers</div><div class="lsub">Scraping eBay for 7-day vs 30-day price shifts.<br>Takes 15–25 seconds.</div></div>`;
+  document.getElementById('tGrid').innerHTML=`<div class="loader"><div class="lring"></div><div class="ltitle">Finding Movers</div><div class="lsub">Scraping eBay for 7-day vs 30-day shifts.<br>Takes 15–25 seconds.</div></div>`;
   try{
     const res=await fetch(`${API}/api/trending`);
     const d=await res.json();
-    tCards=d.trending||[];
-    tLoaded=true;
-    renderTrending();
+    tCards=d.trending||[];tLoaded=true;renderTrending();
   }catch(e){
-    document.getElementById('tGrid').innerHTML=`<div class="ebox"><div style="font-size:11px;color:var(--mu)">Could not load trending data.</div><button class="retry-btn" onclick="tLoaded=false;loadTrending()">RETRY</button></div>`;
+    document.getElementById('tGrid').innerHTML=`<div class="ebox"><div style="font-size:11px;color:var(--mu)">Could not load.</div><button class="rbtn2" onclick="tLoaded=false;loadTrending()">RETRY</button></div>`;
   }
 }
 function renderTrending(){
-  if(!tCards.length){
-    document.getElementById('tGrid').innerHTML=`<div class="empty"><div class="eico">📊</div><div class="etitle">No Movers</div><div class="esub">No significant price movement in current top cards.</div></div>`;
-    return;
-  }
-  const rising =tCards.filter(c=>c.trend==='rising');
+  if(!tCards.length){document.getElementById('tGrid').innerHTML=`<div class="empty"><div class="eico">📊</div><div class="etitle">No Movers</div><div class="esub">No significant price movement in top cards right now.</div></div>`;return;}
+  const rising=tCards.filter(c=>c.trend==='rising');
   const falling=tCards.filter(c=>c.trend==='falling');
   let html='';
-  if(rising.length) html+=`<div class="sh">↑ Rising — Momentum Building</div>`+rising.map(tCardHTML).join('');
-  if(falling.length)html+=`<div class="sh" style="margin-top:14px">↓ Falling — Potential Entry Points</div>`+falling.map(tCardHTML).join('');
+  if(rising.length)html+=`<div class="sh">↑ Rising — Momentum Building</div>`+rising.map(t=>`<div class="icard"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px"><div><div style="font-family:'Bebas Neue',sans-serif;font-size:15px;color:var(--tx)">${t.name}</div><div style="font-size:9px;color:var(--mu)">${t.set} · #${t.cardNo||'?'} · Score ${t.score}</div></div><div class="up" style="font-family:'Bebas Neue',sans-serif;font-size:22px">↑${Math.abs(t.trendPct)}%</div></div><div class="prow" style="margin-bottom:0"><div class="pcell"><div class="pclbl">TCG</div><div class="pcval">$${t.tcgPrice||'—'}</div></div><div class="pcell"><div class="pclbl">7-Day eBay</div><div class="pcval up">$${t.ebayAvg7||'—'}</div></div><div class="pcell"><div class="pclbl">30-Day eBay</div><div class="pcval">$${t.ebayAvg30||'—'}</div></div></div></div>`).join('');
+  if(falling.length)html+=`<div class="sh" style="margin-top:14px">↓ Falling — Potential Entry</div>`+falling.map(t=>`<div class="icard"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px"><div><div style="font-family:'Bebas Neue',sans-serif;font-size:15px;color:var(--tx)">${t.name}</div><div style="font-size:9px;color:var(--mu)">${t.set} · #${t.cardNo||'?'} · Score ${t.score}</div></div><div class="dn" style="font-family:'Bebas Neue',sans-serif;font-size:22px">↓${Math.abs(t.trendPct)}%</div></div><div class="prow" style="margin-bottom:0"><div class="pcell"><div class="pclbl">TCG</div><div class="pcval">$${t.tcgPrice||'—'}</div></div><div class="pcell"><div class="pclbl">7-Day eBay</div><div class="pcval dn">$${t.ebayAvg7||'—'}</div></div><div class="pcell"><div class="pclbl">30-Day eBay</div><div class="pcval">$${t.ebayAvg30||'—'}</div></div></div></div>`).join('');
   document.getElementById('tGrid').innerHTML=html;
 }
-function tCardHTML(c){
-  const pct=c.trendPct||0,dir=pct>0?'up':'dn',arrow=pct>0?'↑':'↓';
-  return`<div class="tcard">
-    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
-      <div>
-        <div style="font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:.8px;color:var(--tx)">${c.name}</div>
-        <div style="font-size:10px;color:var(--mu)">${c.set} · #${c.cardNo||'?'} · Score ${c.score}</div>
-      </div>
-      <div class="${dir}" style="font-family:'Bebas Neue',sans-serif;font-size:22px">${arrow}${Math.abs(pct)}%</div>
-    </div>
-    <div class="prow" style="margin-bottom:0">
-      <div class="pcell"><div class="pclbl">TCG Price</div><div class="pcval">$${c.tcgPrice||'—'}</div></div>
-      <div class="pcell"><div class="pclbl">7-Day eBay</div><div class="pcval ${dir}">$${c.ebayAvg7||'—'}</div></div>
-      <div class="pcell"><div class="pclbl">30-Day eBay</div><div class="pcval">$${c.ebayAvg30||'—'}</div></div>
-    </div>
-  </div>`;
-}
 
-// ── WATCHLIST ─────────────────────────────────────────────────────
-function toggleWatch(id){
-  watchlist.includes(id)?(watchlist=watchlist.filter(w=>w!==id),showToast('Removed')):(watchlist.push(id),showToast('Added to watchlist ★'));
-  localStorage.setItem('pi_watch',JSON.stringify(watchlist));
-  renderScreener();renderSearch(lastSearch);renderWatchlist();
-}
-function renderWatchlist(){
-  const metrics=document.getElementById('wMetrics'),grid=document.getElementById('wGrid');
-  const cards=allCards.filter(c=>watchlist.includes(c.id));
-  if(!watchlist.length||!cards.length){
-    metrics.innerHTML='';
-    grid.innerHTML=`<div class="empty"><div class="eico">★</div><div class="etitle">Watchlist Empty</div><div class="esub">Expand any card and tap Add to Watchlist.</div></div>`;
-    return;
+// ── INTEL — CALENDAR ──────────────────────────────────────────────
+async function loadIntel(){
+  if(intelLoaded)return;
+  try{
+    const res=await fetch(`${API}/api/intel`);
+    const d=await res.json();
+    renderCalendar(d);
+    intelLoaded=true;
+  }catch(e){
+    document.getElementById('calendarContent').innerHTML=`<div class="ebox"><div style="font-size:11px;color:var(--mu)">Could not load intel.</div></div>`;
   }
-  const avgSc =Math.round(cards.reduce((a,c)=>a+c.score,0)/cards.length);
-  const totC  =cards.reduce((a,c)=>a+(c.marketPrice||0),0).toFixed(0);
-  const totFV =cards.reduce((a,c)=>a+(c.benchmarks?.fair||0),0);
-  const roi   =totC>0?Math.round((totFV/totC-1)*100):0;
-  const gems  =cards.filter(c=>c.isHiddenGem).length;
-  const rs    =rStyle(avgSc);
-  metrics.innerHTML=`
-    <div class="mbox"><div class="mbox-l">Cards Tracked</div><div class="mbox-v" style="color:var(--gold)">${cards.length}</div></div>
-    <div class="mbox"><div class="mbox-l">Avg Score</div><div class="mbox-v" style="color:${rs.c}">${avgSc}</div></div>
-    <div class="mbox"><div class="mbox-l">Total Cost</div><div class="mbox-v">$${totC}</div><div class="mbox-s">at market price</div></div>
-    <div class="mbox"><div class="mbox-l">Portfolio Upside</div><div class="mbox-v" style="color:var(--green)">+${roi}%</div><div class="mbox-s">${gems>0?`${gems} hidden gem${gems>1?'s':''}`:'to fair value'}</div></div>`;
-  grid.innerHTML=[...cards].sort((a,b)=>{
-    if(a.isHiddenGem&&!b.isHiddenGem)return-1;
-    if(!a.isHiddenGem&&b.isHiddenGem)return 1;
-    return b.score-a.score;
-  }).map(c=>cardHTML(c,'watchlist')).join('');
+}
+function renderCalendar(d){
+  const el=document.getElementById('calendarContent');
+  if(!el)return;
+  const now=Date.now();
+  let html='<div class="sh">Upcoming Releases</div>';
+  (d.upcomingSets||[]).forEach(s=>{
+    const isPast=new Date(s.releaseDate)<new Date();
+    html+=`<div class="setcard">
+      <div class="setcard-head">
+        <div>
+          <div class="setcard-name">${s.name}</div>
+          <div class="setcard-date">${isPast?'Released':'Releases'} ${s.releaseDate}</div>
+        </div>
+        <span class="setcard-region ${s.region.toLowerCase()}">${s.region}</span>
+      </div>
+      <div style="font-size:10px;color:var(--mu);margin-bottom:7px;line-height:1.6">${s.note}</div>
+      ${s.keyCards?.length?`<div style="font-size:9px;color:var(--mu)">Key cards: ${s.keyCards.map(k=>`<span style="color:var(--tx)">${k}</span>`).join(', ')}</div>`:''}
+    </div>`;
+  });
+  if(d.setImpact){
+    html+='<div class="sh" style="margin-top:14px">🤖 AI Impact Analysis</div>';
+    if(d.setImpact.topOpportunity)html+=`<div class="icard"><div class="ititle">Top Opportunity</div><div style="font-size:11px;color:#a0a0c0;line-height:1.7">${d.setImpact.topOpportunity}</div></div>`;
+    (d.setImpact.impacts||[]).forEach(imp=>{
+      html+=`<div class="impact-card ${imp.direction==='positive'?'impact-pos':'impact-neg'}">
+        <div style="font-size:10px;color:var(--tx);margin-bottom:3px"><strong>${imp.affectedCard}</strong> — ${imp.upcomingSet}</div>
+        <div style="font-size:10px;color:var(--mu);margin-bottom:4px">${imp.reason}</div>
+        <div style="font-size:9px;color:${imp.direction==='positive'?'var(--green)':'var(--amber)'}">Action: ${imp.action}</div>
+      </div>`;
+    });
+  }
+  el.innerHTML=html;
 }
 
-// ── INSIGHTS ──────────────────────────────────────────────────────
-function renderInsights(){
-  if(!allCards.length)return;
-  const el=document.getElementById('iGrid');
-  const byScore =[...allCards].sort((a,b)=>b.score-a.score);
-  const byUpside=[...allCards].filter(c=>c.upside>0).sort((a,b)=>b.upside-a.upside);
-  const gems    =allCards.filter(c=>c.isHiddenGem).sort((a,b)=>b.score-a.score);
-  const rotated =allCards.filter(c=>c.playabilityContext==='ROTATED'&&c.score>=55).sort((a,b)=>b.score-a.score);
-  const mustBuy =allCards.filter(c=>c.score>=85).length;
-  const inBuy   =allCards.filter(c=>(c.lifecycleLabel||'').includes('BUY')).length;
-  const avgUp   =Math.round(allCards.reduce((a,c)=>a+(c.upside||0),0)/allCards.length);
-
+// ── HOW IT WORKS ──────────────────────────────────────────────────
+function renderHowTo(){
+  const el=document.getElementById('howtoContent');
+  if(!el||el.innerHTML)return;
   el.innerHTML=`
-    <div class="mgrid">
-      <div class="mbox"><div class="mbox-l">Total Cards</div><div class="mbox-v" style="color:var(--gold)">${allCards.length}</div><div class="mbox-s">secret rares tracked</div></div>
-      <div class="mbox"><div class="mbox-l">Hidden Gems</div><div class="mbox-v" style="color:var(--purple)">${gems.length}</div><div class="mbox-s">underpriced + under radar</div></div>
-      <div class="mbox"><div class="mbox-l">Strong Buys</div><div class="mbox-v" style="color:var(--fire)">${mustBuy}</div><div class="mbox-s">score 85+</div></div>
-      <div class="mbox"><div class="mbox-l">In Buy Zone</div><div class="mbox-v" style="color:var(--green)">${inBuy}</div><div class="mbox-s">lifecycle trough</div></div>
+    <div class="hw-section">
+      <div class="hw-title">The 7-Factor Scoring System</div>
+      <div class="hw-body" style="margin-bottom:10px">Every card is scored 0–100 across 7 independent signals. The goal is to find cards the market hasn't correctly priced yet — not confirm what everyone already knows.</div>
+      <div class="hw-factor"><div class="hw-weight">22%</div><div><div class="hw-ftitle">Supply Scarcity</div><div class="hw-fdesc">Pull rate × set print volume × in-print status. A SIR from a small specialty set with low print run scores higher than the same rarity from a massive main set — even if the pull rate is identical.</div></div></div>
+      <div class="hw-factor"><div class="hw-weight">20%</div><div><div class="hw-ftitle">Pokémon Demand</div><div class="hw-fdesc">Fan popularity tier based on global polls, PSA submission volume, and social data. Tier 1 (Charizard, Pikachu, Umbreon) = floor never drops. Overprint penalty applied to heavily reprinted Pokémon.</div></div></div>
+      <div class="hw-factor"><div class="hw-weight" style="color:var(--fire)">20%</div><div><div class="hw-ftitle">Set Lifecycle</div><div class="hw-fdesc">The most important signal. TCG cards follow a predictable price curve: release hype → trough at 3-9 months → recovery → out-of-print appreciation. The BUY ZONE is 6-18 months after release.</div></div></div>
+      <div class="hw-factor"><div class="hw-weight" style="color:var(--fire)">22%</div><div><div class="hw-ftitle">Price Dislocation</div><div class="hw-fdesc">How far is the current price from the lifecycle-adjusted floor? A card priced below where comparable cards traded at the same lifecycle stage is dislocated — that's the buy signal.</div></div></div>
+      <div class="hw-factor"><div class="hw-weight">8%</div><div><div class="hw-ftitle">Collector Ceiling</div><div class="hw-fdesc">How high can this card realistically go? Based on documented peak sales of comparable cards. Tier 1 Pokémon SIRs have much higher ceilings than Tier 3 Hyper Rares.</div></div></div>
+      <div class="hw-factor"><div class="hw-weight">8%</div><div><div class="hw-ftitle">Momentum Signal</div><div class="hw-fdesc">eBay 7-day vs 30-day trend. Flat or falling momentum on a high-scoring card often signals nobody has noticed it yet — ideal for hidden gems.</div></div></div>
     </div>
-
-    ${gems.length?`<div class="icard" style="border-color:rgba(155,114,255,.25);background:linear-gradient(135deg,rgba(155,114,255,.06),var(--s1) 80px)">
-      <div class="ititle">💎 Hidden Gems — The Alpha List</div>
-      <div style="font-size:10px;color:var(--mu);margin-bottom:9px;line-height:1.6">Underpriced · Under the radar · Recently rotated or competitive support · Asymmetric upside</div>
-      ${gems.slice(0,8).map((c,i)=>`<div class="irow">
-        <span class="irn">${i+1}. ${c.name} <span style="color:var(--mu);font-size:9px">${c.set?.name||''}</span></span>
-        <span class="irv" style="color:var(--purple)">${c.score} · ${c.upside!=null?'+'+c.upside+'%':'—'}</span>
-      </div>`).join('')}
-    </div>`:''}
-
-    <div class="icard">
-      <div class="ititle">🏆 Top Scored</div>
-      ${byScore.slice(0,6).map((c,i)=>`<div class="irow">
-        <span class="irn">${i+1}. ${c.name}${c.isHiddenGem?' 💎':''} <span style="color:var(--mu);font-size:9px">${c.set?.name||''}</span></span>
-        <span class="irv" style="color:${rStyle(c.score).c}">${c.score}</span>
-      </div>`).join('')}
+    <div class="div"></div>
+    <div class="hw-section">
+      <div class="hw-title">The Set Lifecycle Curve</div>
+      <div class="hw-body" style="margin-bottom:8px">This pattern has held across 40+ sets analyzed from 2018–2024:</div>
+      <div class="hw-lc-bar"><span style="color:var(--fire)">0–30 days: Release</span><span style="color:var(--mu)">Hype premium. Wait.</span></div>
+      <div class="hw-lc-bar"><span style="color:var(--amber)">1–3 months: Dropping</span><span style="color:var(--mu)">Supply flooding market. Wait.</span></div>
+      <div class="hw-lc-bar" style="background:rgba(51,221,136,.08);border-color:rgba(51,221,136,.2)"><span style="color:var(--green)">3–9 months: 🟢 BUY ZONE</span><span style="color:var(--green)">Trough. Buy here.</span></div>
+      <div class="hw-lc-bar"><span style="color:var(--blue)">9–18 months: Recovery</span><span style="color:var(--mu)">Supply tightening. Accumulate.</span></div>
+      <div class="hw-lc-bar"><span style="color:var(--purple)">18mo+: OOP Appreciation</span><span style="color:var(--mu)">Only decreases from here.</span></div>
     </div>
-
-    <div class="icard">
-      <div class="ititle">📈 Most Upside to Fair Value</div>
-      ${byUpside.slice(0,5).map((c,i)=>`<div class="irow">
-        <span class="irn">${i+1}. ${c.name} <span style="color:var(--mu);font-size:9px">#${c.cardNo||'?'}</span></span>
-        <span class="irv up">+${c.upside}%</span>
-      </div>`).join('')}
-    </div>
-
-    ${rotated.length?`<div class="icard">
-      <div class="ititle">🔄 Recently Rotated — Trough Opportunity</div>
-      <div style="font-size:10px;color:var(--mu);margin-bottom:9px;line-height:1.6">Competitive demand gone, nobody's talking about them, collector demand just starting. Classic hidden gem setup.</div>
-      ${rotated.slice(0,5).map((c,i)=>`<div class="irow">
-        <span class="irn">${i+1}. ${c.name} <span style="color:var(--mu);font-size:9px">${c.set?.name||''}</span></span>
-        <span class="irv" style="color:var(--green)">${c.score} · $${c.marketPrice?.toFixed(0)||'—'}</span>
-      </div>`).join('')}
-    </div>`:''}
-
-    <div class="icard">
-      <div class="ititle">📖 Scoring System — v4</div>
-      <div class="irow"><span class="irn">Supply Scarcity (pull rate × print volume × OOP)</span><span class="irv" style="color:var(--mu)">22%</span></div>
-      <div class="irow"><span class="irn">Pokémon Demand (tier + overprint penalty)</span><span class="irv" style="color:var(--mu)">20%</span></div>
-      <div class="irow"><span class="irn">Set Lifecycle (price curve position)</span><span class="irv" style="color:var(--gold)">20%</span></div>
-      <div class="irow"><span class="irn">Price Dislocation (lifecycle-adjusted floor)</span><span class="irv" style="color:var(--gold)">22%</span></div>
-      <div class="irow"><span class="irn">Collector Ceiling (peak comp headroom)</span><span class="irv" style="color:var(--mu)">8%</span></div>
-      <div class="irow"><span class="irn">Momentum Signal (eBay 7d vs 30d)</span><span class="irv" style="color:var(--mu)">8%</span></div>
-      <div style="margin-top:10px;font-size:10px;color:var(--mu);line-height:1.75">
-        Playability is a <strong style="color:var(--tx)">context modifier</strong> — not a direct weight. Recently rotated cards and competitive support cards get lifecycle/dislocation bonuses to surface opportunities the market hasn't repriced yet.
-        Trainer SIRs get a post-composite multiplier (up to +20%) reflecting their documented 5–50x historical appreciation vs Pokémon SIRs.
+    <div class="div"></div>
+    <div class="hw-section">
+      <div class="hw-title">Playability — A Context Modifier</div>
+      <div class="hw-body">Competitive playability is NOT a direct scoring factor. It's a modifier that finds hidden gems the market hasn't repriced yet.</div>
+      <div style="margin-top:8px">
+        <div class="hw-factor"><div class="hw-weight" style="font-size:12px;color:var(--green)">+10LC<br>+5PD</div><div><div class="hw-ftitle">Recently Rotated 🔄</div><div class="hw-fdesc">Was meta, just rotated out. Competitive demand evaporated overnight. Collector curve just starting. Classic hidden gem setup — nobody's talking about it.</div></div></div>
+        <div class="hw-factor"><div class="hw-weight" style="font-size:12px;color:var(--amber)">+10PD</div><div><div class="hw-ftitle">Competitive Support ⚙️</div><div class="hw-fdesc">Trainer/energy cards propping up their price floor via competitive demand that collectors haven't noticed yet.</div></div></div>
+        <div class="hw-factor"><div class="hw-weight" style="font-size:12px;color:var(--mu)">0</div><div><div class="hw-ftitle">Currently Meta</div><div class="hw-fdesc">Already priced in by the market. No hidden gem bonus — the opportunity is already reflected in the price.</div></div></div>
       </div>
     </div>
-
-    <div class="icard">
-      <div class="ititle">🔍 Grading Strategy</div>
-      <div style="font-size:10px;color:var(--mu);line-height:1.75">
-        PSA 10 copies of SIRs sell at 3–8x raw. A $45 raw that grades at $200+ is the highest-leverage play in the hobby.<br><br>
-        Best candidates: Trainer SIRs (centering critical — inspect before submitting), any Hidden Gem scoring 75+ under $60 raw, JP cards (thicker stock = higher PSA 10 rate).<br><br>
-        PSA Value tier: ~$25/card, 45–90 days. Factor into your hold timeline.
+    <div class="div"></div>
+    <div class="hw-section">
+      <div class="hw-title">Artist Tiers</div>
+      <div class="hw-body" style="margin-bottom:8px">Artist matters significantly for long-term collector value. Cards by high-tier artists consistently outperform at auction:</div>
+      <div class="icard">
+        <div class="hw-artist"><span>Mitsuhiro Arita</span><span class="tier-s">Tier S</span></div>
+        <div class="hw-artist"><span>Naoki Saito</span><span class="tier-s">Tier S</span></div>
+        <div class="hw-artist"><span>Akira Komayama</span><span class="tier-s">Tier S</span></div>
+        <div class="hw-artist"><span>Narumi Sato</span><span class="tier-s">Tier S</span></div>
+        <div class="hw-artist"><span>Atsushi Furusawa</span><span class="tier-s">Tier S</span></div>
+        <div class="hw-artist"><span>HYOGONOSUKE</span><span class="tier-a">Tier A</span></div>
+        <div class="hw-artist"><span>danciao</span><span class="tier-a">Tier A</span></div>
+        <div class="hw-artist"><span>Taiga Kasai</span><span class="tier-a">Tier A</span></div>
+        <div class="hw-artist"><span>5ban Graphics</span><span class="tier-b">Tier B — 3D CGI</span></div>
       </div>
+    </div>
+    <div class="div"></div>
+    <div class="hw-section">
+      <div class="hw-title">Trainer SIR Multiplier</div>
+      <div class="hw-body">Trainer SIRs get a post-composite multiplier (not a factor weight) because their historical appreciation vs Pokémon SIRs is so consistent it warrants special treatment:<br><br>
+      N Full Art 2016: $8 → $400+<br>
+      Misty's Determination SAR: $15 → $300+<br>
+      Brock's Grit SAR: $12 → $200+<br><br>
+      High-tier trainers (Cynthia, Misty, N, Lillie) get +20%. Other trainer SIRs get +12%.</div>
+    </div>
+    <div class="div"></div>
+    <div class="hw-section">
+      <div class="hw-title">The Hidden Gem Formula</div>
+      <div class="hw-body">A card is flagged 💎 Hidden Gem when ALL of these are true:<br><br>
+      ✓ Score ≥ 70/100<br>
+      ✓ Flat or falling eBay momentum (nobody's looking at it)<br>
+      ✓ Playability context = ROTATED, SUPPORT, or NONE (not already in the spotlight)<br>
+      ✓ Current price below fair value<br><br>
+      This combination — high fundamental score, under the radar, priced below fair value — is the asymmetric setup.</div>
     </div>`;
 }
+
+// ── INSIGHTS (for Discover tab internal use) ──────────────────────
+function renderInsights(){} // Insights now live in Portfolio Analytics
 
 // ── NAV ───────────────────────────────────────────────────────────
 function goTab(tab,el){
@@ -879,9 +1311,21 @@ function goTab(tab,el){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
   document.getElementById('pg-'+tab).classList.add('on');
   el.classList.add('on');
-  if(tab==='watchlist')renderWatchlist();
-  if(tab==='insights') renderInsights();
-  if(tab==='trending') loadTrending();
+  if(tab==='portfolio')renderWatchlist();
+  if(tab==='intel')loadTrending();
+}
+function goSubTab(sub,el,parent){
+  const pg=document.getElementById('pg-'+parent);
+  pg.querySelectorAll('[id^="sub-"]').forEach(s=>s.style.display='none');
+  pg.querySelectorAll('.stab').forEach(t=>t.classList.remove('on'));
+  const target=document.getElementById('sub-'+sub);
+  if(target)target.style.display='block';
+  el.classList.add('on');
+  if(sub==='owned')renderOwned();
+  if(sub==='analytics')renderAnalytics();
+  if(sub==='trending')loadTrending();
+  if(sub==='calendar')loadIntel();
+  if(sub==='howto')renderHowTo();
 }
 
 // ── TOAST ─────────────────────────────────────────────────────────
@@ -891,7 +1335,7 @@ function showToast(msg){
   setTimeout(()=>t.classList.remove('on'),2000);
 }
 
-// ── AUTO REFRESH ──────────────────────────────────────────────────
+// ── INIT ──────────────────────────────────────────────────────────
 setInterval(()=>loadCards(true),30*60*1000);
 loadCards();
 </script>
