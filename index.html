@@ -393,10 +393,26 @@ input[type=number]:focus,input[type=text]:focus{border-color:var(--gold)}
         <div class="fg">
           <label>Rarity</label>
           <select id="rarF" onchange="renderDiscover()">
-            <option value="all">All Secret Rares</option>
-            <option value="Special Illustration Rare">SIR Only</option>
-            <option value="Illustration Rare">IR Only</option>
-            <option value="Hyper Rare">Hyper Rare Only</option>
+            <option value="all">All Rarities</option>
+            <optgroup label="SV Era">
+              <option value="Special Illustration Rare">SIR</option>
+              <option value="Illustration Rare">IR</option>
+              <option value="Hyper Rare">Hyper Rare</option>
+              <option value="Mega Hyper Rare">Mega Hyper Rare</option>
+            </optgroup>
+            <optgroup label="SWSH Era">
+              <option value="Rainbow Rare">Rainbow Rare</option>
+              <option value="Rare Holo VMAX">VMAX Full Art</option>
+              <option value="Rare Holo VSTAR">VSTAR Full Art</option>
+              <option value="Secret Rare">Secret Rare (Gold)</option>
+              <option value="Trainer Gallery Rare Holo">Trainer Gallery</option>
+            </optgroup>
+            <optgroup label="SM / XY / BW Era">
+              <option value="Rare Ultra">Full Art (Rare Ultra)</option>
+              <option value="Rare Rainbow">Rainbow Rare (SM)</option>
+              <option value="Rare Shiny GX">Shiny GX (Hidden Fates)</option>
+              <option value="Full Art">Full Art (older)</option>
+            </optgroup>
           </select>
         </div>
         <div class="fg">
