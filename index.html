@@ -677,7 +677,7 @@ function cardHTML(c,ctx){
   const isOOP=!!c.isOOP,isTr=c.supertype==='Trainer';
   const ebayQ=encodeURIComponent(c.ebayQuery||c.name);
   const eSold=`https://www.ebay.com/sch/i.html?_nkw=${ebayQ}&LH_Complete=1&LH_Sold=1&_sop=13`;
-  const eBuy=`https://www.ebay.com/sch/i.html?_nkw=${ebayQ}&LH_BIN=1&_sop=15`;
+  const eBuy=`https://www.ebay.com/sch/i.html?_nkw=${ebayQ}&LH_Auction=1&_sop=1`;
   const tcg=c.tcgplayerUrl||'';
   const prStr=price>0?(c.priceSource==='cardmarket'?`~$${price.toFixed(2)}`:`$${price.toFixed(2)}`):'—';
   const fvStr=fv?`$${fv}`:'—';
@@ -814,7 +814,7 @@ function cardHTML(c,ctx){
     </div>
     ${tcg?`<a class="xlink" href="${tcg}" target="_blank" onclick="event.stopPropagation()" style="color:var(--gold)">View on TCGPlayer ↗</a>`:''}
     <a class="xlink" href="${eSold}" target="_blank" onclick="event.stopPropagation()" style="color:var(--green);border-color:rgba(51,221,136,.22)">eBay Sold Listings ↗</a>
-    <a class="xlink" href="${eBuy}"  target="_blank" onclick="event.stopPropagation()" style="color:var(--blue);border-color:rgba(74,158,255,.22)">eBay Active Listings ↗</a>
+    <a class="xlink" href="${eBuy}"  target="_blank" onclick="event.stopPropagation()" style="color:var(--blue);border-color:rgba(74,158,255,.22)">eBay Auctions — Ending Soon ↗</a>
     <div class="cactions">
       <button class="cabtn cawatch${inW?' on':''}" onclick="event.stopPropagation();toggleWatch('${c.id}')">
         ${inW?'★ Watching':'☆ Watch'}
