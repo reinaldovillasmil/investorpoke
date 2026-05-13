@@ -1136,13 +1136,12 @@ async function loadCards(force=false){
   await fetchBatch(1,false);
 }
 async function shuffleCards(){
-  const page=Math.floor(Math.random()*4)+1;
   const btn=document.getElementById('ri');if(btn)btn.classList.add('spn');
-  await fetchBatch(page,true,false);
+  await fetchBatch(1,true,false,true); // rebuild=true forces fresh pool on backend
   if(btn)btn.classList.remove('spn');
   showToast('Fresh batch loaded 🔀');
 }
-async function fetchBatch(page=1,anim=false,merge=false){
+async function fetchBatch(page=1,anim=false,merge=false,rebuild=false){
   setSt('Fetching...',true);
   const minScore=+document.getElementById('scF').value;
   const minPrice=+document.getElementById('prF').value;
@@ -1152,13 +1151,14 @@ async function fetchBatch(page=1,anim=false,merge=false){
   if(!anim)document.getElementById('discoverGrid').innerHTML=`<div class="loader"><div class="lring"></div><div class="ltitle">Scanning the Market</div><div class="lsub">${batchCount>1?`Aggregating ${batchCount} batches for min $${minPrice}…`:'Loading secret rares from the backend.<br>First load takes a few seconds.'}</div></div>`;
   else{document.getElementById('discoverGrid').style.opacity='0.3';document.getElementById('discoverGrid').style.transition='opacity .2s';}
   try{
-    const buildUrl=()=>{
+    const buildUrl=(isFirst=false)=>{
       const qs=new URLSearchParams({page});
       if(minScore>0)qs.set('minScore',minScore);
       if(minPrice>0)qs.set('minPrice',minPrice);
+      if(rebuild&&isFirst)qs.set('rebuild','1'); // only first request triggers rebuild
       return `${API}/api/cards?${qs.toString()}`;
     };
-    const responses=await Promise.all(Array.from({length:batchCount},()=>fetch(buildUrl()).then(r=>{if(!r.ok)throw new Error(`Backend ${r.status}`);return r.json();})));
+    const responses=await Promise.all(Array.from({length:batchCount},(_,i)=>fetch(buildUrl(i===0)).then(r=>{if(!r.ok)throw new Error(`Backend ${r.status}`);return r.json();})));
     // Deduplicate across batches; merge=true adds to existing allCards instead of replacing
     const seen=new Set();
     if(merge){
