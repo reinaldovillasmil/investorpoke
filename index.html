@@ -320,13 +320,27 @@ input[type=number]:focus,input[type=text]:focus{border-color:var(--gold)}
 .toast{position:fixed;bottom:calc(var(--sb)+86px);left:50%;transform:translateX(-50%) translateY(14px);background:var(--s3);border:1px solid var(--b1);border-radius:20px;padding:8px 16px;font-size:10px;color:var(--tx);opacity:0;transition:all .22s;pointer-events:none;white-space:nowrap;z-index:999}
 .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
 .pcdet{cursor:default}.pcdet input,.pcdet select,.pcdet button,.pcdet a{pointer-events:auto}
+
+/* ── IMAGE MODAL ── */
+.imgmodal{position:fixed;inset:0;background:rgba(0,0,0,.9);display:none;align-items:center;justify-content:center;z-index:10000;padding:20px}
+.imgmodal.open{display:flex}
+.imgmodal-content{position:relative;max-width:90vw;max-height:85vh;background:var(--s2);border:1px solid var(--b1);border-radius:var(--r);padding:0;overflow:hidden;display:flex;flex-direction:column;align-items:center}
+.imgmodal-header{width:100%;padding:12px 16px;border-bottom:1px solid var(--b0);display:flex;justify-content:space-between;align-items:center;background:var(--s1)}
+.imgmodal-title{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:1px;color:var(--tx);flex:1}
+.imgmodal-close{background:none;border:none;color:var(--mu);cursor:pointer;font-size:20px;padding:0 8px;transition:color .15s}
+.imgmodal-close:hover{color:var(--tx)}
+.imgmodal-body{flex:1;width:100%;display:flex;align-items:center;justify-content:center;overflow:auto}
+.imgmodal-img{max-width:100%;max-height:100%;object-fit:contain}
+.imgmodal-footer{width:100%;padding:10px 16px;border-top:1px solid var(--b0);background:var(--s1);text-align:center;font-size:9px;color:var(--mu)}
+.card-thumb{width:54px;height:75px;border-radius:5px;object-fit:cover;flex-shrink:0;cursor:pointer;margin-right:10px;border:1px solid var(--b1);transition:opacity .15s,border-color .15s}
+.card-thumb:hover{opacity:.85;border-color:var(--b2)}
 </style>
 </head>
 <body>
 
 <!-- LOGIN -->
 <div id="loginScreen">
-  <div class="lmark">Poke<b>Invest</b></div>
+  <div class="lmark">Poke<b>Investttt</b></div>
   <div class="ltag">Private Access · Investment Screener</div>
   <div class="lbox">
     <label class="llbl">Access Password</label>
@@ -401,8 +415,8 @@ input[type=number]:focus,input[type=text]:focus{border-color:var(--gold)}
           <input type="range" min="0" max="100" value="60" id="scF" step="1" oninput="document.getElementById('scV').textContent=this.value;renderDiscover()">
         </div>
         <div class="fg">
-          <label>Max Price: <strong id="prV" style="color:var(--gold)">$150</strong></label>
-          <input type="range" min="5" max="500" value="150" id="prF" step="5" oninput="document.getElementById('prV').textContent='$'+this.value;renderDiscover()">
+          <label>Min Price: <strong id="prV" style="color:var(--gold)">Any</strong></label>
+          <input type="range" min="0" max="500" value="0" id="prF" step="5" oninput="onPriceSlide(this.value)">
         </div>
       </div>
     </div>
@@ -420,6 +434,39 @@ input[type=number]:focus,input[type=text]:focus{border-color:var(--gold)}
       <div class="leg"><div class="ldot2" style="background:var(--blue)"></div>Watch &lt;65</div>
       <div class="leg"><div class="ldot2" style="background:var(--purple)"></div>💎 Hidden Gem</div>
     </div>
+    <!-- ── CONNOISSEUR ── -->
+    <div id="connPanel" style="background:linear-gradient(135deg,rgba(26,18,44,.95),rgba(14,10,28,.98));border:1px solid rgba(139,92,246,.35);border-radius:10px;padding:14px;margin-bottom:12px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:2px;color:#c4b5fd">🎯 CONNOISSEUR</div>
+          <div style="font-size:9px;color:var(--mu);letter-spacing:.5px">AI picks the best investments for your budget</div>
+        </div>
+        <button onclick="toggleConnPanel()" id="connToggle" style="background:rgba(139,92,246,.15);border:1px solid rgba(139,92,246,.35);border-radius:6px;color:#c4b5fd;font-size:10px;padding:5px 10px;cursor:pointer;font-family:'DM Mono',monospace">▼ Open</button>
+      </div>
+      <div id="connBody" style="display:none">
+        <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px">
+          <div style="flex:1">
+            <label style="font-size:9px;color:var(--mu);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px">Max Budget</label>
+            <div style="display:flex;align-items:center;gap:6px">
+              <span style="color:var(--mu);font-size:11px">$</span>
+              <input type="number" id="connBudget" value="80" min="5" max="1000" step="5" style="width:70px;background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.3);border-radius:6px;color:#c4b5fd;font-family:'DM Mono',monospace;font-size:12px;padding:6px 8px;outline:none">
+            </div>
+          </div>
+          <div style="flex:1">
+            <label style="font-size:9px;color:var(--mu);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px">Picks</label>
+            <select id="connCount" style="background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.3);border-radius:6px;color:#c4b5fd;font-family:'DM Mono',monospace;font-size:11px;padding:6px 8px;width:100%">
+              <option value="3" selected>3 picks</option>
+              <option value="5">5 picks</option>
+            </select>
+          </div>
+          <div style="flex-shrink:0;padding-top:18px">
+            <button onclick="runConnoisseur()" id="connBtn" style="background:linear-gradient(135deg,#7c3aed,#5b21b6);border:none;border-radius:8px;color:#fff;font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:1.5px;padding:8px 16px;cursor:pointer;white-space:nowrap">FIND GEMS</button>
+          </div>
+        </div>
+        <div id="connResult"></div>
+      </div>
+    </div>
+
     <div id="discoverInfo" class="ilbl"></div>
     <div id="batchInfo" style="font-size:9px;color:var(--mu);margin-bottom:6px;display:none"></div>
     <div id="discoverGrid"></div>
@@ -485,11 +532,27 @@ input[type=number]:focus,input[type=text]:focus{border-color:var(--gold)}
 
 </div>
 
+<!-- ── IMAGE MODAL ── -->
+<div class="imgmodal" id="imgModal" onclick="closeCardImage()">
+  <div class="imgmodal-content" onclick="event.stopPropagation()">
+    <div class="imgmodal-header">
+      <div class="imgmodal-title" id="imgModalTitle">Card Image</div>
+      <button class="imgmodal-close" onclick="closeCardImage()">✕</button>
+    </div>
+    <div class="imgmodal-body">
+      <img class="imgmodal-img" id="imgModalImg" src="" alt="Card image">
+    </div>
+    <div class="imgmodal-footer" id="imgModalFooter"></div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
 // ── CONFIG ────────────────────────────────────────────────────────
-const API = 'https://poke-api-three-delta.vercel.app';
+const API = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+  ? 'http://localhost:3000'
+  : 'https://poke-api-three-delta.vercel.app';
 
 // ── AUTH ──────────────────────────────────────────────────────────
 const PWS=['pokeball1','charizard2','pikachu3','mewtwo4','umbreon5','gardevoir6','gengar7','lugia8','eevee9','mew10'];
@@ -515,6 +578,7 @@ buildSlots();
 // ── STATE ─────────────────────────────────────────────────────────
 let allCards=[],lastFetch=0,CACHE=30*60*1000;
 let sortKey='score',gemsOnly=false,expandId=null,expandCtx=null;
+let _autoTopUp=false; // prevents renderDiscover → fetchBatch → renderDiscover loop
 let watchlist=JSON.parse(localStorage.getItem('pi_watch')||'[]');
 let owned=JSON.parse(localStorage.getItem('pi_owned')||'[]');
 let dismissed=JSON.parse(localStorage.getItem('pi_dismissed')||'[]');
@@ -523,6 +587,7 @@ let alertTargets=JSON.parse(localStorage.getItem('pi_alerts')||'{}');
 let sTimer=null,lastSearch=[];
 let tLoaded=false,tCards=[];
 let intelLoaded=false;
+const cardImageMap=new Map(); // Store card images by ID
 const SORT_OPTIONS=['-set.releaseDate','-tcgplayer.prices.holofoil.market','name','-name','number'];
 
 // ── STYLE HELPERS ────────────────────────────────────────────────
@@ -572,11 +637,20 @@ function cardHTML(c,ctx){
   const eSold=`https://www.ebay.com/sch/i.html?_nkw=${ebayQ}&LH_Complete=1&LH_Sold=1&_sop=13`;
   const eBuy=`https://www.ebay.com/sch/i.html?_nkw=${ebayQ}&LH_BIN=1&_sop=15`;
   const tcg=c.tcgplayerUrl||'';
-  const prStr=price>0?`$${price.toFixed(2)}`:'—';
+  const prStr=price>0?(c.priceSource==='cardmarket'?`~$${price.toFixed(2)}`:`$${price.toFixed(2)}`):'—';
   const fvStr=fv?`$${fv}`:'—';
   const upStr=up!=null?(up>=0?`+${up}%`:`${up}%`):'—';
   const upCls=up>0?'up':up<0?'dn':'na';
   const hasAlert=alertTargets[c.id];
+
+  // Store image data for modal
+  if(c.imageLarge||c.image){
+    cardImageMap.set(c.id,{
+      name:c.name,
+      image:c.imageLarge||c.image,
+      set:c.set?.name||''
+    });
+  }
 
   const bars=[
     ['Supply Scarcity',bd.supplyScore],
@@ -592,6 +666,7 @@ function cardHTML(c,ctx){
   return`<div class="pc${isOpen?' open':''}${isGem?' gem':''}" id="pc-${c.id}-${ctx}" onclick="toggleCard('${c.id}','${ctx}')">
   <div class="pctop">
     <div class="pchead">
+      ${c.image?`<img class="card-thumb" src="${c.image}" alt="${c.name}" loading="lazy" onclick="event.stopPropagation();openCardImage('${c.id}')">`:''}
       <div class="pcleft">
         <div class="pcname">${c.name}</div>
         <div class="pcmeta">
@@ -610,7 +685,9 @@ function cardHTML(c,ctx){
           ${hasAlert?`<span class="tag tart">🔔 Alert $${hasAlert.target}</span>`:''}
         </div>
       </div>
-      <div class="sring" style="color:${rs.c};background:${rs.bg};border-color:${rs.bd}">${c.score||0}</div>
+      <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+        <div class="sring" style="color:${rs.c};background:${rs.bg};border-color:${rs.bd}">${c.score||0}</div>
+      </div>
     </div>
     <div class="prow">
       <div class="pcell"><div class="pclbl">Market Price</div><div class="pcval">${prStr}</div></div>
@@ -725,6 +802,38 @@ function toggleCard(id,ctx){
   }
 }
 
+// ── IMAGE MODAL ───────────────────────────────────────────────────
+function openCardImage(cardId){
+  const cardData=cardImageMap.get(cardId);
+  if(!cardData){console.warn('Card image not found:',cardId);return;}
+  
+  const modal=document.getElementById('imgModal');
+  const img=document.getElementById('imgModalImg');
+  const title=document.getElementById('imgModalTitle');
+  const footer=document.getElementById('imgModalFooter');
+  
+  img.src=cardData.image;
+  title.textContent=cardData.name;
+  footer.textContent=cardData.set||'Card Image';
+  modal.classList.add('open');
+  
+  // Prevent body scroll when modal is open
+  document.body.style.overflow='hidden';
+}
+
+function closeCardImage(){
+  const modal=document.getElementById('imgModal');
+  modal.classList.remove('open');
+  document.body.style.overflow='';
+}
+
+// Close modal on Escape key
+document.addEventListener('keydown',(e)=>{
+  if(e.key==='Escape'&&document.getElementById('imgModal').classList.contains('open')){
+    closeCardImage();
+  }
+});
+
 // ── AI ANALYSIS ───────────────────────────────────────────────────
 // ── ARTIST TIER DATA ────────────────────────────────────────────
 const ARTIST_TIERS={
@@ -781,6 +890,9 @@ async function loadAI(id,ctx){
       lifecycleLabel:card.lifecycleLabel||'',
       floor:b.floor||'', fair:b.fair||'', ceil:b.ceil||'', peak:b.peak||'',
       imageUrl:encodeURIComponent(card.imageLarge||card.image||''),
+      characterNotes:card.characterNotes||'',
+      collectorTier:card.collectorTier||'',
+      cardNumber:card.number||'',
     });
 
     const res=await fetch(`${API}/api/ai-analysis?${params.toString()}`);
@@ -853,6 +965,7 @@ async function loadArtAI(id,ctx){
     const params=new URLSearchParams({
       name:card.name, rarity:card.rarity||'',
       artist:card.artist||'',
+      set:card.set?.name||'',
       imageUrl:encodeURIComponent(card.imageLarge||card.image||''),
     });
 
@@ -1008,23 +1121,40 @@ async function loadCards(force=false){
 }
 async function shuffleCards(){
   const page=Math.floor(Math.random()*4)+1;
-  const sort=SORT_OPTIONS[Math.floor(Math.random()*SORT_OPTIONS.length)];
   const btn=document.getElementById('ri');if(btn)btn.classList.add('spn');
-  await fetchBatch(page,true,sort);
+  await fetchBatch(page,true,false);
   if(btn)btn.classList.remove('spn');
   showToast('Fresh batch loaded 🔀');
 }
-async function fetchBatch(page=1,anim=false,sortBy='-set.releaseDate'){
+async function fetchBatch(page=1,anim=false,merge=false){
   setSt('Fetching...',true);
-  if(!anim)document.getElementById('discoverGrid').innerHTML=`<div class="loader"><div class="lring"></div><div class="ltitle">Scanning the Market</div><div class="lsub">Loading secret rares from the backend.<br>First load takes a few seconds.</div></div>`;
+  const minScore=+document.getElementById('scF').value;
+  const minPrice=+document.getElementById('prF').value;
+  // When a price floor is set the pool is smaller, so fetch multiple batches in
+  // parallel and deduplicate — user accepted the slower load time for this.
+  const batchCount=minPrice>0?5:1;
+  if(!anim)document.getElementById('discoverGrid').innerHTML=`<div class="loader"><div class="lring"></div><div class="ltitle">Scanning the Market</div><div class="lsub">${batchCount>1?`Aggregating ${batchCount} batches for min $${minPrice}…`:'Loading secret rares from the backend.<br>First load takes a few seconds.'}</div></div>`;
   else{document.getElementById('discoverGrid').style.opacity='0.3';document.getElementById('discoverGrid').style.transition='opacity .2s';}
   try{
-    const res=await fetch(`${API}/api/cards?page=${page}`);
-    if(!res.ok)throw new Error(`Backend ${res.status}`);
-    const d=await res.json();
-    allCards=d.cards||[];lastFetch=Date.now();
+    const buildUrl=()=>{
+      const qs=new URLSearchParams({page});
+      if(minScore>0)qs.set('minScore',minScore);
+      if(minPrice>0)qs.set('minPrice',minPrice);
+      return `${API}/api/cards?${qs.toString()}`;
+    };
+    const responses=await Promise.all(Array.from({length:batchCount},()=>fetch(buildUrl()).then(r=>{if(!r.ok)throw new Error(`Backend ${r.status}`);return r.json();})));
+    // Deduplicate across batches; merge=true adds to existing allCards instead of replacing
+    const seen=new Set();
+    if(merge){
+      const existing=new Set(allCards.map(c=>c.id));
+      for(const d of responses)for(const c of(d.cards||[])){if(!seen.has(c.id)&&!existing.has(c.id)){seen.add(c.id);allCards.push(c);}}
+    }else{
+      allCards=[];
+      for(const d of responses)for(const c of(d.cards||[])){if(!seen.has(c.id)){seen.add(c.id);allCards.push(c);}}
+    }
+    lastFetch=Date.now();
     const gems=allCards.filter(c=>c.isHiddenGem).length;
-    setSt(`${new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})} · ${allCards.length} cards`,false);
+    setSt(`${new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})} · ${allCards.length} cards${batchCount>1?` (${batchCount} batches)`:''}`,false);
     const bi=document.getElementById('batchInfo');
     if(bi&&page>1){bi.style.display='block';bi.textContent=`Batch ${page} · ${allCards.length} cards · Shuffle for different results`;}
     else if(bi){bi.style.display='none';}
@@ -1046,6 +1176,13 @@ function setSt(txt,loading){
 }
 
 // ── DISCOVER ──────────────────────────────────────────────────────
+let _priceDebounce;
+function onPriceSlide(v){
+  document.getElementById('prV').textContent=+v>0?'$'+v:'Any';
+  renderDiscover();
+  clearTimeout(_priceDebounce);
+  _priceDebounce=setTimeout(()=>fetchBatch(),700);
+}
 function setSort(s,btn){
   sortKey=s;
   document.querySelectorAll('.trow .pill:not(.gem)').forEach(b=>b.classList.remove('on'));
@@ -1056,6 +1193,54 @@ function toggleGems(){
   document.getElementById('gemBtn').classList.toggle('on',gemsOnly);
   renderDiscover();
 }
+
+// ── CONNOISSEUR ──────────────────────────────────────────────────
+let _connOpen=false;
+function toggleConnPanel(){
+  _connOpen=!_connOpen;
+  document.getElementById('connBody').style.display=_connOpen?'block':'none';
+  document.getElementById('connToggle').textContent=_connOpen?'▲ Close':'▼ Open';
+}
+async function runConnoisseur(){
+  const budget=+document.getElementById('connBudget').value||80;
+  const count=+document.getElementById('connCount').value||3;
+  const btn=document.getElementById('connBtn');
+  const out=document.getElementById('connResult');
+  btn.disabled=true;btn.textContent='Thinking…';
+  out.innerHTML=`<div style="text-align:center;padding:16px;color:var(--mu);font-size:11px"><div class="lring" style="margin:0 auto 8px"></div>Evaluating candidates under $${budget}…</div>`;
+  try{
+    const res=await fetch(`${API}/api/ai-connoisseur?budget=${budget}&count=${count}`);
+    const d=await res.json();
+    if(!d.success){out.innerHTML=`<div style="color:var(--fire);font-size:11px;padding:8px">${d.error||'Error fetching picks.'}</div>`;return;}
+    let html=`<div style="font-size:10px;color:rgba(196,181,253,.6);margin-bottom:10px;padding:8px 10px;background:rgba(139,92,246,.08);border-radius:6px;border-left:2px solid rgba(139,92,246,.4)">${d.summary||''}</div>`;
+    const _t=d.generatedAt?new Date(d.generatedAt).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):'just now';
+    html+=`<div style="font-size:9px;color:var(--mu);margin-bottom:8px">Generated ${_t} · ${d.candidatesEvaluated} candidates evaluated · Pool refreshes every 30 min</div>`;
+    for(const p of d.picks){
+      const prStr=p.price>0?`$${(+p.price).toFixed(2)}`:'—';
+      const gem=p.isHiddenGem?'<span style="color:#a78bfa;margin-left:4px">💎</span>':'';
+      const img=p.image?`<img src="${p.image}" style="width:42px;height:58px;object-fit:cover;border-radius:4px;flex-shrink:0;border:1px solid rgba(139,92,246,.3)" alt="${p.name}">`:'';
+      const lc=p.lifecycleLabel?`<div style="font-size:9px;color:var(--mu);margin-top:2px">${p.lifecycleLabel}</div>`:'';
+      html+=`<div style="background:rgba(139,92,246,.08);border:1px solid rgba(139,92,246,.2);border-radius:8px;padding:10px;margin-bottom:8px;display:flex;gap:10px;align-items:flex-start">
+        ${img}
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
+            <span style="font-family:'Bebas Neue',sans-serif;font-size:13px;color:#c4b5fd">${p.name}${gem}</span>
+            <span style="margin-left:auto;font-family:'DM Mono',monospace;font-size:12px;color:var(--gold);flex-shrink:0">${prStr}</span>
+          </div>
+          <div style="font-size:9px;color:var(--mu);margin-bottom:5px">${p.rarity||''} · ${p.set||''}</div>
+          ${lc}
+          <div style="font-size:10px;color:rgba(255,255,255,.8);line-height:1.5;margin-top:6px">${p.why}</div>
+          ${p.score!=null?`<div style="font-size:9px;color:var(--mu);margin-top:5px">Score: ${p.score}/100${p.benchmarks?.fair?` · Fair: $${p.benchmarks.fair}`:''}</div>`:''}
+        </div>
+      </div>`;
+    }
+    out.innerHTML=html;
+  }catch(e){
+    out.innerHTML=`<div style="color:var(--fire);font-size:11px;padding:8px">Error: ${e.message}</div>`;
+  }finally{
+    btn.disabled=false;btn.textContent='FIND GEMS';
+  }
+}
 function renderDiscover(){
   if(!allCards.length)return;
   const rar=document.getElementById('rarF').value;
@@ -1063,10 +1248,11 @@ function renderDiscover(){
   const msc=+document.getElementById('scF').value;
   const mpr=+document.getElementById('prF').value;
   let cards=allCards.filter(c=>{
+    if(!c.marketPrice||c.marketPrice<=0)return false; // hide no-price cards
     if(dismissed.includes(c.id))return false;
     if(owned.includes(c.id))return false;
     if(rar!=='all'&&c.rarity!==rar)return false;
-    if(c.marketPrice>0&&c.marketPrice>mpr)return false;
+    if(mpr>0&&c.marketPrice<mpr)return false;
     if(c.score<msc)return false;
     if(gemsOnly&&!c.isHiddenGem)return false;
     if(lc==='buy'&&!(c.lifecycleLabel||'').includes('BUY'))return false;
@@ -1082,6 +1268,11 @@ function renderDiscover(){
     if(!a.isHiddenGem&&b.isHiddenGem)return 1;
     return b.score-a.score;
   });
+  // If too few visible cards, silently merge a fresh batch (once — flag prevents loops)
+  if(cards.length<20&&!_autoTopUp){
+    _autoTopUp=true;
+    fetchBatch(1,true,true).finally(()=>{_autoTopUp=false;});
+  }
   const dCount=dismissed.length,oCount=owned.length;
   let bars='';
   if(oCount>0)bars+=`<div class="obar"><span>✓ ${oCount} card${oCount>1?'s':''} owned — view in Portfolio</span></div>`;

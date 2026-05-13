@@ -1,0 +1,22 @@
+{
+  "name": "pokeinvest",
+  "version": "1.0.0",
+  "description": "Pokemon card investment screener with pull rates, artwork scores, and buy signals",
+  "main": "index.html",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js",
+    "serve": "node server.js"
+  },
+  "keywords": [
+    "pokemon",
+    "cards",
+    "investment",
+    "screener"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "live-server": "^1.2.2"
+  }
+}
