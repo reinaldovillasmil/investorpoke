@@ -369,6 +369,7 @@ input[type=number]:focus,input[type=text]:focus{border-color:var(--gold)}
 </div>
 <div class="tabs">
   <div class="tab on"  onclick="goTab('discover',this)">Discover</div>
+  <div class="tab"     onclick="goTab('sets',this)">Sets</div>
   <div class="tab"     onclick="goTab('search',this)">Search</div>
   <div class="tab"     onclick="goTab('portfolio',this)">Portfolio</div>
   <div class="tab"     onclick="goTab('intel',this)">Intel</div>
@@ -486,6 +487,31 @@ input[type=number]:focus,input[type=text]:focus{border-color:var(--gold)}
     <div id="discoverInfo" class="ilbl"></div>
     <div id="batchInfo" style="font-size:9px;color:var(--mu);margin-bottom:6px;display:none"></div>
     <div id="discoverGrid"></div>
+  </div>
+
+  <!-- ── SETS ── -->
+  <div class="pg" id="pg-sets">
+    <div class="fbar">
+      <div class="fgrid">
+        <div class="fg" style="grid-column:span 2">
+          <label>Set</label>
+          <select id="setSelect" onchange="onSetSelect()" style="width:100%">
+            <option value="">— Choose a set —</option>
+          </select>
+        </div>
+      </div>
+      <div class="fgrid">
+        <div class="fg">
+          <label>Min Price: <strong id="setPrV" style="color:var(--gold)">$7</strong></label>
+          <input type="range" min="1" max="200" value="7" id="setPrF" step="1" oninput="document.getElementById('setPrV').textContent='$'+this.value">
+        </div>
+        <div class="fg" style="display:flex;align-items:flex-end">
+          <button onclick="onSetSelect()" style="width:100%;background:var(--gold);border:none;border-radius:var(--rs);color:#07070e;font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:1px;padding:8px;cursor:pointer">LOAD SET</button>
+        </div>
+      </div>
+    </div>
+    <div id="setsInfo" class="ilbl"></div>
+    <div id="setsGrid"></div>
   </div>
 
   <!-- ── SEARCH ── -->
@@ -1657,6 +1683,68 @@ function goTab(tab,el){
   el.classList.add('on');
   if(tab==='portfolio')renderWatchlist();
   if(tab==='intel')loadTrending();
+  if(tab==='sets')initSetsTab();
+}
+
+// ── SETS TAB ─────────────────────────────────────────────────────
+let _setsLoaded=false;
+const SERIES_ORDER=['Scarlet & Violet','Mega Evolution','Sword & Shield','Sun & Moon','XY','Black & White','HeartGold & SoulSilver','Platinum','Diamond & Pearl','EX','E-Card','Neo','Gym','Base'];
+
+async function initSetsTab(){
+  if(_setsLoaded)return;
+  const sel=document.getElementById('setSelect');
+  sel.innerHTML='<option value="">Loading sets…</option>';
+  try{
+    const r=await fetch('https://api.pokemontcg.io/v2/sets?orderBy=-releaseDate&pageSize=250&select=id,name,series,releaseDate');
+    const d=await r.json();
+    // Group by series
+    const byS={};
+    (d.data||[]).forEach(s=>{
+      const ser=s.series||'Other';
+      if(!byS[ser])byS[ser]=[];
+      byS[ser].push(s);
+    });
+    // Build dropdown in preferred order, then any remaining series
+    const ordered=[...SERIES_ORDER,...Object.keys(byS).filter(s=>!SERIES_ORDER.includes(s))];
+    sel.innerHTML='<option value="">— Choose a set —</option>';
+    ordered.forEach(ser=>{
+      if(!byS[ser])return;
+      const grp=document.createElement('optgroup');
+      grp.label=ser;
+      byS[ser].forEach(s=>{
+        const o=document.createElement('option');
+        o.value=s.id;
+        o.textContent=s.name+' ('+s.releaseDate?.slice(0,4)+')';
+        grp.appendChild(o);
+      });
+      sel.appendChild(grp);
+    });
+    _setsLoaded=true;
+  }catch(e){
+    sel.innerHTML='<option value="">Error loading sets — retry</option>';
+    _setsLoaded=false;
+  }
+}
+
+async function onSetSelect(){
+  const setId=document.getElementById('setSelect').value;
+  const minPrice=+document.getElementById('setPrF').value;
+  const grid=document.getElementById('setsGrid');
+  const info=document.getElementById('setsInfo');
+  if(!setId){grid.innerHTML='';info.innerHTML='';return;}
+  grid.innerHTML=`<div class="loader"><div class="lring"></div><div class="ltitle">Loading Set</div><div class="lsub">Fetching and scoring cards…</div></div>`;
+  info.innerHTML='';
+  try{
+    const r=await fetch(`${API}/api/set-cards?setId=${encodeURIComponent(setId)}&minPrice=${minPrice}`);
+    const d=await r.json();
+    if(!d.success)throw new Error(d.error||'Failed');
+    info.innerHTML=`<strong>${d.cardCount}</strong> cards ≥ $${minPrice} · ${d.totalInSet} total in set`;
+    grid.innerHTML=d.cards.length
+      ?d.cards.map(c=>cardHTML(c,'sets')).join('')
+      :`<div style="text-align:center;padding:36px;color:var(--mu);font-size:11px">No cards above $${minPrice} in this set. Try lowering the price.</div>`;
+  }catch(e){
+    grid.innerHTML=`<div class="ebox"><div style="font-size:28px;margin-bottom:12px">⚠️</div><div style="font-size:11px;color:var(--mu)">${e.message}</div></div>`;
+  }
 }
 function goSubTab(sub,el,parent){
   const pg=document.getElementById('pg-'+parent);
